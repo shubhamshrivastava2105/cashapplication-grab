@@ -360,12 +360,12 @@
     "yPct": 87.98086963785974,
     "author": "SME",
     "text": "when clicked on no, rework. it should actually behave like a real flow and the popup should disappear.",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T13:00:07.649Z",
-    "updatedAt": "2026-06-09T13:00:07.649Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-09T13:22:21.450Z",
+    "resolvedAt": "2026-06-09T13:22:21.450Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "No, re-work now resets the allocation and reloads the credit (real flow), banner disappears."
   },
   {
     "id": "c_njjsloxdv7m",
