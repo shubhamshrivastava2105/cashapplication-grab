@@ -670,5 +670,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_v2ogfl6yxfo",
+    "route": "#/reports",
+    "anchor": "page",
+    "anchorLabel": "Page / navigation",
+    "xPct": 30.482758620689655,
+    "yPct": 3.322259136212625,
+    "author": "SME",
+    "text": "remove this reports & close page after merging the auto apply and customer identification graph to the dashboard",
+    "status": "open",
+    "createdAt": "2026-06-09T13:16:48.708Z",
+    "updatedAt": "2026-06-09T13:16:48.708Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
