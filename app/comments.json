@@ -56,12 +56,12 @@
     "yPct": 63.15958471583003,
     "author": "SME",
     "text": "the period is missing - show for last 3 months\n\nshow - quarter on quarter improvements. eg: 6 pts QoQ",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T10:28:42.749Z",
-    "updatedAt": "2026-06-09T10:28:42.751Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-09T10:50:22.215Z",
+    "resolvedAt": "2026-06-09T10:50:22.215Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "KPI trends now show quarter-on-quarter (last 3 months), e.g. \"6 pts QoQ\", instead of weekly."
   },
   {
     "id": "c_h5c7rctza0h",
