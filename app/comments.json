@@ -318,5 +318,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_2h5454lsdu7",
+    "route": "#/reports",
+    "anchor": "page",
+    "anchorLabel": "Page / navigation",
+    "xPct": 93.10344827586206,
+    "yPct": 3.6544850498338874,
+    "author": "SME",
+    "text": "remove the export csv option from here",
+    "status": "open",
+    "createdAt": "2026-06-09T12:15:44.143Z",
+    "updatedAt": "2026-06-09T12:15:44.143Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
