@@ -49,9 +49,9 @@ button { font-family: var(--font-family-plus-jakarta-sans); cursor: pointer; }
 .sidebar__toggle svg { width: 20px; height: 20px; transition: transform .18s ease; }
 body.nav-collapsed .sidebar__toggle svg { transform: rotate(180deg); }
 .sidebar__logo {
-  display: none; width: 34px; height: 26px;
-  background: url("../img/neoflo_logo.png?v=6") no-repeat left center;
-  background-size: auto 24px; filter: brightness(0) invert(1);
+  display: none; width: 36px; height: 36px; border-radius: var(--radius-sm);
+  background: var(--surface-primary-default); color: #fff; place-items: center;
+  font-family: var(--font-family-plus-jakarta-sans); font-weight: var(--font-weight-bold); font-size: 20px;
 }
 
 .sidebar__nav { flex: 1; padding: var(--scale-200) var(--scale-200); overflow-y: auto; }
@@ -125,7 +125,7 @@ body.nav-collapsed .sidebar__toggle svg { transform: rotate(180deg); }
 body.nav-collapsed .sidebar { width: 72px; flex-basis: 72px; }
 body.nav-collapsed .sidebar__top { flex-direction: column; gap: 12px; padding: var(--scale-300) 0; justify-content: center; }
 body.nav-collapsed .sidebar__logoimg { display: none; }
-body.nav-collapsed .sidebar__logo { display: block; }
+body.nav-collapsed .sidebar__logo { display: grid; }
 body.nav-collapsed .sidebar__toggle { display: grid; margin: 0; }
 body.nav-collapsed .sidebar__nav { padding-left: var(--scale-100); padding-right: var(--scale-100); }
 body.nav-collapsed .navlink { justify-content: center; padding-left: 0; padding-right: 0; position: relative; }

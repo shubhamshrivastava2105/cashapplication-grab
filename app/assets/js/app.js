@@ -52,7 +52,7 @@
     nav.innerHTML = `
       <div class="navgroup" id="navgroup-cashapp">
         <button class="navlink navlink--group is-open" id="cashapp-toggle">
-          ${icon("cashapp")}<span>Cash Application</span>
+          ${icon("cashapp")}<span>Cash Application - B2B</span>
           <svg class="navlink__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
         </button>
         <div class="navsubs" id="cashapp-subs">${subs}</div>
