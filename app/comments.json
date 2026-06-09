@@ -216,12 +216,12 @@
     "yPct": 89.92248062015504,
     "author": "SME",
     "text": "manual upload is not working - it should open the file system and the user should be able to select the file to upload",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T11:14:10.049Z",
-    "updatedAt": "2026-06-09T11:14:10.049Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-09T11:36:16.089Z",
+    "resolvedAt": "2026-06-09T11:36:16.089Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Manual upload now opens the file system to choose a statement file; the filename is shown and stored with the account."
   },
   {
     "id": "c_dypqh1zm4ed",
