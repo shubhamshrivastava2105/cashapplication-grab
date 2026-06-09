@@ -376,12 +376,12 @@
     "yPct": 84.37199782799382,
     "author": "SME",
     "text": "the yes confirm should also behave like a real flow",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T13:00:26.050Z",
-    "updatedAt": "2026-06-09T13:00:26.050Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-09T13:22:22.763Z",
+    "resolvedAt": "2026-06-09T13:22:22.763Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Yes, confirm now confirms the partial (keeps balance open) and dismisses the banner."
   },
   {
     "id": "c_mntv5buehiu",
