@@ -328,12 +328,12 @@
     "yPct": 2.990033222591362,
     "author": "SME",
     "text": "improve this entire page based on the prd and all the context you have till now based on all the comments and changes you made",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T11:22:41.217Z",
-    "updatedAt": "2026-06-09T11:22:41.217Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-09T11:42:13.976Z",
+    "resolvedAt": "2026-06-09T11:42:13.976Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Addressed via the cumulative PRD-aligned overhaul this review: entity-driven data in entity currency, consistent 250 exceptions = 250 bank-statement unapplied lines, ageing, drill-downs, bank-account management, workspace redesign (remittance, deductions, simulate, change customer). Tell me any specific element to refine further."
   },
   {
     "id": "c_2tp34o3wbvx",
