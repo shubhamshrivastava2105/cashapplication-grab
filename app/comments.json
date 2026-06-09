@@ -144,22 +144,6 @@
     "resolutionNote": "Removed the Export button from Reports."
   },
   {
-    "id": "c_297pgf6c5wc",
-    "route": "#/workspace",
-    "anchor": "ws.credit",
-    "anchorLabel": "Workspace · The credit + identified customer",
-    "xPct": 43.75,
-    "yPct": 69.80284866964621,
-    "author": "SME",
-    "text": "the remittance advice should be a pdf, it should look like a real remittance",
-    "status": "resolved",
-    "createdAt": "2026-06-09T12:59:06.588Z",
-    "updatedAt": "2026-06-09T13:22:20.381Z",
-    "resolvedAt": "2026-06-09T13:22:20.381Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "View remittance now renders a realistic remittance-advice document (header, advice no/date/currency, paid-to, payment reference, invoice lines with WHT, totals)."
-  },
-  {
     "id": "c_54ik60rdh0h",
     "route": "#/workspace",
     "anchor": "ws.allocation",
