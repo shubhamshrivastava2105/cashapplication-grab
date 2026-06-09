@@ -462,5 +462,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_0vczmfqcn67",
+    "route": "#/workspace",
+    "anchor": "ws.queue",
+    "anchorLabel": "Workspace · Credit queue",
+    "xPct": 53.45744680851063,
+    "yPct": 93.15635683950266,
+    "author": "SME",
+    "text": "make this table vertically smaller so the metrics(table) at the bottom is also visible",
+    "status": "open",
+    "createdAt": "2026-06-09T13:27:28.591Z",
+    "updatedAt": "2026-06-09T13:27:28.591Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
