@@ -112,22 +112,6 @@
     "resolutionNote": "Already reframed: remittance now shows \"parse confidence 88%\" instead of \"parsed 0.88\"."
   },
   {
-    "id": "c_q074rtbcgbg",
-    "route": "#/workspace",
-    "anchor": "ws.allocation",
-    "anchorLabel": "Workspace · Open invoices & proposed allocation",
-    "xPct": 89.03508771929825,
-    "yPct": 55.79425189980655,
-    "author": "SME",
-    "text": "Give me an option here to account for GST, any discount, any payment discount, rebates, or any deductions which have been agreed from the customer. If there is a difference between the invoice value and the payment received, I can account for any of these deductions, rebates, or GST and I can fill in the amount.",
-    "status": "resolved",
-    "createdAt": "2026-06-09T11:07:21.628Z",
-    "updatedAt": "2026-06-09T11:36:25.605Z",
-    "resolvedAt": "2026-06-09T11:36:25.605Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "Added an Account for a difference control (GST, cash/payment discount, rebate, agreed deduction, WHT) with an amount field; it reduces the unexplained gap."
-  },
-  {
     "id": "c_akme7z0dq5y",
     "route": "#/workspace",
     "anchor": "screen",
