@@ -200,12 +200,12 @@
     "yPct": 4.097452934662237,
     "author": "SME",
     "text": "the data is not changing based on the entity and everything should match",
-    "status": "resolved",
+    "status": "open",
     "createdAt": "2026-06-09T11:14:52.741Z",
-    "updatedAt": "2026-06-09T11:36:17.246Z",
-    "resolvedAt": "2026-06-09T11:36:17.246Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "All dashboard data (KPIs, ageing, exceptions, bank-statement list) now regenerates when you change entity, and ties out."
+    "updatedAt": "2026-06-09T11:40:46.763Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   },
   {
     "id": "c_uw6p2wfmo6u",
