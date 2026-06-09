@@ -144,22 +144,6 @@
     "resolutionNote": "Removed the Export button from Reports."
   },
   {
-    "id": "c_54ik60rdh0h",
-    "route": "#/workspace",
-    "anchor": "ws.allocation",
-    "anchorLabel": "Workspace · Open invoices & proposed allocation",
-    "xPct": 72.01834862385321,
-    "yPct": 87.98086963785974,
-    "author": "SME",
-    "text": "when clicked on no, rework. it should actually behave like a real flow and the popup should disappear.",
-    "status": "resolved",
-    "createdAt": "2026-06-09T13:00:07.649Z",
-    "updatedAt": "2026-06-09T13:22:21.450Z",
-    "resolvedAt": "2026-06-09T13:22:21.450Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "No, re-work now resets the allocation and reloads the credit (real flow), banner disappears."
-  },
-  {
     "id": "c_mntv5buehiu",
     "route": "#/workspace",
     "anchor": "ws.allocation",
