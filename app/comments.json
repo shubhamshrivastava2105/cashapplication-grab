@@ -462,5 +462,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_esebvrbwn1b",
+    "route": "#/unapplied",
+    "anchor": "page",
+    "anchorLabel": "Page / navigation",
+    "xPct": 45.58620689655172,
+    "yPct": 3.9867109634551494,
+    "author": "SME",
+    "text": "improve this entire page based on the prd and all the context you have till now based on all the comments and changes you made",
+    "status": "open",
+    "createdAt": "2026-06-09T11:23:03.455Z",
+    "updatedAt": "2026-06-09T11:23:03.455Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
