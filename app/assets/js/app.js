@@ -9,6 +9,12 @@
   const content = $("#content");
   const topbar = $("#topbar");
 
+  // ── Org context (entity drives currency; bank chosen in the left nav) ──────
+  let selectedEntityId = D.entities[0].id;
+  let selectedBankId = D.banks[0].id;
+  const currentEntity = () => D.entities.find((e) => e.id === selectedEntityId) || D.entities[0];
+  const banksForEntity = () => D.banks.filter((b) => b.entity === selectedEntityId);
+
   // ── Icons (inline SVG, currentColor) ─────────────────────────────────────
   const icon = (name) => {
     const p = {
@@ -65,10 +71,15 @@
   //  DASHBOARD
   // ════════════════════════════════════════════════════════════════════════
   function viewDashboard() {
+    const ent = currentEntity();
     setTopbar("Cash Application Dashboard", "Daily health — applied, identified, unapplied, exceptions",
-      `<span class="topbar__chip"><span>Entity</span> Grab Ads SG</span>
-       <span class="topbar__chip"><span>Period</span> This week</span>
-       <span class="topbar__chip"><span>Currency</span> SGD</span>`,
+      `<label class="topbar__chip topbar__chip--select"><span>Entity</span>
+         <select id="entity-select" aria-label="Select entity">
+           ${D.entities.map((e) => `<option value="${e.id}" ${e.id === selectedEntityId ? "selected" : ""}>${e.name}</option>`).join("")}
+         </select>
+       </label>
+       <span class="topbar__chip"><span>Processed till</span> <b id="period-chip">${D.lastStatementDate}</b></span>
+       <span class="topbar__chip"><span>Currency</span> <b id="currency-chip">${ent.currency}</b></span>`,
       `<button class="btn btn--primary">+ Import bank feed</button>`);
 
     const kpis = D.kpis.map((k) => `
@@ -148,6 +159,16 @@
           </table></div></div>
         </div>
       </div>`;
+
+    const entSel = $("#entity-select");
+    if (entSel) entSel.onchange = () => {
+      selectedEntityId = entSel.value;
+      const e = currentEntity();
+      const cc = $("#currency-chip"); if (cc) cc.textContent = e.currency;   // currency derives from entity
+      const first = banksForEntity()[0]; if (first) selectedBankId = first.id; // bank list follows entity
+      syncSidebarContext();
+      toast(`Entity → ${e.name} · ${e.currency}`);
+    };
   }
 
   // ════════════════════════════════════════════════════════════════════════
@@ -491,6 +512,18 @@
     if (window.COMMENTS) COMMENTS.refresh();
   }
 
+  // ── Sidebar org-context controls (entity label + bank selector) ─────────────
+  function syncSidebarContext() {
+    const sbEnt = $("#sb-entity"); if (sbEnt) sbEnt.textContent = currentEntity().name;
+    const bankSel = $("#bank-select");
+    if (bankSel) {
+      const list = banksForEntity();
+      if (!list.some((b) => b.id === selectedBankId)) selectedBankId = (list[0] || {}).id;
+      bankSel.innerHTML = list.map((b) => `<option value="${b.id}" ${b.id === selectedBankId ? "selected" : ""}>${b.name}</option>`).join("");
+      bankSel.onchange = () => { selectedBankId = bankSel.value; };
+    }
+  }
+
   // ── Sidebar collapse + mobile drawer ───────────────────────────────────────
   function setupNavToggle() {
     const KEY = "neoflo_nav_collapsed";
@@ -516,6 +549,7 @@
   // ── Boot ──────────────────────────────────────────────────────────────────
   buildNav();
   setupNavToggle();
+  syncSidebarContext();
   window.addEventListener("hashchange", router);
   if (!location.hash) location.hash = "#/dashboard";
   router();

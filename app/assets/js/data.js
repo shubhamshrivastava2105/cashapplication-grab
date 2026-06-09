@@ -6,6 +6,24 @@ window.DATA = (function () {
   const fmt = (n, ccy = "SGD") =>
     ccy + " " + n.toLocaleString("en-SG", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
+  // ── Org context: entities (currency derives from entity), banks, statement ─
+  const entities = [
+    { id: "grabads-sg", name: "Grab Ads SG",          country: "Singapore",   currency: "SGD" },
+    { id: "gfb-my",     name: "GrabForBusiness MY",   country: "Malaysia",    currency: "MYR" },
+    { id: "grabmart-id",name: "Grab Mart ID",         country: "Indonesia",   currency: "IDR" },
+    { id: "grab-th",    name: "Grab Enterprise TH",   country: "Thailand",    currency: "THB" },
+    { id: "grab-ph",    name: "Grab Ads PH",          country: "Philippines", currency: "PHP" },
+  ];
+  const banks = [
+    { id: "dbs-sgd",  entity: "grabads-sg",  name: "DBS · …450 (SGD)" },
+    { id: "ocbc-sgd", entity: "grabads-sg",  name: "OCBC · …881 (SGD)" },
+    { id: "maybank",  entity: "gfb-my",      name: "Maybank · …207 (MYR)" },
+    { id: "bca-idr",  entity: "grabmart-id", name: "BCA · …119 (IDR)" },
+    { id: "scb-thb",  entity: "grab-th",     name: "SCB · …663 (THB)" },
+    { id: "bdo-php",  entity: "grab-ph",     name: "BDO · …884 (PHP)" },
+  ];
+  const lastStatementDate = "03 May 2026";
+
   // ── Dashboard ──────────────────────────────────────────────────────────
   // Each KPI carries a consistent secondary line: a directional week-on-week
   // trend ({arrow} {value} WoW), coloured green when the movement is an
@@ -165,5 +183,5 @@ window.DATA = (function () {
   // ── Pipeline (reference strip on dashboard) ─────────────────────────────
   const pipeline = ["① Identify customer", "② Identify obligations", "③ Reconcile amount", "④ Apply & post", "⑤ Resolve residual"];
 
-  return { fmt, kpis, dailyChart, exceptionsByType, receipts, unapplied, deductions, customers, reports, pipeline };
+  return { fmt, entities, banks, lastStatementDate, kpis, dailyChart, exceptionsByType, receipts, unapplied, deductions, customers, reports, pipeline };
 })();

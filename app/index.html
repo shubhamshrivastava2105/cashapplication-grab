@@ -32,9 +32,13 @@
       </div>
       <nav class="sidebar__nav" id="sidebar-nav"><!-- nav injected by app.js --></nav>
       <div class="sidebar__foot">
-        <div class="sidebar__entity">
+        <div class="sidebar__control">
           <span class="sidebar__entity-label">Entity</span>
-          <span class="sidebar__entity-value">Grab Ads SG</span>
+          <span class="sidebar__entity-value" id="sb-entity">Grab Ads SG</span>
+        </div>
+        <div class="sidebar__control">
+          <label class="sidebar__entity-label" for="bank-select">Bank account</label>
+          <select id="bank-select" class="sidebar__select"></select>
         </div>
         <div class="sidebar__user">
           <div class="avatar">SS</div>

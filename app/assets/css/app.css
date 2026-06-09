@@ -79,9 +79,19 @@ button { font-family: var(--font-family-plus-jakarta-sans); cursor: pointer; }
 }
 
 .sidebar__foot { border-top: 1px solid rgba(255,255,255,.08); padding: var(--scale-250) var(--scale-300); }
-.sidebar__entity { display: flex; flex-direction: column; gap: 2px; padding-bottom: var(--scale-250); }
+.sidebar__control { display: flex; flex-direction: column; gap: 4px; padding-bottom: var(--scale-250); }
 .sidebar__entity-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--icon-on-colour-placeholder); }
 .sidebar__entity-value { font-size: 14px; font-weight: var(--font-weight-semibold); color: var(--text-on-colour-heading); }
+.sidebar__select {
+  width: 100%; font-family: var(--font-family-inter); font-size: 13px; font-weight: var(--font-weight-medium);
+  color: var(--text-on-colour-heading); background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.14); border-radius: var(--radius-sm); padding: 7px 8px; cursor: pointer;
+  appearance: none; -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23938e83' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 8px center;
+}
+.sidebar__select:hover { background-color: rgba(255,255,255,.1); }
+.sidebar__select option { color: var(--text-default-body); background: var(--surface-pagecard-card-1); }
 .sidebar__user { display: flex; align-items: center; gap: var(--scale-250); padding-top: var(--scale-250); border-top: 1px solid rgba(255,255,255,.08); }
 .sidebar__user-name { font-size: 13px; font-weight: var(--font-weight-semibold); color: var(--text-on-colour-heading); }
 .sidebar__user-role { font-size: 11px; color: var(--icon-on-colour-placeholder); }
@@ -105,7 +115,7 @@ body.nav-collapsed .navlink__badge {
   padding: 0; font-size: 0; line-height: 0; border: 2px solid var(--text-color-primary-black);
 }
 body.nav-collapsed .sidebar__foot { padding-left: 0; padding-right: 0; }
-body.nav-collapsed .sidebar__entity { display: none; }
+body.nav-collapsed .sidebar__control { display: none; }
 body.nav-collapsed .sidebar__user { justify-content: center; }
 body.nav-collapsed .sidebar__user-meta { display: none; }
 
@@ -138,6 +148,15 @@ body.nav-collapsed .sidebar__user-meta { display: none; }
   padding: 6px var(--scale-250); border-radius: var(--radius-full); font-weight: var(--font-weight-medium);
 }
 .topbar__chip span { color: var(--text-default-caption); }
+.topbar__chip b { font-weight: var(--font-weight-semibold); color: var(--text-default-heading); }
+.topbar__chip--select { padding: 3px 6px 3px var(--scale-250); }
+.topbar__chip--select select {
+  font-family: var(--font-family-inter); font-size: 13px; font-weight: var(--font-weight-semibold);
+  color: var(--text-default-heading); border: none; background: transparent; cursor: pointer;
+  padding: 2px 18px 2px 4px; appearance: none; -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2367635c' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 2px center;
+}
 
 /* ─── Content ───────────────────────────────────────────────────────────── */
 .content { padding: var(--scale-500); max-width: 1480px; width: 100%; }
@@ -174,7 +193,7 @@ body.nav-collapsed .sidebar__user-meta { display: none; }
   box-shadow: var(--shadow-small);
 }
 .kpi__label { font-size: 12px; color: var(--text-default-caption); margin-bottom: var(--scale-200); font-weight: var(--font-weight-medium); }
-.kpi__value { font-family: var(--font-family-plus-jakarta-sans); font-size: 28px; font-weight: var(--font-weight-bold); letter-spacing: -1px; line-height: 1.1; }
+.kpi__value { font-family: var(--font-family-plus-jakarta-sans); font-size: 26px; font-weight: var(--font-weight-bold); letter-spacing: -1px; line-height: 1.1; white-space: nowrap; }
 .kpi__delta { font-size: 12px; margin-top: 4px; font-weight: var(--font-weight-semibold); }
 .kpi--good .kpi__value { color: var(--text-success-hover); }
 .kpi--warn .kpi__value { color: var(--text-brand-default); }
