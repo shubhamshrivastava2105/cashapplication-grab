@@ -366,5 +366,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_5beekhuw164",
+    "route": "#/unapplied",
+    "anchor": "page",
+    "anchorLabel": "Page / navigation",
+    "xPct": 89.37931034482759,
+    "yPct": 3.9867109634551494,
+    "author": "SME",
+    "text": "this button doesn't work",
+    "status": "open",
+    "createdAt": "2026-06-09T11:50:34.732Z",
+    "updatedAt": "2026-06-09T11:50:34.732Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
