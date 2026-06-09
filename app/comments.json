@@ -24,12 +24,12 @@
     "yPct": 3.9867109634551494,
     "author": "SME",
     "text": "this should be on the navbar(left panel). give an option to select bank",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T10:23:27.676Z",
-    "updatedAt": "2026-06-09T10:39:16.705Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-09T11:08:34.195Z",
+    "resolvedAt": "2026-06-09T11:08:34.195Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Bank selection + management is now on the left nav (selector + Add bank account manager)."
   },
   {
     "id": "c_v54vh8rvwx6",
