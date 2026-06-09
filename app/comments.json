@@ -478,5 +478,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_akme7z0dq5y",
+    "route": "#/workspace",
+    "anchor": "screen",
+    "anchorLabel": "Apply cash",
+    "xPct": 30.369127516778523,
+    "yPct": 47.667097949359224,
+    "author": "SME",
+    "text": "You should also give me an option to see if there is a payment remittance advice. Basically, what we are trying to do is we will connect our AR email box with this system. If there is a related payment remittance advice which can be identified based on this payment, or if the user manually uploads, I should be able to see a payment reference link. I can also apply the payments to the respective invoices for a particular customer.",
+    "status": "open",
+    "createdAt": "2026-06-09T11:08:21.046Z",
+    "updatedAt": "2026-06-09T11:08:21.049Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
