@@ -296,12 +296,12 @@
     "yPct": 10.607043892992161,
     "author": "SME",
     "text": "The region should match the exception type. The reason and exception type can't be disconnected.",
-    "status": "resolved",
+    "status": "open",
     "createdAt": "2026-06-09T11:16:34.214Z",
-    "updatedAt": "2026-06-09T11:36:21.470Z",
-    "resolvedAt": "2026-06-09T11:36:21.470Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "Each line item reason is one of the exception types, so reason and exception type are now linked."
+    "updatedAt": "2026-06-09T11:39:30.382Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   },
   {
     "id": "c_gxvhzkjpqzq",
