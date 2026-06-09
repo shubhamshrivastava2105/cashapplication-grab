@@ -456,12 +456,12 @@
     "yPct": 37.66073405433024,
     "author": "SME",
     "text": "the amount should also be consistent in all the tabs.",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T12:54:22.644Z",
-    "updatedAt": "2026-06-09T12:54:22.644Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-09T13:06:25.683Z",
+    "resolvedAt": "2026-06-09T13:06:25.683Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "All tabs now derive from one shared entity dataset, so amounts are consistent everywhere (not isolated)."
   },
   {
     "id": "c_g7mav7f8vp6",
