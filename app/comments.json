@@ -80,22 +80,6 @@
     "resolutionNote": null
   },
   {
-    "id": "c_9n00vvzr4ba",
-    "route": "#/dashboard",
-    "anchor": "page",
-    "anchorLabel": "Page / navigation",
-    "xPct": 10.689655172413794,
-    "yPct": 84.82834994462901,
-    "author": "SME",
-    "text": "At least two bank accounts per entity, so make this drop down bigger than one.",
-    "status": "resolved",
-    "createdAt": "2026-06-09T11:18:45.910Z",
-    "updatedAt": "2026-06-09T11:36:23.423Z",
-    "resolvedAt": "2026-06-09T11:36:23.423Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "Every entity now has at least two bank accounts in the selector."
-  },
-  {
     "id": "c_aoph8bosnou",
     "route": "#/workspace",
     "anchor": "ws.allocation",
