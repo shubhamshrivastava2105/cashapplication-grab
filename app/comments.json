@@ -80,22 +80,6 @@
     "resolutionNote": "Replaced the daily applied-vs-unapplied chart with an Unapplied cash ageing chart (0–15d, 15–30d, 1–3mo, 3–6mo, 6mo+), summing to SGD 1.24M."
   },
   {
-    "id": "c_h7lqwm2u9m0",
-    "route": "#/workspace",
-    "anchor": "ws.allocation",
-    "anchorLabel": "Workspace · Open invoices & proposed allocation",
-    "xPct": 52.19298245614035,
-    "yPct": 87.76268136836521,
-    "author": "SME",
-    "text": "this is not working",
-    "status": "resolved",
-    "createdAt": "2026-06-09T10:53:13.128Z",
-    "updatedAt": "2026-06-09T11:08:37.414Z",
-    "resolvedAt": "2026-06-09T11:08:37.414Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "The allocation-rule dropdown now responds (re-allocates and confirms with feedback)."
-  },
-  {
     "id": "c_1pi2c6045fa",
     "route": "#/workspace",
     "anchor": "ws.queue",
