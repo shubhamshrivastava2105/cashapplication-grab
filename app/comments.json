@@ -462,5 +462,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_q074rtbcgbg",
+    "route": "#/workspace",
+    "anchor": "ws.allocation",
+    "anchorLabel": "Workspace · Open invoices & proposed allocation",
+    "xPct": 89.03508771929825,
+    "yPct": 55.79425189980655,
+    "author": "SME",
+    "text": "Give me an option here to account for GST, any discount, any payment discount, rebates, or any deductions which have been agreed from the customer. If there is a difference between the invoice value and the payment received, I can account for any of these deductions, rebates, or GST and I can fill in the amount.",
+    "status": "open",
+    "createdAt": "2026-06-09T11:07:21.628Z",
+    "updatedAt": "2026-06-09T11:07:21.631Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
