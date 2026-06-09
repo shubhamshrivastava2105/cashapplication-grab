@@ -334,5 +334,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_ug2b6hnxvwz",
+    "route": "#/reports",
+    "anchor": "page",
+    "anchorLabel": "Page / navigation",
+    "xPct": 33.241379310344826,
+    "yPct": 2.8792912513842746,
+    "author": "SME",
+    "text": "the reporting can be a lot more dense and detailed. each having a different chart, line chart, bar graph, tables etc",
+    "status": "open",
+    "createdAt": "2026-06-09T11:52:01.235Z",
+    "updatedAt": "2026-06-09T11:52:01.235Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
