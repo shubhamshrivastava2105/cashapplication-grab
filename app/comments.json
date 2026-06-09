@@ -200,12 +200,12 @@
     "yPct": 3.7652270210409746,
     "author": "SME",
     "text": "this button should be removed from here.\n\nshould be placed on the navbar, we should give the option to add multiple bank accounts.\n\nfor each bank account - there could be a direct feed by account through mt940 from bank or there is an option to manually upload by the user",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T10:41:03.240Z",
-    "updatedAt": "2026-06-09T10:41:03.242Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-09T11:08:31.816Z",
+    "resolvedAt": "2026-06-09T11:08:31.816Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Removed the Import bank feed button from the topbar; bank management now lives in the left nav (+ Add bank account) supporting multiple accounts, each with a direct MT940 feed or manual upload."
   },
   {
     "id": "c_mbvej0tex8r",
