@@ -62,5 +62,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_3j4gfxoqwsq",
+    "route": "#/dashboard",
+    "anchor": "page",
+    "anchorLabel": "Page / navigation",
+    "xPct": 82,
+    "yPct": 5.537098560354374,
+    "author": "SME",
+    "text": "currency should be dependent on entity.",
+    "status": "open",
+    "createdAt": "2026-06-09T10:22:36.938Z",
+    "updatedAt": "2026-06-09T10:22:36.941Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
