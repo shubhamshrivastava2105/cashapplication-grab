@@ -238,5 +238,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_6ea7govlge5",
+    "route": "#/unapplied",
+    "anchor": "ua.table",
+    "anchorLabel": "Unapplied · On-account ledger",
+    "xPct": 94.20035149384886,
+    "yPct": 26.621326589913142,
+    "author": "SME",
+    "text": "the apply, refund buttons are looking off.",
+    "status": "open",
+    "createdAt": "2026-06-09T12:10:20.861Z",
+    "updatedAt": "2026-06-09T12:10:20.861Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
