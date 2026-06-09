@@ -96,22 +96,6 @@
     "resolutionNote": "Manual upload now opens the file system to choose a statement file; the filename is shown and stored with the account."
   },
   {
-    "id": "c_ie8xbivoap2",
-    "route": "#/dashboard",
-    "anchor": "dash.queue",
-    "anchorLabel": "Dashboard · Aged unapplied work queue",
-    "xPct": 83.33333333333334,
-    "yPct": 10.607043892992161,
-    "author": "SME",
-    "text": "The region should match the exception type. The reason and exception type can't be disconnected.",
-    "status": "open",
-    "createdAt": "2026-06-09T11:16:34.214Z",
-    "updatedAt": "2026-06-09T11:39:30.382Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
-  },
-  {
     "id": "c_9n00vvzr4ba",
     "route": "#/dashboard",
     "anchor": "page",
