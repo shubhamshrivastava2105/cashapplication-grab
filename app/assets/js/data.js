@@ -25,18 +25,48 @@ window.DATA = (function () {
   const lastStatementDate = "03 May 2026";
 
   // ── Dashboard ──────────────────────────────────────────────────────────
-  // Each KPI carries a consistent secondary line: a directional week-on-week
-  // trend ({arrow} {value} WoW), coloured green when the movement is an
-  // improvement for that metric. Uniform format and time reference across all
-  // six tiles (no mixing of trends with raw counts).
+  // Each KPI carries a consistent secondary line: a directional quarter-on-quarter
+  // trend ({arrow} {value} QoQ over the last 3 months), green when the movement is
+  // an improvement. Tiles with a `drill` key are clickable and open a line-by-line
+  // breakdown; `info` powers the (i) tooltip.
   const kpis = [
-    { key: "autoApply",   label: "Auto-apply rate",     value: "78%",       tone: "good", delta: "▲ 6 pts WoW", deltaTone: "up" },
-    { key: "idRate",      label: "Identification rate", value: "94%",       tone: "good", delta: "▲ 1 pt WoW",  deltaTone: "up" },
-    { key: "unapplied",   label: "Unapplied cash",      value: "SGD 1.24M", tone: "warn", delta: "▼ 4% WoW",    deltaTone: "up" },
-    { key: "exceptions",  label: "Open exceptions",     value: "61",        tone: "warn", delta: "▼ 8 WoW",     deltaTone: "up" },
-    { key: "wht",         label: "WHT receivable",      value: "SGD 312k",  tone: "info", delta: "▼ 3% WoW",    deltaTone: "up" },
-    { key: "deductions",  label: "Deductions open",     value: "SGD 88k",   tone: "warn", delta: "▼ 5% WoW",    deltaTone: "up" },
+    { key: "autoApply",  label: "Auto-apply rate",     value: "78%",       tone: "good", delta: "▲ 6 pts QoQ", deltaTone: "up",
+      info: "Share of cash applied with no human touch this quarter — the headline efficiency metric." },
+    { key: "idRate",     label: "Identification rate", value: "94%",       tone: "good", delta: "▲ 3 pts QoQ", deltaTone: "up",
+      info: "Share of incoming credits attributed to a customer. The floor metric — identity is the minimum viable outcome." },
+    { key: "unapplied",  label: "Unapplied cash",      value: "SGD 1.24M", tone: "warn", delta: "▼ 4% QoQ",   deltaTone: "up", drill: "unapplied",
+      info: "On-account / advance cash that is identified but not yet matched to invoices. Click for the line-by-line breakdown." },
+    { key: "exceptions", label: "Open exceptions",     value: "61",        tone: "warn", delta: "▼ 8 QoQ",    deltaTone: "up", drill: "exceptions",
+      info: "Credits needing analyst attention, grouped by exception type. Click for the breakdown." },
   ];
+
+  // Line-by-line drill-downs behind clickable KPI tiles
+  const breakdowns = {
+    unapplied: {
+      title: "Unapplied cash — line by line", total: "SGD 1.24M",
+      columns: ["Bank account", "Value date", "Description", "Amount"], money: 3,
+      rows: [
+        ["DBS · …450",  "2026-05-02", "GIRO inflow — unidentified payer",        312000],
+        ["DBS · …450",  "2026-05-03", "TT residual after allocation — Lazada SG", 188500],
+        ["OCBC · …881", "2026-05-03", "Overpayment residual — Shopee Pay",        156000],
+        ["DBS · …450",  "2026-04-28", "Advance — Sea Group (no open invoice)",    268000],
+        ["DBS · …450",  "2026-05-01", "Subset-sum residual — Tokopedia Ads",      121500],
+        ["OCBC · …881", "2026-04-19", "On-account — Sinar Jaya Retail",            94000],
+        ["DBS · …450",  "2026-05-04", "Misdirected credit pending return",        100000],
+      ],
+    },
+    exceptions: {
+      title: "Open exceptions — by type", total: "61 exceptions",
+      columns: ["Exception type", "Count"], money: -1,
+      rows: [
+        ["Unidentified payer", 18],
+        ["Partial / short payment", 15],
+        ["Deduction / claim", 12],
+        ["Overpayment", 9],
+        ["WHT certificate pending", 7],
+      ],
+    },
+  };
 
   const dailyChart = [
     { day: "Mon", applied: 92, unapplied: 24 },
@@ -60,7 +90,7 @@ window.DATA = (function () {
     {
       id: "FT77A21B", amount: 48250.00, ccy: "SGD", valueDate: "2026-05-03", bankRef: "FT77A21B",
       narration: "TT REF AX99 INV mix", bankAcct: "DBS …450",
-      customer: { name: "Acme Retail Pte Ltd", id: "C-1042", confidence: 0.91, how: "remittance + alias (ID-1/ID-4)" },
+      customer: { name: "Sinar Jaya Retail Pte Ltd", id: "C-1042", confidence: 0.91, how: "remittance + alias (ID-1/ID-4)" },
       remittance: { listed: 5, parsed: 0.88 },
       state: "Matched", stateTone: "primary", ageHrs: 6, sla: "06:12:40", aiConf: 0.91,
       invoices: [
@@ -113,7 +143,7 @@ window.DATA = (function () {
 
   // ── Unapplied / on-account ──────────────────────────────────────────────
   const unapplied = [
-    { id: "UC-2201", customer: "Acme Retail Pte Ltd",     amount: 3450.00,  ageDays: 41, source: "FT55X10A", reason: "Residual after allocation", tone: "warn" },
+    { id: "UC-2201", customer: "Sinar Jaya Retail Pte Ltd",     amount: 3450.00,  ageDays: 41, source: "FT55X10A", reason: "Residual after allocation", tone: "warn" },
     { id: "UC-2198", customer: "Lazada SG (treasury)",     amount: 3400.00,  ageDays: 2,  source: "FT88C04Z", reason: "Subset-sum residual",       tone: "neutral" },
     { id: "UC-2150", customer: "Sea Group Pte Ltd",        amount: 28000.00, ageDays: 63, source: "FT41J88P", reason: "Advance — no open invoice", tone: "error" },
     { id: "UC-2099", customer: "Shopee Pay",               amount: 12750.00, ageDays: 9,  source: "FT60K22Q", reason: "Overpayment residual",       tone: "neutral" },
@@ -122,7 +152,7 @@ window.DATA = (function () {
 
   // ── Deductions / claims ─────────────────────────────────────────────────
   const deductions = [
-    { id: "DD-771", invoice: "INV-4502", customer: "Acme Retail Pte Ltd", amount: 450.00,  reason: "Withholding tax", code: "WHT-5", status: "Cert pending", tone: "warn",  owner: "Tax desk" },
+    { id: "DD-771", invoice: "INV-4502", customer: "Sinar Jaya Retail Pte Ltd", amount: 450.00,  reason: "Withholding tax", code: "WHT-5", status: "Cert pending", tone: "warn",  owner: "Tax desk" },
     { id: "DD-769", invoice: "INV-4310", customer: "Sea Group Pte Ltd",    amount: 1200.00, reason: "Shortage claim",  code: "SHRT",  status: "Open",         tone: "error", owner: "Claims — Priya" },
     { id: "DD-765", invoice: "INV-4288", customer: "Shopee Pay",           amount: 800.00,  reason: "Pricing dispute", code: "PRC",   status: "Disputed",     tone: "error", owner: "Claims — Wei" },
     { id: "DD-760", invoice: "INV-4255", customer: "Tokopedia Ads",        amount: 300.00,  reason: "Rebate taken",    code: "RBT",   status: "Approved",     tone: "success", owner: "Claims — Priya" },
@@ -132,15 +162,15 @@ window.DATA = (function () {
   // ── Customers (360) ─────────────────────────────────────────────────────
   const customers = [
     {
-      id: "C-1042", name: "Acme Retail Pte Ltd", country: "Singapore", ccy: "SGD", terms: "Net 30",
+      id: "C-1042", name: "Sinar Jaya Retail Pte Ltd", country: "Singapore", ccy: "SGD", terms: "Net 30",
       openAr: 55100.00, unapplied: 3450.00, idRate: 0.96,
       aliases: [
-        { name: "Acme Holdings Treasury", acct: "OCBC …881", rel: "Parent / treasury" },
-        { name: "ACME RETAIL TA SHOPSMART", acct: "DBS …210", rel: "Trading as" },
+        { name: "Sinar Jaya Holdings Treasury", acct: "OCBC …881", rel: "Parent / treasury" },
+        { name: "SINAR JAYA TA FRESHMART", acct: "DBS …210", rel: "Trading as" },
       ],
       fingerprints: [
         { pattern: "TT REF AX99*", weight: 0.88, lastSeen: "2026-05-03" },
-        { pattern: "GIRO ACME*", weight: 0.71, lastSeen: "2026-04-19" },
+        { pattern: "GIRO SINARJAYA*", weight: 0.71, lastSeen: "2026-04-19" },
       ],
       invoices: [
         { inv: "INV-4471", due: "2026-05-02", open: 12000.00 },
@@ -183,5 +213,5 @@ window.DATA = (function () {
   // ── Pipeline (reference strip on dashboard) ─────────────────────────────
   const pipeline = ["① Identify customer", "② Identify obligations", "③ Reconcile amount", "④ Apply & post", "⑤ Resolve residual"];
 
-  return { fmt, entities, banks, lastStatementDate, kpis, dailyChart, exceptionsByType, receipts, unapplied, deductions, customers, reports, pipeline };
+  return { fmt, entities, banks, lastStatementDate, kpis, breakdowns, dailyChart, exceptionsByType, receipts, unapplied, deductions, customers, reports, pipeline };
 })();

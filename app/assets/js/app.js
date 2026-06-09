@@ -66,6 +66,7 @@
   const fmt = D.fmt;
   const pill = (text, tone) => `<span class="pill pill--${tone}">${text}</span>`;
   function dc(id, label) { return `data-comment="${id}" data-comment-label="${label}"`; }
+  function escapeAttr(s) { return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
 
   // ════════════════════════════════════════════════════════════════════════
   //  DASHBOARD
@@ -83,10 +84,14 @@
       `<button class="btn btn--primary">+ Import bank feed</button>`);
 
     const kpis = D.kpis.map((k) => `
-      <div class="kpi kpi--${k.tone}">
-        <div class="kpi__label">${k.label}</div>
+      <div class="kpi kpi--${k.tone} ${k.drill ? "kpi--clickable" : ""}" ${k.drill ? `data-drill="${k.drill}"` : ""}>
+        <div class="kpi__head">
+          <div class="kpi__label">${k.label}</div>
+          ${k.info ? `<button class="info-btn" data-info="${escapeAttr(k.info)}" aria-label="What is this metric?">i</button>` : ""}
+        </div>
         <div class="kpi__value">${k.value}</div>
         <div class="kpi__delta ${k.deltaTone ? "delta-" + k.deltaTone : "muted"}">${k.delta}</div>
+        ${k.drill ? `<div class="kpi__drill">View breakdown →</div>` : ""}
       </div>`).join("");
 
     const maxBar = 100;
@@ -116,20 +121,9 @@
         <td class="muted">${u.reason}</td>
       </tr>`).join("");
 
-    const pipe = D.pipeline.map((s, i) =>
-      `<span class="pipe-step ${i === D.pipeline.length - 1 ? "pipe-step--terminal" : ""}">${s}</span>${i < D.pipeline.length - 1 ? '<span class="pipe-arrow">→</span>' : ""}`
-    ).join("");
-
     content.innerHTML = `
       <div class="section" ${dc("dash.kpis", "Dashboard · KPI tiles")}>
         <div class="kpis">${kpis}</div>
-      </div>
-
-      <div class="section" ${dc("dash.pipeline", "Dashboard · Pipeline strip")}>
-        <div class="card"><div class="card__body">
-          <div class="section__head"><div class="section__title">The cash application pipeline</div><div class="section__sub">five stages, each with a fallback — the floor is "identify the customer and park the cash"</div></div>
-          <div class="pipeline">${pipe}</div>
-        </div></div>
       </div>
 
       <div class="grid" style="grid-template-columns: 1fr 1fr; align-items:start">
@@ -169,6 +163,61 @@
       syncSidebarContext();
       toast(`Entity → ${e.name} · ${e.currency}`);
     };
+
+    // clickable KPI tiles → line-by-line breakdown modal
+    content.querySelectorAll(".kpi--clickable").forEach((tile) => {
+      tile.onclick = (e) => { if (e.target.closest(".info-btn")) return; openBreakdown(tile.dataset.drill); };
+    });
+    // (i) info buttons → small explanatory popover
+    content.querySelectorAll(".info-btn").forEach((b) => {
+      b.onclick = (e) => { e.stopPropagation(); showInfo(b, b.dataset.info); };
+    });
+  }
+
+  // ── KPI breakdown modal ─────────────────────────────────────────────────
+  function openBreakdown(key) {
+    const b = D.breakdowns[key]; if (!b) return;
+    const total = b.rows.reduce((s, r) => s + (b.money >= 0 ? r[b.money] : 0), 0);
+    const head = b.columns.map((c, i) => `<th class="${i === b.money ? "num" : ""}">${c}</th>`).join("");
+    const body = b.rows.map((r) => `<tr>${r.map((cell, i) => `<td class="${i === b.money ? "num strong" : (i === 0 ? "cell-main" : "muted")}">${i === b.money ? fmt(cell) : cell}</td>`).join("")}</tr>`).join("");
+    const foot = b.money >= 0
+      ? `<tr class="modal-total"><td colspan="${b.money}"></td><td class="num">Total</td><td class="num strong">${fmt(total)}</td></tr>`
+      : "";
+    openModal(b.title, `
+      <div class="modal-sub">Ties to the tile total: <b>${b.total}</b></div>
+      <div class="table-wrap"><table class="tbl">
+        <thead><tr>${head}</tr></thead>
+        <tbody>${body}${foot}</tbody>
+      </table></div>`);
+  }
+
+  function openModal(title, html) {
+    closeModal();
+    const back = document.createElement("div");
+    back.className = "modal-backdrop"; back.id = "app-modal";
+    back.innerHTML = `<div class="modal" role="dialog" aria-modal="true">
+      <div class="modal__head"><div class="modal__title">${title}</div><button class="modal__close" aria-label="Close">&times;</button></div>
+      <div class="modal__body">${html}</div>
+    </div>`;
+    document.body.appendChild(back);
+    back.onclick = (e) => { if (e.target === back) closeModal(); };
+    back.querySelector(".modal__close").onclick = closeModal;
+    document.addEventListener("keydown", modalEsc);
+  }
+  function closeModal() { const m = document.getElementById("app-modal"); if (m) m.remove(); document.removeEventListener("keydown", modalEsc); }
+  function modalEsc(e) { if (e.key === "Escape") closeModal(); }
+
+  // ── Info popover for (i) buttons ────────────────────────────────────────
+  function showInfo(anchor, text) {
+    const existing = document.getElementById("info-pop"); if (existing) existing.remove();
+    const pop = document.createElement("div");
+    pop.className = "info-pop"; pop.id = "info-pop"; pop.textContent = text;
+    document.body.appendChild(pop);
+    const r = anchor.getBoundingClientRect();
+    pop.style.left = Math.min(r.left, window.innerWidth - pop.offsetWidth - 12) + "px";
+    pop.style.top = (r.bottom + 6) + "px";
+    const close = (e) => { if (!pop.contains(e.target) && e.target !== anchor) { pop.remove(); document.removeEventListener("mousedown", close); } };
+    setTimeout(() => document.addEventListener("mousedown", close), 0);
   }
 
   // ════════════════════════════════════════════════════════════════════════

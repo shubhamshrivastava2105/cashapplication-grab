@@ -184,15 +184,32 @@ body.nav-collapsed .sidebar__user-meta { display: none; }
 .card__body--flush { padding: 0; }
 
 /* ─── KPI tiles ─────────────────────────────────────────────────────────── */
-.kpis { display: grid; grid-template-columns: repeat(6, 1fr); gap: var(--scale-250); }
+.kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--scale-250); }
 .kpi {
   background: var(--surface-pagecard-card-1);
   border: 1px solid var(--border-default-default);
   border-radius: var(--radius-md);
   padding: var(--scale-300) var(--scale-400);
   box-shadow: var(--shadow-small);
+  position: relative;
 }
-.kpi__label { font-size: 12px; color: var(--text-default-caption); margin-bottom: var(--scale-200); font-weight: var(--font-weight-medium); }
+.kpi--clickable { cursor: pointer; transition: border-color .12s, box-shadow .12s, transform .12s; }
+.kpi--clickable:hover { border-color: var(--border-primary-default); box-shadow: var(--shadow-medium); transform: translateY(-1px); }
+.kpi__head { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: var(--scale-200); }
+.kpi__drill { font-size: 11px; font-weight: var(--font-weight-semibold); color: var(--text-primary-default); margin-top: 6px; }
+.info-btn {
+  flex: 0 0 16px; width: 16px; height: 16px; border-radius: var(--radius-full);
+  border: 1px solid var(--border-default-default-hover); background: var(--grey-75);
+  color: var(--text-default-caption); font-family: var(--font-family-plus-jakarta-sans);
+  font-size: 10px; font-weight: var(--font-weight-bold); font-style: italic; line-height: 1; cursor: pointer; padding: 0;
+}
+.info-btn:hover { background: var(--surface-primary-subtle); color: var(--text-primary-hover); border-color: var(--border-primary-default); }
+.info-pop {
+  position: fixed; z-index: 1200; max-width: 260px; background: var(--text-color-primary-black);
+  color: var(--text-on-colour-body); font-size: 12px; line-height: 1.45; padding: 10px 12px;
+  border-radius: var(--radius-sm); box-shadow: var(--shadow-large);
+}
+.kpi__label { font-size: 12px; color: var(--text-default-caption); font-weight: var(--font-weight-medium); }
 .kpi__value { font-family: var(--font-family-plus-jakarta-sans); font-size: 26px; font-weight: var(--font-weight-bold); letter-spacing: -1px; line-height: 1.1; white-space: nowrap; }
 .kpi__delta { font-size: 12px; margin-top: 4px; font-weight: var(--font-weight-semibold); }
 .kpi--good .kpi__value { color: var(--text-success-hover); }
@@ -341,8 +358,21 @@ table.tbl--fixed { table-layout: fixed; }
 .metric-row .m-val { font-family: var(--font-family-plus-jakarta-sans); font-weight: var(--font-weight-bold); font-size: 18px; color: var(--text-default-heading); }
 
 /* ─── Responsive ────────────────────────────────────────────────────────── */
+/* ─── Modal (KPI breakdown) ─────────────────────────────────────────────── */
+.modal-backdrop { position: fixed; inset: 0; z-index: 1150; background: rgba(11,11,10,.45); display: grid; place-items: center; padding: var(--scale-400); }
+.modal { width: 100%; max-width: 720px; max-height: 84vh; display: flex; flex-direction: column;
+  background: var(--surface-pagecard-card-1); border: 1px solid var(--border-default-default);
+  border-radius: var(--radius-md); box-shadow: var(--shadow-large); overflow: hidden; }
+.modal__head { display: flex; align-items: center; gap: var(--scale-250); padding: var(--scale-300) var(--scale-400); border-bottom: 1px solid var(--border-default-default); }
+.modal__title { font-size: 16px; font-weight: var(--font-weight-bold); color: var(--text-default-heading); font-family: var(--font-family-plus-jakarta-sans); }
+.modal__close { margin-left: auto; background: none; border: none; font-size: 22px; color: var(--text-default-caption); cursor: pointer; line-height: 1; }
+.modal__body { padding: var(--scale-400); overflow-y: auto; }
+.modal-sub { font-size: 13px; color: var(--text-default-caption); margin-bottom: var(--scale-300); }
+.modal-sub b { color: var(--text-default-heading); }
+.modal-total td { border-top: 2px solid var(--border-default-default-hover); font-weight: var(--font-weight-bold); color: var(--text-default-heading); background: var(--grey-75); }
+
 @media (max-width: 1200px) {
-  .kpis { grid-template-columns: repeat(3, 1fr); }
+  .kpis { grid-template-columns: repeat(2, 1fr); }
   .workspace { grid-template-columns: 1fr; }
 }
 @media (max-width: 900px) {
