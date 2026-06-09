@@ -176,22 +176,6 @@
     "resolutionNote": "Merged Partial/short and Deduction/claim into a single \"Partial / short & deductions\" row."
   },
   {
-    "id": "c_3qo3egfl8w7",
-    "route": "#/dashboard",
-    "anchor": "dash.kpis",
-    "anchorLabel": "Dashboard · KPI tiles",
-    "xPct": 53.45744680851063,
-    "yPct": 45.31876642234822,
-    "author": "SME",
-    "text": "make this number bigger - something like 250, and the data should match all over",
-    "status": "resolved",
-    "createdAt": "2026-06-09T10:46:12.296Z",
-    "updatedAt": "2026-06-09T11:08:29.341Z",
-    "resolvedAt": "2026-06-09T11:08:29.341Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "Open exceptions is now 250; the Exceptions-by-type chart and the click-through breakdown both sum to 250. (Interpreted the tile as Open exceptions — reopen if you meant a different tile.)"
-  },
-  {
     "id": "c_o6mei24m8qa",
     "route": "#/dashboard",
     "anchor": "dash.queue",
