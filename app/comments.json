@@ -222,5 +222,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_v5u6ok1i6g5",
+    "route": "#/dashboard",
+    "anchor": "page",
+    "anchorLabel": "Page / navigation",
+    "xPct": 2.6206896551724137,
+    "yPct": 4.4296788482834994,
+    "author": "SME",
+    "text": "replace \"N\" with neoflo logo in design folder",
+    "status": "open",
+    "createdAt": "2026-06-09T12:07:48.005Z",
+    "updatedAt": "2026-06-09T12:07:48.005Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
