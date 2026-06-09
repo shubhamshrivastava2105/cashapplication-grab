@@ -30,5 +30,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_zy10q1jnx5s",
+    "route": "#/dashboard",
+    "anchor": "dash.kpis",
+    "anchorLabel": "Dashboard · KPI tiles",
+    "xPct": 43.61702127659575,
+    "yPct": 51.514502836348065,
+    "author": "SME",
+    "text": "inconsistent",
+    "status": "open",
+    "createdAt": "2026-06-09T10:20:17.440Z",
+    "updatedAt": "2026-06-09T10:20:17.442Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
