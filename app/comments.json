@@ -414,5 +414,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_p6pvhwd8nr1",
+    "route": "#/workspace",
+    "anchor": "ws.allocation",
+    "anchorLabel": "Workspace · Open invoices & proposed allocation",
+    "xPct": 75.43859649122807,
+    "yPct": 54.580398801320065,
+    "author": "SME",
+    "text": "This is a partial match because only 8,750 is utilized from this one. You should just highlight that this is a partial match and let the user take action whether this is correct or not.",
+    "status": "open",
+    "createdAt": "2026-06-09T11:04:24.637Z",
+    "updatedAt": "2026-06-09T11:04:24.639Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
