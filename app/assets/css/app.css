@@ -304,7 +304,10 @@ table.tbl--fixed { table-layout: fixed; }
 .hbar__track { background: var(--grey-100); border-radius: var(--radius-full); height: 14px; overflow: hidden; }
 .hbar__fill { height: 100%; background: var(--surface-brand-default); border-radius: var(--radius-full); }
 .hbar__fill--age { background: var(--surface-primary-default); }
-.hbars--age .hbar { grid-template-columns: 110px 1fr 110px; }
+.hbars--age .hbar { grid-template-columns: 110px 1fr 130px; }
+.hbar--ex { grid-template-columns: 190px 1fr 150px; }
+.table-scroll { max-height: 440px; overflow-y: auto; }
+.table-scroll thead th { position: sticky; top: 0; z-index: 1; }
 .hbar__val { text-align: right; font-variant-numeric: tabular-nums; color: var(--text-default-caption); font-weight: var(--font-weight-semibold); }
 
 /* ─── Pipeline strip ────────────────────────────────────────────────────── */
@@ -329,6 +332,15 @@ table.tbl--fixed { table-layout: fixed; }
 .identified-box .name { font-weight: var(--font-weight-bold); color: var(--text-default-heading); }
 .howline { font-size: 12px; color: var(--text-default-caption); margin-top: 4px; }
 .remit-box { background: var(--grey-75); border: 1px dashed var(--border-default-default-hover); border-radius: var(--radius-sm); padding: var(--scale-250) var(--scale-300); font-size: 13px; }
+.remit-linked { color: var(--text-default-heading); }
+.remit-link { display: inline-block; margin-top: 6px; font-size: 13px; font-weight: var(--font-weight-semibold); color: var(--text-primary-default); cursor: pointer; }
+.remit-actions { margin-top: 10px; }
+.remit-hint { margin-top: 8px; font-size: 11px; color: var(--text-default-caption); line-height: 1.45; }
+.adj-box { margin-top: var(--scale-300); padding-top: var(--scale-250); border-top: 1px dashed var(--border-default-default); }
+.adj-title { font-size: 12px; font-weight: var(--font-weight-bold); color: var(--text-default-heading); margin-bottom: 8px; }
+.adj-form { display: grid; grid-template-columns: 1fr 1fr auto; gap: 6px; }
+.adj-form select, .adj-form input { font-family: var(--font-family-inter); font-size: 12px; border: 1px solid var(--border-default-default); border-radius: var(--radius-sm); padding: 6px; min-width: 0; }
+.adj-del { background: none; border: none; color: var(--text-error-default); cursor: pointer; font-size: 14px; font-weight: 700; padding: 0 0 0 4px; }
 
 /* allocation table */
 .alloc-summary { display: flex; gap: var(--scale-400); font-size: 14px; font-weight: var(--font-weight-bold); padding: var(--scale-300) var(--scale-400); border-top: 1px solid var(--border-default-default); }

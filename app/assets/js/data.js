@@ -15,14 +15,94 @@ window.DATA = (function () {
     { id: "grab-ph",    name: "Grab Ads PH",          country: "Philippines", currency: "PHP" },
   ];
   const banks = [
-    { id: "dbs-sgd",  entity: "grabads-sg",  name: "DBS · …450 (SGD)" },
-    { id: "ocbc-sgd", entity: "grabads-sg",  name: "OCBC · …881 (SGD)" },
-    { id: "maybank",  entity: "gfb-my",      name: "Maybank · …207 (MYR)" },
-    { id: "bca-idr",  entity: "grabmart-id", name: "BCA · …119 (IDR)" },
-    { id: "scb-thb",  entity: "grab-th",     name: "SCB · …663 (THB)" },
-    { id: "bdo-php",  entity: "grab-ph",     name: "BDO · …884 (PHP)" },
+    { id: "dbs-sgd",   entity: "grabads-sg",  name: "DBS · …450 (SGD)",      feed: "MT940 direct feed" },
+    { id: "ocbc-sgd",  entity: "grabads-sg",  name: "OCBC · …881 (SGD)",     feed: "MT940 direct feed" },
+    { id: "maybank",   entity: "gfb-my",      name: "Maybank · …207 (MYR)",  feed: "MT940 direct feed" },
+    { id: "cimb-my",   entity: "gfb-my",      name: "CIMB · …540 (MYR)",     feed: "Manual upload" },
+    { id: "bca-idr",   entity: "grabmart-id", name: "BCA · …119 (IDR)",      feed: "MT940 direct feed" },
+    { id: "mandiri-id",entity: "grabmart-id", name: "Mandiri · …772 (IDR)",  feed: "Manual upload" },
+    { id: "scb-thb",   entity: "grab-th",     name: "SCB · …663 (THB)",      feed: "MT940 direct feed" },
+    { id: "kbank-thb", entity: "grab-th",     name: "KBank · …318 (THB)",    feed: "Manual upload" },
+    { id: "bdo-php",   entity: "grab-ph",     name: "BDO · …884 (PHP)",      feed: "MT940 direct feed" },
+    { id: "bpi-php",   entity: "grab-ph",     name: "BPI · …205 (PHP)",      feed: "Manual upload" },
   ];
   const lastStatementDate = "03 May 2026";
+
+  // ── Entity-driven, internally-consistent dashboard data (O2C) ─────────────
+  // One generator builds the open exceptions = unapplied line items for an
+  // entity; every aggregate (exceptions-by-type, ageing, totals, KPIs) is
+  // DERIVED from that single list, so all numbers always tie out. Amounts are
+  // produced in the entity's own currency.
+  const CCY_SCALE = { SGD: 1, MYR: 3.1, THB: 25, PHP: 42, IDR: 11000 };
+  const REASONS = ["Unidentified customer", "Partial / short & deductions", "Overpayment", "WHT certificate pending"];
+  const REASON_TONE = { "Unidentified customer": "error", "Partial / short & deductions": "warn", "Overpayment": "neutral", "WHT certificate pending": "info" };
+  const SEA_CUSTOMERS = ["Lazada SG", "Sea Group Pte Ltd", "Shopee Pay", "Tokopedia Ads", "Bukalapak Enterprise", "Sinar Jaya Retail Pte Ltd", "Central Group TH", "FairPrice Group", "Maju Jaya Sdn Bhd", "PTT Retail", "VNG Corporation", "Gojek Niaga", "BliBli Commerce", "Zalora SEA", "Sentosa Media Pte Ltd"];
+  const CHANNELS = ["MEPS IBG TT", "INWARD TT", "INWARD TT FCY", "FAST GIRO COLLECTION", "GIRO BULK CR", "DUITNOW TRANSFER", "PROMPTPAY QR", "CHEQUE DEPOSIT"];
+
+  function fmtCompact(n, ccy = "SGD") {
+    const a = Math.abs(n); let v, s;
+    if (a >= 1e9) { v = n / 1e9; s = "B"; } else if (a >= 1e6) { v = n / 1e6; s = "M"; } else if (a >= 1e3) { v = n / 1e3; s = "k"; } else return ccy + " " + Math.round(n);
+    return ccy + " " + v.toFixed(2).replace(/\.?0+$/, "") + s;
+  }
+  function dateMinus(days) {
+    const base = new Date("2026-05-03T00:00:00Z");
+    base.setUTCDate(base.getUTCDate() - days);
+    return base.toISOString().slice(0, 10);
+  }
+  function ageBucket(d) {
+    if (d <= 15) return "0–15 days"; if (d <= 30) return "15–30 days";
+    if (d <= 90) return "1–3 months"; if (d <= 180) return "3–6 months"; return "6 months+";
+  }
+  const AGE_ORDER = ["0–15 days", "15–30 days", "1–3 months", "3–6 months", "6 months+"];
+
+  const _cache = {};
+  function dashboardFor(entityId) {
+    if (_cache[entityId]) return _cache[entityId];
+    const ent = entities.find((e) => e.id === entityId) || entities[0];
+    const ccy = ent.currency, scale = CCY_SCALE[ccy] || 1;
+    const seed = (entityId.length * 7 + ccy.charCodeAt(0) + ccy.charCodeAt(1)) % 97;
+    const N = 250;
+    const list = [];
+    for (let i = 0; i < N; i++) {
+      const reason = REASONS[(i + seed) % REASONS.length];
+      const customer = reason === "Unidentified customer" ? "— unidentified —" : SEA_CUSTOMERS[(i * 3 + seed) % SEA_CUSTOMERS.length];
+      const channel = CHANNELS[(i + seed) % CHANNELS.length];
+      const ageDays = (i * 13 + seed * 3) % 230;
+      const baseUnits = 700 + ((i * 97 + seed * 53) % 9300);     // 700–10000 base
+      const amount = Math.round(baseUnits * scale);
+      list.push({
+        id: "UC-" + (3200 - i),
+        date: dateMinus(ageDays),
+        channel,
+        desc: `${channel} / ${customer === "— unidentified —" ? "NO BNF REF" : customer.toUpperCase().slice(0, 14)} / ${reason === "WHT certificate pending" ? "WHT" : "REF " + (10000 + ((i * 31 + seed) % 89999))}`,
+        customer, amount, ageDays, reason, tone: REASON_TONE[reason],
+      });
+    }
+    const byType = REASONS.map((rn) => {
+      const sub = list.filter((x) => x.reason === rn);
+      return { label: rn, count: sub.length, amount: sub.reduce((s, x) => s + x.amount, 0), tone: REASON_TONE[rn] };
+    });
+    const ageing = AGE_ORDER.map((lbl) => {
+      const sub = list.filter((x) => ageBucket(x.ageDays) === lbl);
+      return { label: lbl, amount: sub.reduce((s, x) => s + x.amount, 0), count: sub.length };
+    });
+    const totalUnapplied = list.reduce((s, x) => s + x.amount, 0);
+    const autoApply = 72 + (seed % 16);   // 72–87 %
+    const custId = 90 + (seed % 9);       // 90–98 %
+    const kpis = [
+      { key: "autoApply",  label: "Auto-apply rate",        value: autoApply + "%", tone: "good", delta: "▲ 6 pts QoQ", deltaTone: "up",
+        info: "Share of cash applied with no human touch this quarter — the headline efficiency metric." },
+      { key: "custId",     label: "Customer identification", value: custId + "%",   tone: "good", delta: "▲ 3 pts QoQ", deltaTone: "up",
+        info: "Share of incoming credits attributed to a customer (the O2C floor metric — identity is the minimum viable outcome)." },
+      { key: "unapplied",  label: "Unapplied cash",          value: fmtCompact(totalUnapplied, ccy), tone: "warn", delta: "▼ 4% QoQ", deltaTone: "up", drill: "unapplied",
+        info: "On-account cash identified but not yet matched to invoices. Click for the line-by-line breakdown." },
+      { key: "exceptions", label: "Open exceptions",         value: String(N), tone: "warn", delta: "▼ 12 QoQ", deltaTone: "up", drill: "exceptions",
+        info: "Credits needing analyst attention, grouped by exception type. Click for the breakdown." },
+    ];
+    const res = { ent, ccy, count: N, list, byType, ageing, totalUnapplied, kpis };
+    _cache[entityId] = res;
+    return res;
+  }
 
   // ── Dashboard ──────────────────────────────────────────────────────────
   // Each KPI carries a consistent secondary line: a directional quarter-on-quarter
@@ -231,5 +311,5 @@ window.DATA = (function () {
   // ── Pipeline (reference strip on dashboard) ─────────────────────────────
   const pipeline = ["① Identify customer", "② Identify obligations", "③ Reconcile amount", "④ Apply & post", "⑤ Resolve residual"];
 
-  return { fmt, entities, banks, lastStatementDate, kpis, breakdowns, ageingUnapplied, dailyChart, exceptionsByType, receipts, unapplied, deductions, customers, reports, pipeline };
+  return { fmt, fmtCompact, entities, banks, lastStatementDate, dashboardFor, receipts, deductions, customers, reports, pipeline };
 })();

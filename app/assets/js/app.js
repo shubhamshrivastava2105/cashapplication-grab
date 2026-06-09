@@ -31,9 +31,9 @@
   // ── Routes ────────────────────────────────────────────────────────────────
   const routes = [
     { id: "dashboard",  label: "Dashboard",   render: viewDashboard },
-    { id: "workspace",  label: "Apply cash",  render: viewWorkspace, badge: () => D.receipts.filter((r) => r.state !== "Closed").length },
-    { id: "unapplied",  label: "Unapplied / on-account", render: viewUnapplied, badge: () => D.unapplied.length },
-    { id: "deductions", label: "Deductions / claims", render: viewDeductions, badge: () => D.deductions.filter((d) => d.status !== "Approved").length },
+    { id: "workspace",  label: "Apply cash",  render: viewWorkspace },
+    { id: "unapplied",  label: "Unapplied / on-account", render: viewUnapplied },
+    { id: "deductions", label: "Deductions / claims", render: viewDeductions },
     { id: "customers",  label: "Customers 360", render: viewCustomers },
     { id: "reports",    label: "Reports",     render: viewReports },
   ];
@@ -72,7 +72,8 @@
   //  DASHBOARD
   // ════════════════════════════════════════════════════════════════════════
   function viewDashboard() {
-    const ent = currentEntity();
+    const db = D.dashboardFor(selectedEntityId);
+    const ccy = db.ccy;
     setTopbar("Cash Application Dashboard", "Daily health — applied, identified, unapplied, exceptions",
       `<label class="topbar__chip topbar__chip--select"><span>Entity</span>
          <select id="entity-select" aria-label="Select entity">
@@ -80,10 +81,10 @@
          </select>
        </label>
        <span class="topbar__chip"><span>Processed till</span> <b id="period-chip">${D.lastStatementDate}</b></span>
-       <span class="topbar__chip"><span>Currency</span> <b id="currency-chip">${ent.currency}</b></span>`,
+       <span class="topbar__chip"><span>Currency</span> <b id="currency-chip">${ccy}</b></span>`,
       "");
 
-    const kpis = D.kpis.map((k) => `
+    const kpis = db.kpis.map((k) => `
       <div class="kpi kpi--${k.tone} ${k.drill ? "kpi--clickable" : ""}" ${k.drill ? `data-drill="${k.drill}"` : ""}>
         <div class="kpi__head">
           <div class="kpi__label">${k.label}</div>
@@ -94,29 +95,31 @@
         ${k.drill ? `<div class="kpi__drill">View breakdown →</div>` : ""}
       </div>`).join("");
 
-    const maxAge = Math.max(...D.ageingUnapplied.buckets.map((b) => b.amount));
-    const ageBars = D.ageingUnapplied.buckets.map((b) => `
+    const maxAge = Math.max(...db.ageing.map((b) => b.amount));
+    const ageBars = db.ageing.map((b) => `
       <div class="hbar">
         <span>${b.label}</span>
-        <div class="hbar__track"><div class="hbar__fill hbar__fill--age" style="width:${(b.amount / maxAge) * 100}%"></div></div>
-        <span class="hbar__val">${fmt(b.amount).replace(".00", "")}</span>
+        <div class="hbar__track"><div class="hbar__fill hbar__fill--age" style="width:${maxAge ? (b.amount / maxAge) * 100 : 0}%"></div></div>
+        <span class="hbar__val">${D.fmtCompact(b.amount, ccy)}</span>
       </div>`).join("");
 
-    const maxEx = Math.max(...D.exceptionsByType.map((e) => e.value));
-    const hbars = D.exceptionsByType.map((e) => `
-      <div class="hbar">
+    // exceptions by type: count + amount (both shown)
+    const maxEx = Math.max(...db.byType.map((e) => e.count));
+    const hbars = db.byType.map((e) => `
+      <div class="hbar hbar--ex">
         <span>${e.label}</span>
-        <div class="hbar__track"><div class="hbar__fill" style="width:${(e.value / maxEx) * 100}%"></div></div>
-        <span class="hbar__val">${e.value}</span>
+        <div class="hbar__track"><div class="hbar__fill" style="width:${maxEx ? (e.count / maxEx) * 100 : 0}%"></div></div>
+        <span class="hbar__val">${e.count} · ${D.fmtCompact(e.amount, ccy)}</span>
       </div>`).join("");
 
-    const queue = D.unapplied.slice().sort((a, b) => b.ageDays - a.ageDays).map((u) => `
-      <tr class="clickable" onclick="location.hash='#/unapplied'">
-        <td class="cell-main">${u.customer}</td>
-        <td>${u.id}</td>
-        <td class="num strong">${fmt(u.amount)}</td>
-        <td>${pill(u.ageDays + " days", u.tone)}</td>
-        <td class="muted">${u.reason}</td>
+    // Aged unapplied — bank-statement style, full 250-line list (scrollable)
+    const queue = db.list.slice().sort((a, b) => b.ageDays - a.ageDays).map((u) => `
+      <tr>
+        <td class="muted" style="white-space:nowrap">${u.date}</td>
+        <td><div class="cell-main" style="font-weight:var(--font-weight-medium)">${u.desc}</div><div class="cell-sub">${u.customer} · ${u.id}</div></td>
+        <td class="num strong">${fmt(u.amount, ccy)}</td>
+        <td>${pill(u.ageDays + "d", u.tone)}</td>
+        <td>${pill(u.reason, u.tone)}</td>
       </tr>`).join("");
 
     content.innerHTML = `
@@ -126,21 +129,21 @@
 
       <div class="grid" style="grid-template-columns: 1fr 1fr; align-items:start">
         <div class="card" ${dc("dash.ageing", "Dashboard · Unapplied cash ageing")}>
-          <div class="card__head"><div class="card__title">Unapplied cash ageing — SGD 1.24M</div></div>
+          <div class="card__head"><div class="card__title">Unapplied cash ageing — ${D.fmtCompact(db.totalUnapplied, ccy)}</div></div>
           <div class="card__body"><div class="hbars hbars--age">${ageBars}</div></div>
         </div>
         <div class="card" ${dc("dash.exceptions", "Dashboard · Exceptions by type")}>
-          <div class="card__head"><div class="card__title">Exceptions by type</div></div>
+          <div class="card__head"><div class="card__title">Exceptions by type</div><span class="muted" style="font-size:12px">${db.count} total · count · amount</span></div>
           <div class="card__body"><div class="hbars">${hbars}</div></div>
         </div>
       </div>
 
       <div class="section" style="margin-top:var(--scale-300)" ${dc("dash.queue", "Dashboard · Aged unapplied work queue")}>
         <div class="card">
-          <div class="card__head"><div class="card__title">Aged unapplied cash — oldest first</div><span class="muted" style="font-size:12px">${D.unapplied.length} items</span></div>
-          <div class="card__body card__body--flush"><div class="table-wrap"><table class="tbl tbl--fixed">
-            <colgroup><col style="width:28%"><col style="width:16%"><col style="width:18%"><col style="width:14%"><col style="width:24%"></colgroup>
-            <thead><tr><th>Customer</th><th>Ref</th><th class="num">Amount</th><th>Age</th><th>Reason</th></tr></thead>
+          <div class="card__head"><div class="card__title">Bank statement — aged unapplied credits (oldest first)</div><span class="muted" style="font-size:12px">${db.list.length} line items</span></div>
+          <div class="card__body card__body--flush"><div class="table-wrap table-scroll"><table class="tbl tbl--fixed">
+            <colgroup><col style="width:12%"><col style="width:40%"><col style="width:16%"><col style="width:12%"><col style="width:20%"></colgroup>
+            <thead><tr><th>Date</th><th>Description</th><th class="num">Amount</th><th>Age</th><th>Reason / exception type</th></tr></thead>
             <tbody>${queue}</tbody>
           </table></div></div>
         </div>
@@ -149,38 +152,43 @@
     const entSel = $("#entity-select");
     if (entSel) entSel.onchange = () => {
       selectedEntityId = entSel.value;
-      const e = currentEntity();
-      const cc = $("#currency-chip"); if (cc) cc.textContent = e.currency;   // currency derives from entity
-      const first = banksForEntity()[0]; if (first) selectedBankId = first.id; // bank list follows entity
+      const first = banksForEntity()[0]; if (first) selectedBankId = first.id;
       syncSidebarContext();
-      toast(`Entity → ${e.name} · ${e.currency}`);
+      viewDashboard();                 // re-render so ALL data + currency follow the entity
+      if (window.COMMENTS) COMMENTS.refresh();
+      toast(`Entity → ${currentEntity().name} · ${currentEntity().currency}`);
     };
 
-    // clickable KPI tiles → line-by-line breakdown modal
     content.querySelectorAll(".kpi--clickable").forEach((tile) => {
       tile.onclick = (e) => { if (e.target.closest(".info-btn")) return; openBreakdown(tile.dataset.drill); };
     });
-    // (i) info buttons → small explanatory popover
     content.querySelectorAll(".info-btn").forEach((b) => {
       b.onclick = (e) => { e.stopPropagation(); showInfo(b, b.dataset.info); };
     });
   }
 
-  // ── KPI breakdown modal ─────────────────────────────────────────────────
+  // ── KPI breakdown modal (derived from the same entity data, always ties) ──
   function openBreakdown(key) {
-    const b = D.breakdowns[key]; if (!b) return;
-    const total = b.rows.reduce((s, r) => s + (b.money >= 0 ? r[b.money] : 0), 0);
-    const head = b.columns.map((c, i) => `<th class="${i === b.money ? "num" : ""}">${c}</th>`).join("");
-    const body = b.rows.map((r) => `<tr>${r.map((cell, i) => `<td class="${i === b.money ? "num strong" : (i === 0 ? "cell-main" : "muted")}">${i === b.money ? fmt(cell) : cell}</td>`).join("")}</tr>`).join("");
-    const foot = b.money >= 0
-      ? `<tr class="modal-total"><td colspan="${b.money}"></td><td class="num">Total</td><td class="num strong">${fmt(total)}</td></tr>`
-      : "";
-    openModal(b.title, `
-      <div class="modal-sub">Ties to the tile total: <b>${b.total}</b></div>
-      <div class="table-wrap"><table class="tbl">
-        <thead><tr>${head}</tr></thead>
-        <tbody>${body}${foot}</tbody>
-      </table></div>`);
+    const db = D.dashboardFor(selectedEntityId), ccy = db.ccy;
+    if (key === "unapplied") {
+      const rows = db.list.slice().sort((a, b) => b.ageDays - a.ageDays).map((u) => `
+        <tr><td class="muted" style="white-space:nowrap">${u.date}</td><td class="cell-main">${u.desc}</td><td class="muted">${u.customer}</td><td class="num strong">${fmt(u.amount, ccy)}</td></tr>`).join("");
+      openModal("Unapplied cash — line by line", `
+        <div class="modal-sub">All ${db.list.length} unapplied lines from the bank statement. Total ties to the tile: <b>${D.fmtCompact(db.totalUnapplied, ccy)}</b> (${fmt(db.totalUnapplied, ccy)}).</div>
+        <div class="table-wrap table-scroll"><table class="tbl">
+          <thead><tr><th>Value date</th><th>Description</th><th>Customer</th><th class="num">Amount</th></tr></thead>
+          <tbody>${rows}<tr class="modal-total"><td colspan="3" class="num">Total</td><td class="num strong">${fmt(db.totalUnapplied, ccy)}</td></tr></tbody>
+        </table></div>`);
+    } else {
+      const rows = db.byType.map((e) => `
+        <tr><td class="cell-main">${e.label}</td><td class="num strong">${e.count}</td><td class="num">${fmt(e.amount, ccy)}</td></tr>`).join("");
+      openModal("Open exceptions — by type", `
+        <div class="modal-sub">Grouped by exception type; counts sum to the tile total <b>${db.count}</b>, amounts to <b>${D.fmtCompact(db.totalUnapplied, ccy)}</b>.</div>
+        <div class="table-wrap"><table class="tbl">
+          <thead><tr><th>Exception type</th><th class="num">Count</th><th class="num">Amount</th></tr></thead>
+          <tbody>${rows}<tr class="modal-total"><td class="num">Total</td><td class="num strong">${db.count}</td><td class="num strong">${fmt(db.totalUnapplied, ccy)}</td></tr></tbody>
+        </table></div>`);
+    }
   }
 
   function openModal(title, html) {
@@ -254,6 +262,8 @@
 
   function renderCockpit(r) {
     const cockpit = $("#cockpit");
+    if (!r._orig) r._orig = JSON.parse(JSON.stringify(r.invoices));   // snapshot for "Remittance" rule
+    r.adjustments = r.adjustments || [];
     // left pane
     const identified = r.customer ? `
       <div class="identified-box">
@@ -267,9 +277,10 @@
         <button class="btn btn--ghost btn--sm" id="change-customer" style="margin-top:10px">Pick customer</button>
       </div>`;
 
-    const remit = r.remittance.listed
-      ? `${r.remittance.listed} invoices listed · parse confidence ${Math.round(r.remittance.parsed * 100)}%`
-      : "No remittance advice received";
+    const remit = r.remittance.listed ? `
+      <div class="remit-linked"><b>RA-${r.bankRef}</b> linked · ${r.remittance.listed} invoices · parse confidence ${Math.round(r.remittance.parsed * 100)}%</div>
+      <a class="remit-link" id="view-remit">View remittance advice ↗</a>`
+      : `<div class="muted">No remittance advice matched to this credit yet.</div>`;
 
     const left = `
       <div class="ws-pane" ${dc("ws.credit", "Workspace · The credit + identified customer")}>
@@ -283,8 +294,15 @@
           </dl>
           <div class="ws-pane__title" style="padding-left:0">Identified customer</div>
           ${identified}
-          <div class="ws-pane__title" style="padding-left:0;margin-top:12px">Remittance</div>
-          <div class="remit-box">${remit}</div>
+          <div class="ws-pane__title" style="padding-left:0;margin-top:12px">Remittance advice</div>
+          <div class="remit-box">
+            ${remit}
+            <div class="remit-actions">
+              <button class="btn btn--ghost btn--sm" id="upload-remit">Upload remittance</button>
+              <input type="file" id="remit-file" style="display:none" accept=".pdf,.eml,.csv,.xlsx,.xls,.png,.jpg" />
+            </div>
+            <div class="remit-hint">Auto-matched from the connected AR mailbox; or upload a PDF/email to link a payment reference and apply to invoices.</div>
+          </div>
         </div>
       </div>`;
 
@@ -328,15 +346,33 @@
     const g = r.gap;
     const gapRow = (lbl, val, cls) => `<div class="gap-row"><span class="lbl">${lbl}</span><span class="val ${cls || ""}">${val}</span></div>`;
     const moneyOrDash = (n) => (n ? (n < 0 ? "− " : "+ ") + Math.abs(n).toFixed(2) : "—");
+    const sumAdj = r.adjustments.reduce((s, a) => s + a.amount, 0);
+    const remainUnexplained = (g.unexplained || 0) - sumAdj;
+    const adjRows = r.adjustments.map((a, idx) =>
+      `<div class="gap-row"><span class="lbl">${a.type}</span><span class="val brand">− ${a.amount.toFixed(2)} <button class="adj-del" data-adj="${idx}" title="Remove">×</button></span></div>`).join("");
     const right = `
       <div class="ws-pane" ${dc("ws.gap", "Workspace · Gap classification & actions")}>
         <div class="ws-pane__title">Gap classification</div>
         <div class="ws-pane__body">
-          <p class="gap-explain">The gap is <b>cash received − invoices selected</b>, classified by cause before anything posts.</p>
+          <p class="gap-explain">The gap is <b>cash received − invoices selected</b>, classified by cause before anything posts. Account for any agreed GST, discount, rebate or deduction below.</p>
           ${gapRow("WHT", g.wht ? `${moneyOrDash(g.wht)} → receivable` : "—", g.wht ? "brand" : "")}
           ${gapRow("Discount", moneyOrDash(g.discount))}
           ${gapRow("Bank charge", moneyOrDash(g.bankCharge), g.bankCharge ? "brand" : "")}
-          ${gapRow("Unexplained", g.unexplained ? moneyOrDash(-g.unexplained) : "0.00", g.unexplained ? "brand" : "ok")}
+          ${adjRows}
+          ${gapRow("Unexplained", Math.abs(remainUnexplained) < 0.01 ? "0.00" : moneyOrDash(-remainUnexplained), Math.abs(remainUnexplained) < 0.01 ? "ok" : "brand")}
+
+          <div class="adj-box">
+            <div class="adj-title">Account for a difference</div>
+            <div class="adj-form">
+              <select id="adj-type">
+                <option>GST</option><option>Cash discount</option><option>Payment discount</option>
+                <option>Rebate</option><option>Agreed deduction</option><option>WHT</option>
+              </select>
+              <input id="adj-amt" type="number" min="0" step="0.01" placeholder="Amount (${r.ccy})" />
+              <button class="btn btn--ghost btn--sm" id="adj-add">Add</button>
+            </div>
+          </div>
+
           <button class="btn btn--ghost btn--block" id="simulate-entry" style="margin-top:14px">Simulate accounting entry</button>
           <div class="ws-pane__title" style="padding-left:0;margin-top:18px">Action</div>
           <div class="actions-grid">
@@ -353,11 +389,71 @@
       b.onclick = () => actionConfirm(b.dataset.act, r);
     });
     const ruleSel = $("#alloc-rule");
-    if (ruleSel) ruleSel.onchange = () => toast(`Re-allocated by: ${ruleSel.value}`);
+    if (ruleSel) ruleSel.onchange = () => { reallocate(r, ruleSel.value); renderCockpit(r); toast(`Re-allocated by: ${ruleSel.value}`); };
     const cc = $("#change-customer");
     if (cc) cc.onclick = () => openCustomerPicker(r);
     const sim = $("#simulate-entry");
     if (sim) sim.onclick = () => simulateEntry(r);
+
+    // deduction / GST / rebate adjustments
+    const adjAdd = $("#adj-add");
+    if (adjAdd) adjAdd.onclick = () => {
+      const type = $("#adj-type").value;
+      const amt = parseFloat($("#adj-amt").value);
+      if (!amt || amt <= 0) { $("#adj-amt").focus(); return; }
+      r.adjustments.push({ type, amount: amt });
+      renderCockpit(r); toast(`Accounted ${type}: ${fmt(amt, r.ccy)}`);
+    };
+    cockpit.querySelectorAll(".adj-del").forEach((b) => {
+      b.onclick = () => { r.adjustments.splice(+b.dataset.adj, 1); renderCockpit(r); };
+    });
+
+    // remittance advice upload / view
+    const up = $("#upload-remit"), rf = $("#remit-file");
+    if (up && rf) {
+      up.onclick = () => rf.click();
+      rf.onchange = () => {
+        if (!rf.files[0]) return;
+        r.remittance = { listed: r.remittance.listed || 3, parsed: 0.93, file: rf.files[0].name };
+        renderCockpit(r); toast(`Remittance ${rf.files[0].name} linked · payment reference matched`);
+      };
+    }
+    const vr = $("#view-remit");
+    if (vr) vr.onclick = () => viewRemittance(r);
+  }
+
+  // Re-allocate the receipt across invoices by the chosen rule (visibly changes)
+  function reallocate(r, rule) {
+    if (!r.invoices || !r.invoices.length) return;
+    r.gap.allocRule = rule;
+    if (rule === "Remittance") {                       // restore the remittance-directed snapshot
+      r.invoices = JSON.parse(JSON.stringify(r._orig));
+      return;
+    }
+    let order = r.invoices.slice();
+    if (rule === "FIFO (oldest-first)" || rule === "By due date") order.sort((a, b) => (a.due < b.due ? -1 : 1));
+    else if (rule === "Exact") order.sort((a, b) => Math.abs(a.open - r.amount) - Math.abs(b.open - r.amount));
+    r.invoices.forEach((i) => { i.sel = false; i.apply = 0; });
+    let remaining = r.amount;
+    for (const i of order) {
+      if (remaining <= 0.001) break;
+      const ap = Math.min(i.open, remaining);
+      i.apply = Math.round(ap * 100) / 100; i.sel = ap > 0; remaining -= ap;
+    }
+  }
+
+  // Show the parsed remittance advice lines
+  function viewRemittance(r) {
+    const cust = r.customer ? r.customer.name : "—";
+    const inv = r.invoices.filter((i) => i.sel);
+    const rows = inv.length ? inv.map((i) => `<tr><td class="cell-main">${i.inv}</td><td class="muted">${i.due}</td><td class="num strong">${fmt(i.apply, r.ccy)}</td></tr>`).join("")
+      : `<tr><td colspan="3" class="muted">No lines parsed.</td></tr>`;
+    openModal(`Remittance advice — RA-${r.bankRef}`, `
+      <div class="modal-sub">${r.remittance.file ? "Uploaded file: <b>" + escapeAttr(r.remittance.file) + "</b>. " : "Auto-matched from the AR mailbox. "}Payment reference linked to <b>${cust}</b>.</div>
+      <div class="table-wrap"><table class="tbl">
+        <thead><tr><th>Invoice</th><th>Due</th><th class="num">Amount advised</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table></div>`);
   }
 
   // Reassign the credit to a different customer
@@ -422,19 +518,19 @@
   //  UNAPPLIED / ON-ACCOUNT
   // ════════════════════════════════════════════════════════════════════════
   function viewUnapplied() {
-    const total = D.unapplied.reduce((s, u) => s + u.amount, 0);
+    const db = D.dashboardFor(selectedEntityId), ccy = db.ccy;
+    const list = db.list, total = db.totalUnapplied;
     setTopbar("Unapplied / on-account cash", "Identified cash with no clean match — aged and escalated, never lost",
-      `<span class="topbar__chip"><span>Total</span> ${fmt(total)}</span><span class="topbar__chip"><span>Items</span> ${D.unapplied.length}</span>`,
+      `<span class="topbar__chip"><span>Entity</span> ${currentEntity().name}</span><span class="topbar__chip"><span>Total</span> ${D.fmtCompact(total, ccy)}</span><span class="topbar__chip"><span>Items</span> ${list.length}</span>`,
       `<button class="btn btn--primary">Run aging escalation</button>`);
 
-    const rows = D.unapplied.slice().sort((a, b) => b.ageDays - a.ageDays).map((u) => `
+    const rows = list.slice().sort((a, b) => b.ageDays - a.ageDays).map((u) => `
       <tr>
-        <td class="cell-main">${u.customer}</td>
-        <td>${u.id}</td>
-        <td class="num strong">${fmt(u.amount)}</td>
-        <td>${pill(u.ageDays + " days", u.tone)}</td>
-        <td class="muted">${u.reason}</td>
-        <td>${u.source}</td>
+        <td class="muted" style="white-space:nowrap">${u.date}</td>
+        <td><div class="cell-main">${u.desc}</div><div class="cell-sub">${u.customer} · ${u.id}</div></td>
+        <td class="num strong">${fmt(u.amount, ccy)}</td>
+        <td>${pill(u.ageDays + "d", u.tone)}</td>
+        <td>${pill(u.reason, u.tone)}</td>
         <td class="t-right">
           <button class="btn btn--ghost btn--sm" onclick="location.hash='#/workspace'">Apply</button>
           <button class="btn btn--ghost btn--sm">Refund</button>
@@ -444,17 +540,17 @@
     content.innerHTML = `
       <div class="section" ${dc("ua.summary", "Unapplied · Summary tiles")}>
         <div class="kpis" style="grid-template-columns:repeat(4,1fr)">
-          <div class="kpi kpi--warn"><div class="kpi__label">On-account total</div><div class="kpi__value">${fmt(total)}</div></div>
-          <div class="kpi kpi--neutral"><div class="kpi__label">Open items</div><div class="kpi__value">${D.unapplied.length}</div></div>
-          <div class="kpi kpi--info"><div class="kpi__label">Aged &gt; 30 days</div><div class="kpi__value">${D.unapplied.filter((u) => u.ageDays > 30).length}</div></div>
-          <div class="kpi kpi--good"><div class="kpi__label">Resolved this week</div><div class="kpi__value">12</div></div>
+          <div class="kpi kpi--warn"><div class="kpi__label">On-account total</div><div class="kpi__value">${D.fmtCompact(total, ccy)}</div></div>
+          <div class="kpi kpi--neutral"><div class="kpi__label">Open items</div><div class="kpi__value">${list.length}</div></div>
+          <div class="kpi kpi--info"><div class="kpi__label">Aged &gt; 30 days</div><div class="kpi__value">${list.filter((u) => u.ageDays > 30).length}</div></div>
+          <div class="kpi kpi--good"><div class="kpi__label">Resolved this week</div><div class="kpi__value">38</div></div>
         </div>
       </div>
       <div class="section" ${dc("ua.table", "Unapplied · On-account ledger")}>
         <div class="card">
-          <div class="card__head"><div class="card__title">On-account ledger — oldest first</div></div>
-          <div class="card__body card__body--flush"><div class="table-wrap"><table class="tbl">
-            <thead><tr><th>Customer</th><th>Ref</th><th class="num">Amount</th><th>Age</th><th>Reason</th><th>Source credit</th><th class="t-right">Action</th></tr></thead>
+          <div class="card__head"><div class="card__title">On-account ledger — bank statement, oldest first</div><span class="muted" style="font-size:12px">${list.length} line items</span></div>
+          <div class="card__body card__body--flush"><div class="table-wrap table-scroll"><table class="tbl">
+            <thead><tr><th>Value date</th><th>Description</th><th class="num">Amount</th><th>Age</th><th>Reason / exception type</th><th class="t-right">Action</th></tr></thead>
             <tbody>${rows}</tbody>
           </table></div></div>
         </div>
@@ -654,21 +750,37 @@
           <label><input type="radio" name="feed" value="MT940 direct feed" checked> Direct feed — MT940 from bank</label>
           <label><input type="radio" name="feed" value="Manual upload"> Manual upload by user</label>
         </div>
+        <div id="upload-row" style="display:none;margin-top:8px;align-items:center;gap:8px">
+          <input type="file" id="bank-file" accept=".mt940,.940,.txt,.csv,.xml,.sta,.camt" style="display:none">
+          <button class="btn btn--ghost btn--sm" id="bank-browse">Choose statement file…</button>
+          <span id="bank-filename" class="muted" style="font-size:12px">No file selected</span>
+        </div>
         <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px">
           <button class="btn btn--ghost" id="bank-close">Close</button>
           <button class="btn btn--primary" id="bank-add">Add account</button>
         </div>
       </div>`);
+    const fileInput = document.getElementById("bank-file");
+    const fileLabel = document.getElementById("bank-filename");
+    const uploadRow = document.getElementById("upload-row");
+    document.querySelectorAll('input[name="feed"]').forEach((rb) => {
+      rb.onchange = () => { uploadRow.style.display = (document.querySelector('input[name="feed"]:checked').value === "Manual upload") ? "flex" : "none"; };
+    });
+    document.getElementById("bank-browse").onclick = () => fileInput.click();
+    fileInput.onchange = () => { fileLabel.textContent = fileInput.files[0] ? fileInput.files[0].name : "No file selected"; };
     document.getElementById("bank-close").onclick = closeModal;
     document.getElementById("bank-add").onclick = () => {
       const name = document.getElementById("bank-name").value.trim();
       if (!name) { document.getElementById("bank-name").focus(); return; }
       const feed = (document.querySelector('input[name="feed"]:checked') || {}).value || "MT940 direct feed";
-      D.banks.push({ id: "bk-" + Date.now(), entity: selectedEntityId, name, feed });
-      selectedBankId = "bk-" + (Date.now() - 0);
+      if (feed === "Manual upload" && !fileInput.files[0]) { fileInput.click(); return; } // open file system
+      const fileName = fileInput.files[0] ? fileInput.files[0].name : null;
+      const id = "bk-" + Date.now();
+      D.banks.push({ id, entity: selectedEntityId, name, feed: feed + (fileName ? ` (${fileName})` : "") });
+      selectedBankId = id;
       syncSidebarContext();
       openBankManager();
-      toast(`Added ${name} · ${feed}`);
+      toast(`Added ${name} · ${feed}${fileName ? " · " + fileName : ""}`);
     };
   }
 
