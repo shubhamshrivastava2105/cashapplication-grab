@@ -48,22 +48,6 @@
     "resolutionNote": "Fixed KPI value inconsistency: values like \"SGD 1.24M\" were wrapping to two lines; values are now single-line (nowrap, sized to fit) so all tiles are consistent."
   },
   {
-    "id": "c_vrd5gaoprl2",
-    "route": "#/dashboard",
-    "anchor": "page",
-    "anchorLabel": "Page / navigation",
-    "xPct": 60.827586206896555,
-    "yPct": 3.9867109634551494,
-    "author": "SME",
-    "text": "the user should be able to change entity",
-    "status": "resolved",
-    "createdAt": "2026-06-09T10:21:43.526Z",
-    "updatedAt": "2026-06-09T10:34:12.118Z",
-    "resolvedAt": "2026-06-09T10:34:12.118Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "Entity is now a dropdown selector in the topbar; you can switch entity."
-  },
-  {
     "id": "c_3j4gfxoqwsq",
     "route": "#/dashboard",
     "anchor": "page",
