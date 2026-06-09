@@ -280,12 +280,12 @@
     "yPct": 3.223214561636639,
     "author": "SME",
     "text": "Should also be 250 line items and not just studying nine items, so make sure all this data is actually correct.",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T11:16:15.697Z",
-    "updatedAt": "2026-06-09T11:16:15.697Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-09T11:36:20.389Z",
+    "resolvedAt": "2026-06-09T11:36:20.389Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Aged unapplied list now holds the full 250 line items (scrollable), generated consistently."
   },
   {
     "id": "c_ie8xbivoap2",
