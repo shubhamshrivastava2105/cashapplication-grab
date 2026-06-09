@@ -462,5 +462,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_3na4tp2g3kk",
+    "route": "#/workspace",
+    "anchor": "ws.queue",
+    "anchorLabel": "Workspace · Credit queue",
+    "xPct": 56.73758865248227,
+    "yPct": 73.77411837077523,
+    "author": "SME",
+    "text": "after selecting, the line item should always be visible",
+    "status": "open",
+    "createdAt": "2026-06-09T13:30:09.812Z",
+    "updatedAt": "2026-06-09T13:30:09.812Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
