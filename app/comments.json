@@ -248,12 +248,12 @@
     "yPct": 49.27606617089088,
     "author": "SME",
     "text": "partial/short and deduction rows should be merged",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T10:43:29.653Z",
-    "updatedAt": "2026-06-09T10:43:29.655Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-09T11:08:28.081Z",
+    "resolvedAt": "2026-06-09T11:08:28.081Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Merged Partial/short and Deduction/claim into a single \"Partial / short & deductions\" row."
   },
   {
     "id": "c_3qo3egfl8w7",
