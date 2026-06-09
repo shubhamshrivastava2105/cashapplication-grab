@@ -398,5 +398,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_jea9qpcncm4",
+    "route": "#/dashboard",
+    "anchor": "dash.exceptions",
+    "anchorLabel": "Dashboard · Exceptions by type",
+    "xPct": 31.294964028776977,
+    "yPct": 10.75401367732089,
+    "author": "SME",
+    "text": "Amount also along with the count of exceptions",
+    "status": "open",
+    "createdAt": "2026-06-09T11:15:50.044Z",
+    "updatedAt": "2026-06-09T11:15:50.044Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
