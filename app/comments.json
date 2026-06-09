@@ -446,5 +446,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_qmfq90nevmm",
+    "route": "#/workspace",
+    "anchor": "ws.credit",
+    "anchorLabel": "Workspace · The credit + identified customer",
+    "xPct": 47.5,
+    "yPct": 78.62001943634597,
+    "author": "SME",
+    "text": "the remittance advice should be a pdf that comes from the SAP in the from of pdf that has lot of details like remittence party name, invoice number, date, swift code etc",
+    "status": "open",
+    "createdAt": "2026-06-09T13:29:12.862Z",
+    "updatedAt": "2026-06-09T13:29:12.862Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
