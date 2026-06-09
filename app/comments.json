@@ -216,12 +216,12 @@
     "yPct": 26.621326589913142,
     "author": "SME",
     "text": "the apply, refund buttons are looking off.",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T12:10:20.861Z",
-    "updatedAt": "2026-06-09T12:10:20.861Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-09T12:35:49.912Z",
+    "resolvedAt": "2026-06-09T12:35:49.912Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Apply/Refund buttons restyled — inline with consistent spacing, Apply is primary."
   },
   {
     "id": "c_7fecm87m019",
