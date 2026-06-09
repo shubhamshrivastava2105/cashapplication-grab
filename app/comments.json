@@ -80,22 +80,6 @@
     "resolutionNote": "Addressed via the cumulative PRD-aligned overhaul this review. Flag specific spots for further refinement."
   },
   {
-    "id": "c_5beekhuw164",
-    "route": "#/unapplied",
-    "anchor": "page",
-    "anchorLabel": "Page / navigation",
-    "xPct": 89.37931034482759,
-    "yPct": 3.9867109634551494,
-    "author": "SME",
-    "text": "this button doesn't work",
-    "status": "resolved",
-    "createdAt": "2026-06-09T11:50:34.732Z",
-    "updatedAt": "2026-06-09T12:35:44.659Z",
-    "resolvedAt": "2026-06-09T12:35:44.659Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "Run aging escalation now opens a confirmation dialog and runs (toast)."
-  },
-  {
     "id": "c_nk510qxyk71",
     "route": "#/reports",
     "anchor": "page",
