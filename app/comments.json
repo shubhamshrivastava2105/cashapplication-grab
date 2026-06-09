@@ -94,5 +94,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_n2p68ibt8wi",
+    "route": "#/dashboard",
+    "anchor": "page",
+    "anchorLabel": "Page / navigation",
+    "xPct": 72.55172413793105,
+    "yPct": 4.540420819490587,
+    "author": "SME",
+    "text": "period should be - \"processed till last bank statement date\". reframe it better based on the o2c language",
+    "status": "open",
+    "createdAt": "2026-06-09T10:24:25.938Z",
+    "updatedAt": "2026-06-09T10:24:25.941Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
