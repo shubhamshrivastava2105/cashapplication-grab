@@ -96,22 +96,6 @@
     "resolutionNote": "Top half now lists all open/unapplied credits received in the bank statement."
   },
   {
-    "id": "c_xwulo0k5phw",
-    "route": "#/workspace",
-    "anchor": "ws.gap",
-    "anchorLabel": "Workspace · Gap classification & actions",
-    "xPct": 55.93749999999999,
-    "yPct": 70.58121147578017,
-    "author": "SME",
-    "text": "remove all the actions except apply and post.",
-    "status": "resolved",
-    "createdAt": "2026-06-09T11:02:06.932Z",
-    "updatedAt": "2026-06-09T11:21:09.688Z",
-    "resolvedAt": "2026-06-09T11:21:09.688Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "Removed all actions except Apply & post."
-  },
-  {
     "id": "c_o583sp66fxc",
     "route": "#/workspace",
     "anchor": "ws.credit",
