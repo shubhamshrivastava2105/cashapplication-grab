@@ -446,5 +446,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_6nh8d2l3c2f",
+    "route": "#/workspace",
+    "anchor": "ws.queue",
+    "anchorLabel": "Workspace · Credit queue",
+    "xPct": 37.322695035460995,
+    "yPct": 6.050413012007153,
+    "author": "SME",
+    "text": "the list should be exact match on the dashboard, not just 4 line items",
+    "status": "open",
+    "createdAt": "2026-06-09T12:52:14.679Z",
+    "updatedAt": "2026-06-09T12:52:14.681Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
