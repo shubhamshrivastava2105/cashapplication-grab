@@ -160,22 +160,6 @@
     "resolutionNote": "Added a remittance-advice panel: shows the linked advice + payment reference, View link, and Upload (PDF/email) which links a reference; framed as auto-matched from the connected AR mailbox. Invoices are applied via the allocation table."
   },
   {
-    "id": "c_4tbv466gnhf",
-    "route": "#/dashboard",
-    "anchor": "dash.kpis",
-    "anchorLabel": "Dashboard · KPI tiles",
-    "xPct": 36.258865248226954,
-    "yPct": 17.721084544102506,
-    "author": "SME",
-    "text": "Create customer identification instead of just identification rate.",
-    "status": "resolved",
-    "createdAt": "2026-06-09T11:10:37.539Z",
-    "updatedAt": "2026-06-09T11:36:13.894Z",
-    "resolvedAt": "2026-06-09T11:36:13.894Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "Renamed the metric to \"Customer identification\"."
-  },
-  {
     "id": "c_86z6h6cikh3",
     "route": "#/dashboard",
     "anchor": "dash.kpis",
