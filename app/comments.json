@@ -430,5 +430,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_2tp34o3wbvx",
+    "route": "#/customers",
+    "anchor": "page",
+    "anchorLabel": "Page / navigation",
+    "xPct": 39.6551724137931,
+    "yPct": 1.9933554817275747,
+    "author": "SME",
+    "text": "improve this entire page based on the prd and all the context you have till now based on all the comments and changes you made",
+    "status": "open",
+    "createdAt": "2026-06-09T11:22:49.005Z",
+    "updatedAt": "2026-06-09T11:22:49.005Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
