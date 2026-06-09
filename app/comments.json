@@ -622,5 +622,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_bv82gmautfc",
+    "route": "#/customers",
+    "anchor": "cust.fingerprints",
+    "anchorLabel": "Customer 360 · Learned fingerprints",
+    "xPct": 30.102040816326532,
+    "yPct": 19.67696111958752,
+    "author": "SME",
+    "text": "remove this section",
+    "status": "open",
+    "createdAt": "2026-06-09T13:13:36.888Z",
+    "updatedAt": "2026-06-09T13:13:36.888Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
