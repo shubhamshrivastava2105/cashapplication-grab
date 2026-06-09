@@ -254,5 +254,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_3qo3egfl8w7",
+    "route": "#/dashboard",
+    "anchor": "dash.kpis",
+    "anchorLabel": "Dashboard · KPI tiles",
+    "xPct": 53.45744680851063,
+    "yPct": 45.31876642234822,
+    "author": "SME",
+    "text": "make this number bigger - something like 250, and the data should match all over",
+    "status": "open",
+    "createdAt": "2026-06-09T10:46:12.296Z",
+    "updatedAt": "2026-06-09T10:46:12.298Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
