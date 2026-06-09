@@ -40,12 +40,12 @@
     "yPct": 26.17141511655286,
     "author": "SME",
     "text": "acme is dummy data, make it look real. pick names from south east asian countires",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T10:26:30.378Z",
-    "updatedAt": "2026-06-09T10:26:30.378Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-09T10:50:20.805Z",
+    "resolvedAt": "2026-06-09T10:50:20.805Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Replaced the dummy \"Acme Retail\" with a realistic SEA name (Sinar Jaya Retail Pte Ltd) across customers, receipts, unapplied, deductions and aliases. Other customers were already real SEA names (Lazada, Sea Group, Shopee, Tokopedia, Bukalapak)."
   },
   {
     "id": "c_71sguxvyr25",
