@@ -446,5 +446,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_6vgb71wwh6g",
+    "route": "#/deductions",
+    "anchor": "page",
+    "anchorLabel": "Page / navigation",
+    "xPct": 39.86206896551724,
+    "yPct": 3.875968992248062,
+    "author": "SME",
+    "text": "improve this entire page based on the prd and all the context you have till now based on all the comments and changes you made",
+    "status": "open",
+    "createdAt": "2026-06-09T11:22:55.864Z",
+    "updatedAt": "2026-06-09T11:22:55.864Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
