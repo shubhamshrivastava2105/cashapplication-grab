@@ -78,5 +78,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_n6welmlrzy4",
+    "route": "#/dashboard",
+    "anchor": "page",
+    "anchorLabel": "Page / navigation",
+    "xPct": 90.41379310344828,
+    "yPct": 3.9867109634551494,
+    "author": "SME",
+    "text": "this should be on the navbar(left panel). give an option to select bank",
+    "status": "open",
+    "createdAt": "2026-06-09T10:23:27.676Z",
+    "updatedAt": "2026-06-09T10:23:27.678Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
