@@ -24,11 +24,11 @@
     "yPct": 19.66372815448178,
     "author": "SME",
     "text": "column spacing is not consistent",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T10:12:28.790Z",
-    "updatedAt": "2026-06-09T10:12:28.792Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-09T10:18:09.385Z",
+    "resolvedAt": "2026-06-09T10:18:09.385Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Gave the Aged-unapplied table fixed, defined column widths (28/16/18/14/24%) so column spacing is consistent and the right-aligned Amount no longer creates uneven gaps."
   }
 ]
