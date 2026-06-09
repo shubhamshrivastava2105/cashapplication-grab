@@ -160,22 +160,6 @@
     "resolutionNote": "Renamed to \"Manual upload\"."
   },
   {
-    "id": "c_6ea7govlge5",
-    "route": "#/unapplied",
-    "anchor": "ua.table",
-    "anchorLabel": "Unapplied · On-account ledger",
-    "xPct": 94.20035149384886,
-    "yPct": 26.621326589913142,
-    "author": "SME",
-    "text": "the apply, refund buttons are looking off.",
-    "status": "resolved",
-    "createdAt": "2026-06-09T12:10:20.861Z",
-    "updatedAt": "2026-06-09T12:35:49.912Z",
-    "resolvedAt": "2026-06-09T12:35:49.912Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "Apply/Refund buttons restyled — inline with consistent spacing, Apply is primary."
-  },
-  {
     "id": "c_k4wr502q0j4",
     "route": "#/unapplied",
     "anchor": "screen",
