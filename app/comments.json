@@ -32,22 +32,6 @@
     "resolutionNote": "Replaced the daily applied-vs-unapplied chart with an Unapplied cash ageing chart (0–15d, 15–30d, 1–3mo, 3–6mo, 6mo+), summing to SGD 1.24M."
   },
   {
-    "id": "c_akme7z0dq5y",
-    "route": "#/workspace",
-    "anchor": "screen",
-    "anchorLabel": "Apply cash",
-    "xPct": 30.369127516778523,
-    "yPct": 47.667097949359224,
-    "author": "SME",
-    "text": "You should also give me an option to see if there is a payment remittance advice. Basically, what we are trying to do is we will connect our AR email box with this system. If there is a related payment remittance advice which can be identified based on this payment, or if the user manually uploads, I should be able to see a payment reference link. I can also apply the payments to the respective invoices for a particular customer.",
-    "status": "resolved",
-    "createdAt": "2026-06-09T11:08:21.046Z",
-    "updatedAt": "2026-06-09T12:35:42.464Z",
-    "resolvedAt": "2026-06-09T12:35:42.464Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "Remittance-advice panel on the credit pane: shows linked advice + parse confidence, a View link, an Upload button (file picker), and the AR-mailbox auto-match note; invoices applied via the allocation table."
-  },
-  {
     "id": "c_aoph8bosnou",
     "route": "#/workspace",
     "anchor": "ws.allocation",
