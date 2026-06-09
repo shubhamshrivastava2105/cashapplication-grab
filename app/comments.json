@@ -350,5 +350,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_nk510qxyk71",
+    "route": "#/reports",
+    "anchor": "page",
+    "anchorLabel": "Page / navigation",
+    "xPct": 9.448275862068964,
+    "yPct": 88.59357696566998,
+    "author": "SME",
+    "text": "change \"manual upload by user\" to \"manual upload\"",
+    "status": "open",
+    "createdAt": "2026-06-09T11:52:32.701Z",
+    "updatedAt": "2026-06-09T11:52:32.701Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
