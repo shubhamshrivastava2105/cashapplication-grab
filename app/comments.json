@@ -376,12 +376,12 @@
     "yPct": 54.781368490625105,
     "author": "SME",
     "text": "make the split look real, 62,62,63,63 looks unreal.",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T12:49:26.487Z",
-    "updatedAt": "2026-06-09T12:49:26.487Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-09T13:06:19.979Z",
+    "resolvedAt": "2026-06-09T13:06:19.979Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Exception split is now realistic/skewed (e.g. unidentified ~22%, partial ~33%, overpayment ~25%, WHT ~20%), not 62/62/63/63."
   },
   {
     "id": "c_o0qiasc0hsw",
