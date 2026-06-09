@@ -296,12 +296,12 @@
     "yPct": 3.6544850498338874,
     "author": "SME",
     "text": "remove the export csv option from here",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T12:15:44.143Z",
-    "updatedAt": "2026-06-09T12:15:44.143Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-09T12:35:55.884Z",
+    "resolvedAt": "2026-06-09T12:35:55.884Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Removed the Export button from Reports."
   },
   {
     "id": "c_yjgkhkpviut",
