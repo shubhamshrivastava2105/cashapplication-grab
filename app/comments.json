@@ -440,12 +440,12 @@
     "yPct": 58.97623324004845,
     "author": "SME",
     "text": "bank charge, discount/rebate will be on a total level",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T13:04:23.687Z",
-    "updatedAt": "2026-06-09T13:04:23.687Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-09T13:22:29.397Z",
+    "resolvedAt": "2026-06-09T13:22:29.397Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Bank charge and rebate/deduction are now total-level in the gap panel."
   },
   {
     "id": "c_fuf1cvsk8ax",
