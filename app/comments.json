@@ -96,22 +96,6 @@
     "resolutionNote": "Added the bank-account manager to the left nav: add multiple accounts per entity, each fed by MT940 direct feed or manual upload."
   },
   {
-    "id": "c_6b4aa1chred",
-    "route": "#/dashboard",
-    "anchor": "dash.exceptions",
-    "anchorLabel": "Dashboard · Exceptions by type",
-    "xPct": 17.26618705035971,
-    "yPct": 49.27606617089088,
-    "author": "SME",
-    "text": "partial/short and deduction rows should be merged",
-    "status": "resolved",
-    "createdAt": "2026-06-09T10:43:29.653Z",
-    "updatedAt": "2026-06-09T11:08:28.081Z",
-    "resolvedAt": "2026-06-09T11:08:28.081Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "Merged Partial/short and Deduction/claim into a single \"Partial / short & deductions\" row."
-  },
-  {
     "id": "c_o6mei24m8qa",
     "route": "#/dashboard",
     "anchor": "dash.queue",
