@@ -80,22 +80,6 @@
     "resolutionNote": "Added a Bank account selector to the left nav (sidebar footer); options follow the selected entity."
   },
   {
-    "id": "c_n2p68ibt8wi",
-    "route": "#/dashboard",
-    "anchor": "page",
-    "anchorLabel": "Page / navigation",
-    "xPct": 72.55172413793105,
-    "yPct": 4.540420819490587,
-    "author": "SME",
-    "text": "period should be - \"processed till last bank statement date\". reframe it better based on the o2c language",
-    "status": "resolved",
-    "createdAt": "2026-06-09T10:24:25.938Z",
-    "updatedAt": "2026-06-09T10:34:15.249Z",
-    "resolvedAt": "2026-06-09T10:34:15.249Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "Reframed the period chip to O2C language: now reads \"Processed till 03 May 2026\" (the last bank statement date) instead of \"This week\"."
-  },
-  {
     "id": "c_v54vh8rvwx6",
     "route": "#/customers",
     "anchor": "cust.list",
