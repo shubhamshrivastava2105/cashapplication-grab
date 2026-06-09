@@ -126,21 +126,5 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
-  },
-  {
-    "id": "c_td5hd2wxcjk",
-    "route": "#/dashboard",
-    "anchor": "dash.kpis",
-    "anchorLabel": "Dashboard · KPI tiles",
-    "xPct": 6.382978723404255,
-    "yPct": 69.32462806379107,
-    "author": "SME",
-    "text": "the period is missing - show for last 3 months",
-    "status": "open",
-    "createdAt": "2026-06-09T10:27:37.280Z",
-    "updatedAt": "2026-06-09T10:27:37.282Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
   }
 ]
