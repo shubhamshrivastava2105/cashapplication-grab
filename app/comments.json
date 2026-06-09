@@ -1,1 +1,18 @@
-[]
+[
+  {
+    "id": "c_skue4ngznhy",
+    "route": "#/dashboard",
+    "anchor": "dash.kpis",
+    "anchorLabel": "Dashboard · KPI tiles",
+    "xPct": 50,
+    "yPct": 40,
+    "author": "Verify Bot",
+    "text": "round-trip verification — safe to ignore",
+    "status": "open",
+    "createdAt": "2026-06-09T09:33:25.558Z",
+    "updatedAt": "2026-06-09T09:33:25.564Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
+  }
+]
