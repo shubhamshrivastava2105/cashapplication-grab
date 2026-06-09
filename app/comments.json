@@ -334,21 +334,5 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
-  },
-  {
-    "id": "c_7qemm7o1r8q",
-    "route": "#/workspace",
-    "anchor": "page",
-    "anchorLabel": "Page / navigation",
-    "xPct": 27.86206896551724,
-    "yPct": 2.6578073089700998,
-    "author": "SME",
-    "text": "this view should look like a bank statement and next should be customer identification",
-    "status": "open",
-    "createdAt": "2026-06-09T10:59:02.570Z",
-    "updatedAt": "2026-06-09T10:59:02.581Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
   }
 ]
