@@ -280,12 +280,12 @@
     "yPct": 44.07278565694408,
     "author": "SME",
     "text": "the exceptions should not be same for each entity",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T12:41:43.462Z",
-    "updatedAt": "2026-06-09T12:41:43.466Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-09T13:06:12.069Z",
+    "resolvedAt": "2026-06-09T13:06:12.069Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Exception count now varies per entity (170–319), no longer 250 for everyone."
   },
   {
     "id": "c_mdfw9y9tm3x",
