@@ -80,22 +80,6 @@
     "resolutionNote": "Replaced the daily applied-vs-unapplied chart with an Unapplied cash ageing chart (0–15d, 15–30d, 1–3mo, 3–6mo, 6mo+), summing to SGD 1.24M."
   },
   {
-    "id": "c_4zcsuqft7rq",
-    "route": "#/workspace",
-    "anchor": "ws.gap",
-    "anchorLabel": "Workspace · Gap classification & actions",
-    "xPct": 83.4375,
-    "yPct": 48.997966889340695,
-    "author": "SME",
-    "text": "ui elements are going out of the box",
-    "status": "resolved",
-    "createdAt": "2026-06-09T10:52:24.086Z",
-    "updatedAt": "2026-06-09T11:08:35.982Z",
-    "resolvedAt": "2026-06-09T11:08:35.982Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "Fixed the Gap & actions overflow — values (e.g. the WHT line) now wrap within the pane instead of spilling out of the box."
-  },
-  {
     "id": "c_h7lqwm2u9m0",
     "route": "#/workspace",
     "anchor": "ws.allocation",
