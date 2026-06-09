@@ -56,12 +56,12 @@
     "yPct": 3.9867109634551494,
     "author": "SME",
     "text": "the user should be able to change entity",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T10:21:43.526Z",
-    "updatedAt": "2026-06-09T10:21:43.528Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-09T10:34:12.118Z",
+    "resolvedAt": "2026-06-09T10:34:12.118Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Entity is now a dropdown selector in the topbar; you can switch entity."
   },
   {
     "id": "c_3j4gfxoqwsq",
