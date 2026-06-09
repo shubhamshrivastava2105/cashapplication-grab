@@ -478,5 +478,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_bmrnzc8lxb9",
+    "route": "#/workspace",
+    "anchor": "ws.gap",
+    "anchorLabel": "Workspace · Gap classification & actions",
+    "xPct": 35.588235294117645,
+    "yPct": 21.948002566600916,
+    "author": "SME",
+    "text": "the user should be able to change wht on an invoice level, same for discount.",
+    "status": "open",
+    "createdAt": "2026-06-09T13:34:41.637Z",
+    "updatedAt": "2026-06-09T13:34:41.637Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
