@@ -64,22 +64,6 @@
     "resolutionNote": null
   },
   {
-    "id": "c_4z6lvbt3okf",
-    "route": "#/dashboard",
-    "anchor": "dash.kpis",
-    "anchorLabel": "Dashboard · KPI tiles",
-    "xPct": 59.04255319148937,
-    "yPct": 66.58460879803062,
-    "author": "SME",
-    "text": "does this data tie to unapplied cash. it should also show the breakdown, when clicked on it. line by line",
-    "status": "resolved",
-    "createdAt": "2026-06-09T10:32:32.799Z",
-    "updatedAt": "2026-06-09T10:50:26.699Z",
-    "resolvedAt": "2026-06-09T10:50:26.699Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "Open exceptions tile is now clickable and opens a by-type breakdown (sums to 61). Exceptions and unapplied are distinct views; both now have line-by-line drilldowns."
-  },
-  {
     "id": "c_ww5gjxc5eeb",
     "route": "#/dashboard",
     "anchor": "dash.kpis",
