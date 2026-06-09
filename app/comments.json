@@ -526,5 +526,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_uopucnz99nf",
+    "route": "#/dashboard",
+    "anchor": "dash.kpis",
+    "anchorLabel": "Dashboard · KPI tiles",
+    "xPct": 61.79078014184397,
+    "yPct": 84.40358863304901,
+    "author": "SME",
+    "text": "can you keep the view breakdown ui consistent everywhere and make it look better",
+    "status": "open",
+    "createdAt": "2026-06-09T13:24:51.099Z",
+    "updatedAt": "2026-06-09T13:24:51.099Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
