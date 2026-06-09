@@ -81,7 +81,7 @@
        </label>
        <span class="topbar__chip"><span>Processed till</span> <b id="period-chip">${D.lastStatementDate}</b></span>
        <span class="topbar__chip"><span>Currency</span> <b id="currency-chip">${ent.currency}</b></span>`,
-      `<button class="btn btn--primary">+ Import bank feed</button>`);
+      "");
 
     const kpis = D.kpis.map((k) => `
       <div class="kpi kpi--${k.tone} ${k.drill ? "kpi--clickable" : ""}" ${k.drill ? `data-drill="${k.drill}"` : ""}>
@@ -94,14 +94,12 @@
         ${k.drill ? `<div class="kpi__drill">View breakdown →</div>` : ""}
       </div>`).join("");
 
-    const maxBar = 100;
-    const bars = D.dailyChart.map((d) => `
-      <div class="barcol">
-        <div class="barpair">
-          <div class="bar bar--applied" style="height:${(d.applied / maxBar) * 100}%" title="Applied ${d.applied}"></div>
-          <div class="bar bar--unapplied" style="height:${(d.unapplied / maxBar) * 100}%" title="Unapplied ${d.unapplied}"></div>
-        </div>
-        <div class="barlabel">${d.day}</div>
+    const maxAge = Math.max(...D.ageingUnapplied.buckets.map((b) => b.amount));
+    const ageBars = D.ageingUnapplied.buckets.map((b) => `
+      <div class="hbar">
+        <span>${b.label}</span>
+        <div class="hbar__track"><div class="hbar__fill hbar__fill--age" style="width:${(b.amount / maxAge) * 100}%"></div></div>
+        <span class="hbar__val">${fmt(b.amount).replace(".00", "")}</span>
       </div>`).join("");
 
     const maxEx = Math.max(...D.exceptionsByType.map((e) => e.value));
@@ -127,15 +125,9 @@
       </div>
 
       <div class="grid" style="grid-template-columns: 1fr 1fr; align-items:start">
-        <div class="card" ${dc("dash.dailychart", "Dashboard · Cash applied vs unapplied")}>
-          <div class="card__head"><div class="card__title">Cash applied vs unapplied — daily</div></div>
-          <div class="card__body">
-            <div class="barchart">${bars}</div>
-            <div class="legend" style="margin-top:12px">
-              <span><i style="background:var(--surface-success-default)"></i> Applied</span>
-              <span><i style="background:var(--surface-brand-default)"></i> Unapplied</span>
-            </div>
-          </div>
+        <div class="card" ${dc("dash.ageing", "Dashboard · Unapplied cash ageing")}>
+          <div class="card__head"><div class="card__title">Unapplied cash ageing — SGD 1.24M</div></div>
+          <div class="card__body"><div class="hbars hbars--age">${ageBars}</div></div>
         </div>
         <div class="card" ${dc("dash.exceptions", "Dashboard · Exceptions by type")}>
           <div class="card__head"><div class="card__title">Exceptions by type</div></div>
@@ -145,7 +137,7 @@
 
       <div class="section" style="margin-top:var(--scale-300)" ${dc("dash.queue", "Dashboard · Aged unapplied work queue")}>
         <div class="card">
-          <div class="card__head"><div class="card__title">Aged unapplied cash — oldest first (work queue)</div></div>
+          <div class="card__head"><div class="card__title">Aged unapplied cash — oldest first</div><span class="muted" style="font-size:12px">${D.unapplied.length} items</span></div>
           <div class="card__body card__body--flush"><div class="table-wrap"><table class="tbl tbl--fixed">
             <colgroup><col style="width:28%"><col style="width:16%"><col style="width:18%"><col style="width:14%"><col style="width:24%"></colgroup>
             <thead><tr><th>Customer</th><th>Ref</th><th class="num">Amount</th><th>Age</th><th>Reason</th></tr></thead>
@@ -316,7 +308,7 @@
         </div>
         <div class="gap-note">${r.gap.note}</div>
         <div class="alloc-rule">Allocation rule:
-          <select><option ${r.gap.allocRule === "Remittance" ? "selected" : ""}>Remittance</option><option ${r.gap.allocRule === "Subset-sum" ? "selected" : ""}>Subset-sum</option><option ${r.gap.allocRule === "Exact" ? "selected" : ""}>Exact</option><option>FIFO (oldest-first)</option><option>By due date</option><option>By PO</option><option>Manual</option></select>
+          <select id="alloc-rule"><option ${r.gap.allocRule === "Remittance" ? "selected" : ""}>Remittance</option><option ${r.gap.allocRule === "Subset-sum" ? "selected" : ""}>Subset-sum</option><option ${r.gap.allocRule === "Exact" ? "selected" : ""}>Exact</option><option>FIFO (oldest-first)</option><option>By due date</option><option>By PO</option><option>Manual</option></select>
         </div>
       </div>`;
 
@@ -334,12 +326,12 @@
           ${gapRow("Unexplained", g.unexplained ? moneyOrDash(-g.unexplained) : "0.00", g.unexplained ? "brand" : "ok")}
           <div class="ws-pane__title" style="padding-left:0;margin-top:14px">Actions</div>
           <div class="actions-grid">
-            <button class="btn btn--success" data-act="apply">Apply &amp; post</button>
-            <button class="btn btn--ghost" data-act="split">Split</button>
-            <button class="btn btn--ghost" data-act="park">Park on-account</button>
-            <button class="btn btn--ghost" data-act="deduction">Open deduction</button>
-            <button class="btn btn--ghost" data-act="reassign">Reassign customer</button>
-            <button class="btn btn--ghost" data-act="reverse">Reverse</button>
+            <button class="btn btn--success ws-action ws-action--primary" data-act="apply">Apply &amp; post</button>
+            <button class="btn btn--ghost ws-action" data-act="split">Split</button>
+            <button class="btn btn--ghost ws-action" data-act="park">Park on-account</button>
+            <button class="btn btn--ghost ws-action" data-act="deduction">Open deduction</button>
+            <button class="btn btn--ghost ws-action" data-act="reassign">Reassign customer</button>
+            <button class="btn btn--ghost ws-action" data-act="reverse">Reverse</button>
           </div>
           <div class="conf-line">AI confidence <span class="conf">${r.aiConf.toFixed(2)}</span></div>
           <div class="conf-line">SLA <span class="sla">${r.sla}</span></div>
@@ -349,11 +341,31 @@
     cockpit.innerHTML = `<div class="workspace">${left}${mid}${right}</div>`;
 
     cockpit.querySelectorAll("[data-act]").forEach((b) => {
-      b.onclick = () => {
-        const labels = { apply: "Applied & posted to ERP (maker-checker queued)", split: "Split dialog", park: "Parked on-account", deduction: "Deduction opened & routed to claims", reassign: "Reassign customer", reverse: "Reversal initiated" };
-        toast(labels[b.dataset.act] || "Action");
-      };
+      b.onclick = () => actionConfirm(b.dataset.act, r);
     });
+    const ruleSel = $("#alloc-rule");
+    if (ruleSel) ruleSel.onchange = () => toast(`Re-allocated by: ${ruleSel.value}`);
+  }
+
+  // Action buttons open a confirmation dialog (clear, visible feedback)
+  function actionConfirm(act, r) {
+    const cust = r.customer ? r.customer.name : "—";
+    const map = {
+      apply:     { t: "Apply & post", danger: false, body: `Post <b>${fmt(r.amount, r.ccy)}</b> for <b>${cust}</b> to the ERP under maker-checker.<div class="modal-sub" style="margin-top:10px">ERP document <b>SAP-${r.bankRef}</b> · queued for checker approval (the proposer cannot self-approve).</div>` },
+      split:     { t: "Split credit", danger: false, body: `Split <b>${fmt(r.amount, r.ccy)}</b> across multiple customers / invoices before applying.` },
+      park:      { t: "Park on-account", danger: false, body: `Park <b>${fmt(r.amount, r.ccy)}</b> on-account under <b>${cust}</b>, aged for follow-up — the floor outcome.` },
+      deduction: { t: "Open deduction", danger: false, body: `Open a coded deduction for the short amount and route it to the claims owner.` },
+      reassign:  { t: "Reassign customer", danger: false, body: `Attribute this credit to a different customer (re-runs the identification ladder).` },
+      reverse:   { t: "Reverse application", danger: true, body: `Unapply the cash and reopen the invoice(s), with a full audit trail.` },
+    };
+    const m = map[act] || { t: "Action", body: "", danger: false };
+    openModal(m.t, `<p style="margin:0 0 4px">${m.body}</p>
+      <div style="margin-top:20px;display:flex;justify-content:flex-end;gap:8px">
+        <button class="btn btn--ghost" id="ac-cancel">Cancel</button>
+        <button class="btn btn--${m.danger ? "danger" : "primary"}" id="ac-confirm">Confirm</button>
+      </div>`);
+    document.getElementById("ac-cancel").onclick = closeModal;
+    document.getElementById("ac-confirm").onclick = () => { closeModal(); toast(`${m.t} — done`); };
   }
 
   // ════════════════════════════════════════════════════════════════════════
@@ -571,6 +583,43 @@
       bankSel.innerHTML = list.map((b) => `<option value="${b.id}" ${b.id === selectedBankId ? "selected" : ""}>${b.name}</option>`).join("");
       bankSel.onchange = () => { selectedBankId = bankSel.value; };
     }
+    const addBtn = $("#add-bank-btn");
+    if (addBtn) addBtn.onclick = openBankManager;
+  }
+
+  // Bank account management — add multiple accounts per entity, each fed by a
+  // direct MT940 feed from the bank or by manual upload.
+  function openBankManager() {
+    const list = banksForEntity();
+    const rows = list.length
+      ? list.map((b) => `<tr><td class="cell-main">${b.name}</td><td>${pill(b.feed || "MT940 direct feed", b.feed === "Manual upload" ? "warn" : "primary")}</td></tr>`).join("")
+      : `<tr><td colspan="2" class="muted">No bank accounts yet for this entity.</td></tr>`;
+    openModal(`Bank accounts — ${currentEntity().name}`, `
+      <div class="modal-sub">Add multiple bank accounts per entity. Each account is fed either by a <b>direct MT940 feed</b> from the bank, or by <b>manual statement upload</b>.</div>
+      <div class="table-wrap"><table class="tbl"><thead><tr><th>Account</th><th>Feed type</th></tr></thead><tbody>${rows}</tbody></table></div>
+      <div class="bankform">
+        <div class="bankform__title">Add a bank account</div>
+        <input id="bank-name" placeholder="e.g. UOB · …321 (SGD)" />
+        <div class="bankform__feeds">
+          <label><input type="radio" name="feed" value="MT940 direct feed" checked> Direct feed — MT940 from bank</label>
+          <label><input type="radio" name="feed" value="Manual upload"> Manual upload by user</label>
+        </div>
+        <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px">
+          <button class="btn btn--ghost" id="bank-close">Close</button>
+          <button class="btn btn--primary" id="bank-add">Add account</button>
+        </div>
+      </div>`);
+    document.getElementById("bank-close").onclick = closeModal;
+    document.getElementById("bank-add").onclick = () => {
+      const name = document.getElementById("bank-name").value.trim();
+      if (!name) { document.getElementById("bank-name").focus(); return; }
+      const feed = (document.querySelector('input[name="feed"]:checked') || {}).value || "MT940 direct feed";
+      D.banks.push({ id: "bk-" + Date.now(), entity: selectedEntityId, name, feed });
+      selectedBankId = "bk-" + (Date.now() - 0);
+      syncSidebarContext();
+      openBankManager();
+      toast(`Added ${name} · ${feed}`);
+    };
   }
 
   // ── Sidebar collapse + mobile drawer ───────────────────────────────────────

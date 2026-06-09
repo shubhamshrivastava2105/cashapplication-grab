@@ -36,7 +36,7 @@ window.DATA = (function () {
       info: "Share of incoming credits attributed to a customer. The floor metric — identity is the minimum viable outcome." },
     { key: "unapplied",  label: "Unapplied cash",      value: "SGD 1.24M", tone: "warn", delta: "▼ 4% QoQ",   deltaTone: "up", drill: "unapplied",
       info: "On-account / advance cash that is identified but not yet matched to invoices. Click for the line-by-line breakdown." },
-    { key: "exceptions", label: "Open exceptions",     value: "61",        tone: "warn", delta: "▼ 8 QoQ",    deltaTone: "up", drill: "exceptions",
+    { key: "exceptions", label: "Open exceptions",     value: "250",       tone: "warn", delta: "▼ 12 QoQ",   deltaTone: "up", drill: "exceptions",
       info: "Credits needing analyst attention, grouped by exception type. Click for the breakdown." },
   ];
 
@@ -56,14 +56,13 @@ window.DATA = (function () {
       ],
     },
     exceptions: {
-      title: "Open exceptions — by type", total: "61 exceptions",
+      title: "Open exceptions — by type", total: "250 exceptions",
       columns: ["Exception type", "Count"], money: -1,
       rows: [
-        ["Unidentified payer", 18],
-        ["Partial / short payment", 15],
-        ["Deduction / claim", 12],
-        ["Overpayment", 9],
-        ["WHT certificate pending", 7],
+        ["Unidentified customer", 74],
+        ["Partial / short & deductions", 96],
+        ["Overpayment", 45],
+        ["WHT certificate pending", 35],
       ],
     },
   };
@@ -78,12 +77,23 @@ window.DATA = (function () {
   ];
 
   const exceptionsByType = [
-    { label: "Unidentified",     value: 18 },
-    { label: "Partial / short",  value: 15 },
-    { label: "Deduction / claim",value: 12 },
-    { label: "Overpayment",      value: 9 },
-    { label: "WHT cert pending", value: 7 },
+    { label: "Unidentified customer",        value: 74 },
+    { label: "Partial / short & deductions", value: 96 },
+    { label: "Overpayment",                  value: 45 },
+    { label: "WHT certificate pending",      value: 35 },
   ];
+
+  // Ageing of the SGD 1.24M unapplied cash (replaces the old daily bar chart)
+  const ageingUnapplied = {
+    title: "Unapplied cash ageing", total: "SGD 1.24M",
+    buckets: [
+      { label: "0–15 days",  amount: 512000 },
+      { label: "15–30 days", amount: 326000 },
+      { label: "1–3 months", amount: 248000 },
+      { label: "3–6 months", amount: 102000 },
+      { label: "6 months+",  amount: 52000  },
+    ],
+  };
 
   // ── Receipts queue (drives the workspace) ───────────────────────────────
   const receipts = [
@@ -141,13 +151,21 @@ window.DATA = (function () {
     },
   ];
 
-  // ── Unapplied / on-account ──────────────────────────────────────────────
+  // ── Unapplied / on-account (full work list) ─────────────────────────────
   const unapplied = [
-    { id: "UC-2201", customer: "Sinar Jaya Retail Pte Ltd",     amount: 3450.00,  ageDays: 41, source: "FT55X10A", reason: "Residual after allocation", tone: "warn" },
-    { id: "UC-2198", customer: "Lazada SG (treasury)",     amount: 3400.00,  ageDays: 2,  source: "FT88C04Z", reason: "Subset-sum residual",       tone: "neutral" },
-    { id: "UC-2150", customer: "Sea Group Pte Ltd",        amount: 28000.00, ageDays: 63, source: "FT41J88P", reason: "Advance — no open invoice", tone: "error" },
-    { id: "UC-2099", customer: "Shopee Pay",               amount: 12750.00, ageDays: 9,  source: "FT60K22Q", reason: "Overpayment residual",       tone: "neutral" },
-    { id: "UC-2044", customer: "Bukalapak Enterprise",     amount: 6200.00,  ageDays: 27, source: "FT38L09R", reason: "Identified, no clean match", tone: "warn" },
+    { id: "UC-2201", customer: "Sinar Jaya Retail Pte Ltd", amount: 3450.00,  ageDays: 41, source: "FT55X10A", reason: "Residual after allocation",  tone: "warn" },
+    { id: "UC-2198", customer: "Lazada SG (treasury)",      amount: 3400.00,  ageDays: 2,  source: "FT88C04Z", reason: "Subset-sum residual",        tone: "neutral" },
+    { id: "UC-2150", customer: "Sea Group Pte Ltd",         amount: 28000.00, ageDays: 63, source: "FT41J88P", reason: "Advance — no open invoice",   tone: "error" },
+    { id: "UC-2099", customer: "Shopee Pay",                amount: 12750.00, ageDays: 9,  source: "FT60K22Q", reason: "Overpayment residual",        tone: "neutral" },
+    { id: "UC-2044", customer: "Bukalapak Enterprise",      amount: 6200.00,  ageDays: 27, source: "FT38L09R", reason: "Identified, no clean match",  tone: "warn" },
+    { id: "UC-2031", customer: "Tokopedia Ads",             amount: 9100.00,  ageDays: 5,  source: "FT62M11S", reason: "Remittance awaited",         tone: "neutral" },
+    { id: "UC-2018", customer: "Grab Mart ID",              amount: 41200.00, ageDays: 78, source: "FT29N04T", reason: "Advance — no open invoice",   tone: "error" },
+    { id: "UC-2007", customer: "Central Group TH",          amount: 18650.00, ageDays: 33, source: "FT70P22U", reason: "Identified, no clean match",  tone: "warn" },
+    { id: "UC-1994", customer: "Maju Jaya Sdn Bhd",         amount: 5400.00,  ageDays: 12, source: "FT55Q08V", reason: "Overpayment residual",        tone: "neutral" },
+    { id: "UC-1981", customer: "FairPrice Group",           amount: 22300.00, ageDays: 51, source: "FT41R77W", reason: "Residual after allocation",  tone: "error" },
+    { id: "UC-1975", customer: "PTT Retail",                amount: 7850.00,  ageDays: 4,  source: "FT63S09X", reason: "Subset-sum residual",        tone: "neutral" },
+    { id: "UC-1968", customer: "VNG Corporation",           amount: 14900.00, ageDays: 22, source: "FT38T44Y", reason: "Identified, no clean match",  tone: "warn" },
+    { id: "UC-1950", customer: "Sinar Jaya Retail Pte Ltd", amount: 3100.00,  ageDays: 88, source: "FT22U10Z", reason: "Misdirected — pending return", tone: "error" },
   ];
 
   // ── Deductions / claims ─────────────────────────────────────────────────
@@ -213,5 +231,5 @@ window.DATA = (function () {
   // ── Pipeline (reference strip on dashboard) ─────────────────────────────
   const pipeline = ["① Identify customer", "② Identify obligations", "③ Reconcile amount", "④ Apply & post", "⑤ Resolve residual"];
 
-  return { fmt, entities, banks, lastStatementDate, kpis, breakdowns, dailyChart, exceptionsByType, receipts, unapplied, deductions, customers, reports, pipeline };
+  return { fmt, entities, banks, lastStatementDate, kpis, breakdowns, ageingUnapplied, dailyChart, exceptionsByType, receipts, unapplied, deductions, customers, reports, pipeline };
 })();
