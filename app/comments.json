@@ -350,5 +350,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_tvaqppmv3th",
+    "route": "#/dashboard",
+    "anchor": "page",
+    "anchorLabel": "Page / navigation",
+    "xPct": 14.551724137931036,
+    "yPct": 4.761904761904762,
+    "author": "SME",
+    "text": "this should be a collapse button and not a hamburger button",
+    "status": "open",
+    "createdAt": "2026-06-09T11:49:51.509Z",
+    "updatedAt": "2026-06-09T11:49:51.510Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
