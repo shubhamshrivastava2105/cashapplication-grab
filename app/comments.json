@@ -526,5 +526,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_dz276xxnvmk",
+    "route": "#/workspace",
+    "anchor": "ws.gap",
+    "anchorLabel": "Workspace · Gap classification & actions",
+    "xPct": 38.529411764705884,
+    "yPct": 76.09377599277549,
+    "author": "SME",
+    "text": "if the match is not exact, the user should not be able to post",
+    "status": "open",
+    "createdAt": "2026-06-09T13:36:12.765Z",
+    "updatedAt": "2026-06-09T13:36:12.765Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
