@@ -424,12 +424,12 @@
     "yPct": 50.95651810701307,
     "author": "SME",
     "text": "discount will also be on an invoice level and user should be able to add it on an invoice level",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T13:03:47.702Z",
-    "updatedAt": "2026-06-09T13:03:47.702Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-09T13:22:28.268Z",
+    "resolvedAt": "2026-06-09T13:22:28.268Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Discount is now editable per invoice (line-item Discount column)."
   },
   {
     "id": "c_s6zept5iykn",
