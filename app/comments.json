@@ -238,5 +238,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_6b4aa1chred",
+    "route": "#/dashboard",
+    "anchor": "dash.exceptions",
+    "anchorLabel": "Dashboard · Exceptions by type",
+    "xPct": 17.26618705035971,
+    "yPct": 49.27606617089088,
+    "author": "SME",
+    "text": "partial/short and deduction rows should be merged",
+    "status": "open",
+    "createdAt": "2026-06-09T10:43:29.653Z",
+    "updatedAt": "2026-06-09T10:43:29.655Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
