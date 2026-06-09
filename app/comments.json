@@ -574,5 +574,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_8qwhyv4r213",
+    "route": "#/unapplied",
+    "anchor": "page",
+    "anchorLabel": "Page / navigation",
+    "xPct": 11.379310344827587,
+    "yPct": 24.031007751937985,
+    "author": "SME",
+    "text": "remove this page - unapplied / on-account cash completely",
+    "status": "open",
+    "createdAt": "2026-06-09T13:10:41.415Z",
+    "updatedAt": "2026-06-09T13:10:41.415Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
