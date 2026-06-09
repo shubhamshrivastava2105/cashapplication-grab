@@ -32,22 +32,6 @@
     "resolutionNote": "Fixed-width columns are now deployed on the Aged-unapplied table (was likely reopened before the deploy landed). Refresh to see even spacing; reopen if any specific table/columns still look off."
   },
   {
-    "id": "c_zy10q1jnx5s",
-    "route": "#/dashboard",
-    "anchor": "dash.kpis",
-    "anchorLabel": "Dashboard · KPI tiles",
-    "xPct": 43.61702127659575,
-    "yPct": 51.514502836348065,
-    "author": "SME",
-    "text": "inconsistent",
-    "status": "resolved",
-    "createdAt": "2026-06-09T10:20:17.440Z",
-    "updatedAt": "2026-06-09T10:34:17.543Z",
-    "resolvedAt": "2026-06-09T10:34:17.543Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "Fixed KPI value inconsistency: values like \"SGD 1.24M\" were wrapping to two lines; values are now single-line (nowrap, sized to fit) so all tiles are consistent."
-  },
-  {
     "id": "c_n6welmlrzy4",
     "route": "#/dashboard",
     "anchor": "page",
