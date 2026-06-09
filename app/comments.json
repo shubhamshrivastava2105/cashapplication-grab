@@ -430,5 +430,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_h0xmk1p4grt",
+    "route": "#/workspace",
+    "anchor": "ws.queue",
+    "anchorLabel": "Workspace · Credit queue",
+    "xPct": 16.93262411347518,
+    "yPct": 21.310567997956227,
+    "author": "SME",
+    "text": "the description should look real as on bank statement",
+    "status": "open",
+    "createdAt": "2026-06-09T12:53:07.433Z",
+    "updatedAt": "2026-06-09T12:53:07.433Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
