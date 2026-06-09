@@ -1,21 +1,5 @@
 [
   {
-    "id": "c_qggkcoh2pnp",
-    "route": "#/dashboard",
-    "anchor": "dash.kpis",
-    "anchorLabel": "Dashboard · KPI tiles",
-    "xPct": 42.641843971631204,
-    "yPct": 83.7097292090335,
-    "author": "SME",
-    "text": "not consistent",
-    "status": "resolved",
-    "createdAt": "2026-06-09T10:03:47.941Z",
-    "updatedAt": "2026-06-09T10:08:37.827Z",
-    "resolvedAt": "2026-06-09T10:08:37.827Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "Standardised all six KPI tile subtitles to one consistent week-on-week trend format (arrow + value + WoW), replacing the mix of coloured trends and plain counts. Reopen if you meant a different inconsistency."
-  },
-  {
     "id": "c_of873c06oys",
     "route": "#/dashboard",
     "anchor": "screen",
