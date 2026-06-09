@@ -286,5 +286,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_wgd13mfqqg8",
+    "route": "#/workspace",
+    "anchor": "screen",
+    "anchorLabel": "Apply cash",
+    "xPct": 62.5,
+    "yPct": 91.72825686414929,
+    "author": "SME",
+    "text": "can we keep all the 3 boxes consistent and not of different sizes",
+    "status": "open",
+    "createdAt": "2026-06-09T12:14:27.176Z",
+    "updatedAt": "2026-06-09T12:14:27.176Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
