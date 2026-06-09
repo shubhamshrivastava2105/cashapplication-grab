@@ -264,12 +264,12 @@
     "yPct": 10.75401367732089,
     "author": "SME",
     "text": "Amount also along with the count of exceptions",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T11:15:50.044Z",
-    "updatedAt": "2026-06-09T11:15:50.044Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-09T11:36:19.372Z",
+    "resolvedAt": "2026-06-09T11:36:19.372Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Exceptions-by-type now shows both count and amount per type."
   },
   {
     "id": "c_hiiivlenwep",
