@@ -216,12 +216,12 @@
     "yPct": 39.42414174972315,
     "author": "SME",
     "text": "a button should be placed on the navbar, we should give the option to add multiple bank accounts.\n\nfor each bank account - there could be a direct feed by account through mt940 from bank or there is an option to manually upload by the user",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T10:41:17.259Z",
-    "updatedAt": "2026-06-09T10:41:17.261Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-09T11:08:33.068Z",
+    "resolvedAt": "2026-06-09T11:08:33.068Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Added the bank-account manager to the left nav: add multiple accounts per entity, each fed by MT940 direct feed or manual upload."
   },
   {
     "id": "c_db0eogvh00d",
