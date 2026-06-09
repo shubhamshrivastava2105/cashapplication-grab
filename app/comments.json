@@ -462,5 +462,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_j8i0sqkz980",
+    "route": "#/workspace",
+    "anchor": "ws.gap",
+    "anchorLabel": "Workspace · Gap classification & actions",
+    "xPct": 54.37499999999999,
+    "yPct": 76.40593734133739,
+    "author": "SME",
+    "text": "remove - split, park on account, open deduction, reassign customer, reverse etc. just keep apply and post",
+    "status": "open",
+    "createdAt": "2026-06-09T11:25:05.520Z",
+    "updatedAt": "2026-06-09T11:25:05.520Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
