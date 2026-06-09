@@ -120,12 +120,12 @@
     "yPct": 63.50583725387698,
     "author": "SME",
     "text": "If I feel the customer is wrong, I should be able to change the customer from here.",
-    "status": "resolved",
+    "status": "open",
     "createdAt": "2026-06-09T11:02:41.184Z",
-    "updatedAt": "2026-06-09T11:21:10.739Z",
-    "resolvedAt": "2026-06-09T11:21:10.739Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "Added a Change customer button on the identified-customer pane to re-attribute the credit."
+    "updatedAt": "2026-06-09T11:23:53.547Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   },
   {
     "id": "c_p6pvhwd8nr1",
