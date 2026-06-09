@@ -446,5 +446,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_ttlw84362t0",
+    "route": "#/workspace",
+    "anchor": "ws.queue",
+    "anchorLabel": "Workspace · Credit queue",
+    "xPct": 64.8936170212766,
+    "yPct": 37.66073405433024,
+    "author": "SME",
+    "text": "the amount should also be consistent in all the tabs.",
+    "status": "open",
+    "createdAt": "2026-06-09T12:54:22.644Z",
+    "updatedAt": "2026-06-09T12:54:22.644Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
