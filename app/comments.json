@@ -144,22 +144,6 @@
     "resolutionNote": "Removed the Export button from Reports."
   },
   {
-    "id": "c_g7mav7f8vp6",
-    "route": "#/workspace",
-    "anchor": "ws.credit",
-    "anchorLabel": "Workspace · The credit + identified customer",
-    "xPct": 41.875,
-    "yPct": 50.42187043147738,
-    "author": "SME",
-    "text": "the customer names should match as it is on other tabs on an entity level",
-    "status": "resolved",
-    "createdAt": "2026-06-09T12:56:33.402Z",
-    "updatedAt": "2026-06-09T13:22:18.911Z",
-    "resolvedAt": "2026-06-09T13:22:18.911Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "Workspace customers now come from the same per-entity pool as the other tabs."
-  },
-  {
     "id": "c_297pgf6c5wc",
     "route": "#/workspace",
     "anchor": "ws.credit",
