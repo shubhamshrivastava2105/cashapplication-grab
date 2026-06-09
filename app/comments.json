@@ -280,12 +280,12 @@
     "yPct": 3.211517165005537,
     "author": "SME",
     "text": "is this period making sense? is it consistent with the other tabs?",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T12:15:21.960Z",
-    "updatedAt": "2026-06-09T12:15:21.960Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-09T12:35:54.799Z",
+    "resolvedAt": "2026-06-09T12:35:54.799Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Period is now consistent across tabs — all show \"Processed till 03 May 2026\" (the last bank statement date)."
   },
   {
     "id": "c_2h5454lsdu7",
