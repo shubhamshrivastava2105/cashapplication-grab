@@ -558,5 +558,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_teaqsgoh71s",
+    "route": "#/workspace",
+    "anchor": "ws.gap",
+    "anchorLabel": "Workspace · Gap classification & actions",
+    "xPct": 61.76470588235294,
+    "yPct": 20.74892443924648,
+    "author": "SME",
+    "text": "i should also be able to remove the auto applied wht",
+    "status": "open",
+    "createdAt": "2026-06-09T13:03:01.360Z",
+    "updatedAt": "2026-06-09T13:03:01.360Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
