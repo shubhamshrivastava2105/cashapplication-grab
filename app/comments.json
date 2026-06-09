@@ -168,12 +168,12 @@
     "yPct": 14.712621421886599,
     "author": "SME",
     "text": "This whole section is not very clear: the gap section. Give a simulation action for the accounting entry.",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T11:05:30.121Z",
-    "updatedAt": "2026-06-09T11:05:30.124Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-09T11:21:12.946Z",
+    "resolvedAt": "2026-06-09T11:21:12.946Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Clarified the gap section with an explanation line and added a Simulate accounting entry preview (journal Dr/Cr)."
   },
   {
     "id": "c_2yer35oalst",
