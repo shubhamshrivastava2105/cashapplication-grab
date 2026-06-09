@@ -160,22 +160,6 @@
     "resolutionNote": "Removed the Export button from Reports."
   },
   {
-    "id": "c_mdfw9y9tm3x",
-    "route": "#/dashboard",
-    "anchor": "page",
-    "anchorLabel": "Page / navigation",
-    "xPct": 82.27586206896552,
-    "yPct": 4.651162790697675,
-    "author": "SME",
-    "text": "show latest date - 8th june",
-    "status": "resolved",
-    "createdAt": "2026-06-09T12:44:41.133Z",
-    "updatedAt": "2026-06-09T13:06:13.470Z",
-    "resolvedAt": "2026-06-09T13:06:13.470Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "Latest date is now 08 Jun 2026; statement dates rebased to it."
-  },
-  {
     "id": "c_g7mav7f8vp6",
     "route": "#/workspace",
     "anchor": "ws.credit",
