@@ -456,12 +456,12 @@
     "yPct": 3.6544850498338874,
     "author": "SME",
     "text": "remove the open credits button from here",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T13:05:22.953Z",
-    "updatedAt": "2026-06-09T13:05:22.953Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-09T13:22:30.349Z",
+    "resolvedAt": "2026-06-09T13:22:30.349Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Removed the Open credits chip from the workspace topbar."
   },
   {
     "id": "c_8qwhyv4r213",
