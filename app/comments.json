@@ -32,22 +32,6 @@
     "resolutionNote": "Replaced the dummy \"Acme Retail\" with a realistic SEA name (Sinar Jaya Retail Pte Ltd) across customers, receipts, unapplied, deductions and aliases. Other customers were already real SEA names (Lazada, Sea Group, Shopee, Tokopedia, Bukalapak)."
   },
   {
-    "id": "c_71sguxvyr25",
-    "route": "#/dashboard",
-    "anchor": "dash.kpis",
-    "anchorLabel": "Dashboard · KPI tiles",
-    "xPct": 9.574468085106384,
-    "yPct": 63.15958471583003,
-    "author": "SME",
-    "text": "the period is missing - show for last 3 months\n\nshow - quarter on quarter improvements. eg: 6 pts QoQ",
-    "status": "resolved",
-    "createdAt": "2026-06-09T10:28:42.749Z",
-    "updatedAt": "2026-06-09T10:50:22.215Z",
-    "resolvedAt": "2026-06-09T10:50:22.215Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "KPI trends now show quarter-on-quarter (last 3 months), e.g. \"6 pts QoQ\", instead of weekly."
-  },
-  {
     "id": "c_f4uuhcbzvsg",
     "route": "#/dashboard",
     "anchor": "dash.kpis",
