@@ -526,5 +526,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_mntv5buehiu",
+    "route": "#/workspace",
+    "anchor": "ws.allocation",
+    "anchorLabel": "Workspace · Open invoices & proposed allocation",
+    "xPct": 22.706422018348622,
+    "yPct": 94.53030366317196,
+    "author": "SME",
+    "text": "remove allocation rule",
+    "status": "open",
+    "createdAt": "2026-06-09T13:00:54.966Z",
+    "updatedAt": "2026-06-09T13:00:54.966Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
