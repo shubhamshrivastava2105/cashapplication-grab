@@ -256,22 +256,6 @@
     "resolutionNote": "The allocation-rule dropdown now actually re-allocates (FIFO/due-date/exact greedily re-spread the receipt; Remittance restores the directed allocation)."
   },
   {
-    "id": "c_8q69obyv46c",
-    "route": "#/dashboard",
-    "anchor": "page",
-    "anchorLabel": "Page / navigation",
-    "xPct": 14.827586206896552,
-    "yPct": 4.208194905869324,
-    "author": "SME",
-    "text": "it should be a collapsible icon and not a hamburger icon.",
-    "status": "resolved",
-    "createdAt": "2026-06-09T11:21:52.356Z",
-    "updatedAt": "2026-06-09T11:42:09.713Z",
-    "resolvedAt": "2026-06-09T11:42:09.713Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "Sidebar toggle is now a collapse chevron (rotates on collapse), not a hamburger."
-  },
-  {
     "id": "c_aokhs8fw5vl",
     "route": "#/reports",
     "anchor": "page",
