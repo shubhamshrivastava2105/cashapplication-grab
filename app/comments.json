@@ -606,5 +606,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_7hmhotk5n5a",
+    "route": "#/workspace",
+    "anchor": "ws.allocation",
+    "anchorLabel": "Workspace · Open invoices & proposed allocation",
+    "xPct": 38.99082568807339,
+    "yPct": 75.47083933030717,
+    "author": "SME",
+    "text": "once a dropdown option is selected, the value changes, but for the second time the value stops changing",
+    "status": "open",
+    "createdAt": "2026-06-09T13:22:01.966Z",
+    "updatedAt": "2026-06-09T13:22:01.975Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
