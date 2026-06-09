@@ -654,5 +654,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_idu2hblwqwh",
+    "route": "#/reports",
+    "anchor": "rep.topcust",
+    "anchorLabel": "Reports · Top customers by open AR",
+    "xPct": 34.84400248601616,
+    "yPct": 4.987624568488243,
+    "author": "SME",
+    "text": "remove this",
+    "status": "open",
+    "createdAt": "2026-06-09T13:15:06.929Z",
+    "updatedAt": "2026-06-09T13:15:06.929Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
