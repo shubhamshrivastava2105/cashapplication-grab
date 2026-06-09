@@ -328,12 +328,12 @@
     "yPct": 65.19489786816519,
     "author": "SME",
     "text": "show amount instead of count for aged",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T12:46:38.440Z",
-    "updatedAt": "2026-06-09T12:46:38.440Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-09T13:06:16.354Z",
+    "resolvedAt": "2026-06-09T13:06:16.354Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Unapplied tile now shows the aged AMOUNT (> 30d) instead of a count."
   },
   {
     "id": "c_kkmqd2mx40d",
