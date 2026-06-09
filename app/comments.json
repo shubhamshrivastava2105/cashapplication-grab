@@ -184,12 +184,12 @@
     "yPct": 88.59357696566998,
     "author": "SME",
     "text": "change \"manual upload by user\" to \"manual upload\"",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T11:52:32.701Z",
-    "updatedAt": "2026-06-09T11:52:32.701Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-09T12:35:46.831Z",
+    "resolvedAt": "2026-06-09T12:35:46.831Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Renamed to \"Manual upload\"."
   },
   {
     "id": "c_p63ew1xhcp9",
