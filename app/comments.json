@@ -184,12 +184,12 @@
     "yPct": 88.82035197769646,
     "author": "SME",
     "text": "Don't understand what this 0.88 parsed means, so reframe it or make it clearer.",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T11:05:55.421Z",
-    "updatedAt": "2026-06-09T11:05:55.421Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-09T11:21:14.025Z",
+    "resolvedAt": "2026-06-09T11:21:14.025Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Reframed remittance \"parsed 0.88\" to \"parse confidence 88%\"."
   },
   {
     "id": "c_vcr74aoblrn",
