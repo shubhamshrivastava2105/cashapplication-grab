@@ -440,12 +440,12 @@
     "yPct": 21.310567997956227,
     "author": "SME",
     "text": "the description should look real as on bank statement",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T12:53:07.433Z",
-    "updatedAt": "2026-06-09T12:53:07.433Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-09T13:06:24.610Z",
+    "resolvedAt": "2026-06-09T13:06:24.610Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Workspace descriptions use the same realistic bank-statement narration."
   },
   {
     "id": "c_ttlw84362t0",
