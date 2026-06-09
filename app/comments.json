@@ -408,12 +408,12 @@
     "yPct": 40.129902677415316,
     "author": "SME",
     "text": "each invoice can have wht and there should be an option to take wht amount on a line item level",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T13:02:03.525Z",
-    "updatedAt": "2026-06-09T13:02:03.525Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-09T13:22:25.208Z",
+    "resolvedAt": "2026-06-09T13:22:25.208Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "WHT is now editable per invoice (line-item WHT column); apply recomputes."
   },
   {
     "id": "c_teaqsgoh71s",
