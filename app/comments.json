@@ -104,12 +104,12 @@
     "yPct": 4.540420819490587,
     "author": "SME",
     "text": "period should be - \"processed till last bank statement date\". reframe it better based on the o2c language",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T10:24:25.938Z",
-    "updatedAt": "2026-06-09T10:24:25.941Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-09T10:34:15.249Z",
+    "resolvedAt": "2026-06-09T10:34:15.249Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Reframed the period chip to O2C language: now reads \"Processed till 03 May 2026\" (the last bank statement date) instead of \"This week\"."
   },
   {
     "id": "c_v54vh8rvwx6",
