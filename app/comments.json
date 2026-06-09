@@ -248,12 +248,12 @@
     "yPct": 96.74988952717631,
     "author": "SME",
     "text": "lot of blank space at the bottom, why is the table not using this space?",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T12:13:53.584Z",
-    "updatedAt": "2026-06-09T12:13:53.584Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-09T12:35:52.295Z",
+    "resolvedAt": "2026-06-09T12:35:52.295Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Tables now fill the available height (scroll area = viewport-based), removing the blank space at the bottom."
   },
   {
     "id": "c_wgd13mfqqg8",
