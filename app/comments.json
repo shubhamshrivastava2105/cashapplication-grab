@@ -312,12 +312,12 @@
     "yPct": 87.76268136836521,
     "author": "SME",
     "text": "this is not working",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T10:53:13.128Z",
-    "updatedAt": "2026-06-09T10:53:13.131Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-09T11:08:37.414Z",
+    "resolvedAt": "2026-06-09T11:08:37.414Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "The allocation-rule dropdown now responds (re-allocates and confirms with feedback)."
   },
   {
     "id": "c_b47ngq4upmt",
