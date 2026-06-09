@@ -456,15 +456,24 @@
       </table></div>`);
   }
 
-  // Reassign the credit to a different customer
+  // Reassign the credit to a different customer (lists all customers + search)
   function openCustomerPicker(r) {
-    const opts = D.customers.map((c) => `<button class="picker-item" data-cid="${c.id}" data-name="${escapeAttr(c.name)}"><span class="cell-main">${c.name}</span><span class="muted"> · ${c.country} · ${c.ccy}</span></button>`).join("");
+    const names = Array.from(new Set([...D.customers.map((c) => c.name), ...D.customerNames])).sort();
+    const opts = names.map((n) => `<button class="picker-item" data-name="${escapeAttr(n)}"><span class="cell-main">${n}</span></button>`).join("");
     openModal("Change customer", `
       <div class="modal-sub">Re-attribute this credit if the suggested customer looks wrong. Your choice is logged and trains the identification model.</div>
-      <div class="picker-list">${opts}</div>`);
+      <input id="picker-search" placeholder="Search customers…" style="width:100%;padding:9px;border:1px solid var(--border-default-default);border-radius:var(--radius-sm);margin-bottom:10px;font-family:var(--font-family-inter);font-size:13px" />
+      <div class="picker-list" id="picker-list">${opts}</div>`);
+    const search = document.getElementById("picker-search");
+    if (search) search.oninput = () => {
+      const q = search.value.toLowerCase();
+      document.querySelectorAll("#picker-list .picker-item").forEach((it) => {
+        it.style.display = it.dataset.name.toLowerCase().includes(q) ? "" : "none";
+      });
+    };
     document.querySelectorAll(".picker-item").forEach((b) => {
       b.onclick = () => {
-        r.customer = { name: b.dataset.name, id: b.dataset.cid, confidence: 1.0, how: "manually set by analyst" };
+        r.customer = { name: b.dataset.name, id: "manual", confidence: 1.0, how: "manually set by analyst" };
         closeModal(); renderCockpit(r); toast(`Customer set to ${b.dataset.name}`);
       };
     });

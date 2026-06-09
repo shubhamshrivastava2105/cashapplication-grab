@@ -311,5 +311,5 @@ window.DATA = (function () {
   // ── Pipeline (reference strip on dashboard) ─────────────────────────────
   const pipeline = ["① Identify customer", "② Identify obligations", "③ Reconcile amount", "④ Apply & post", "⑤ Resolve residual"];
 
-  return { fmt, fmtCompact, entities, banks, lastStatementDate, dashboardFor, receipts, deductions, customers, reports, pipeline };
+  return { fmt, fmtCompact, entities, banks, lastStatementDate, dashboardFor, customerNames: SEA_CUSTOMERS, receipts, deductions, customers, reports, pipeline };
 })();

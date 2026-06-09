@@ -49,7 +49,8 @@ button { font-family: var(--font-family-plus-jakarta-sans); cursor: pointer; }
   background: transparent; border: none; color: var(--icon-on-colour-caption); cursor: pointer;
 }
 .sidebar__toggle:hover { background: rgba(255,255,255,.08); color: var(--text-on-colour-heading); }
-.sidebar__toggle svg { width: 20px; height: 20px; }
+.sidebar__toggle svg { width: 20px; height: 20px; transition: transform .18s ease; }
+body.nav-collapsed .sidebar__toggle svg { transform: rotate(180deg); }
 .sidebar__logo {
   width: 36px; height: 36px; border-radius: var(--radius-sm);
   background: var(--surface-primary-default);
