@@ -654,5 +654,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_hleh4xvy6wd",
+    "route": "#/reports",
+    "anchor": "rep.aatrend",
+    "anchorLabel": "Reports · Auto-apply trend (line)",
+    "xPct": 50.719424460431654,
+    "yPct": 9.121647583186045,
+    "author": "SME",
+    "text": "merge auto apply rate and customer identification 12 months trend on the dashboard. give the option to change time frame. make sure the data is matching and correct",
+    "status": "open",
+    "createdAt": "2026-06-09T13:16:14.317Z",
+    "updatedAt": "2026-06-09T13:16:14.317Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
