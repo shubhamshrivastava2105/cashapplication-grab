@@ -152,12 +152,12 @@
     "yPct": 80.28470512683292,
     "author": "SME",
     "text": "remove this metric too",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T10:34:07.695Z",
-    "updatedAt": "2026-06-09T10:34:07.698Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-09T10:50:29.217Z",
+    "resolvedAt": "2026-06-09T10:50:29.217Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Removed the Deductions open KPI tile."
   },
   {
     "id": "c_igdw0sl8j3s",
