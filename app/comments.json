@@ -112,22 +112,6 @@
     "resolutionNote": "The allocation-rule dropdown now responds (re-allocates and confirms with feedback)."
   },
   {
-    "id": "c_b47ngq4upmt",
-    "route": "#/workspace",
-    "anchor": "ws.gap",
-    "anchorLabel": "Workspace · Gap classification & actions",
-    "xPct": 69.6875,
-    "yPct": 58.498725271888205,
-    "author": "SME",
-    "text": "action is not doing anything, also make it visually better",
-    "status": "resolved",
-    "createdAt": "2026-06-09T10:53:33.893Z",
-    "updatedAt": "2026-06-09T11:08:38.809Z",
-    "resolvedAt": "2026-06-09T11:08:38.809Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "Action buttons now open a confirmation dialog (Apply & post shows the ERP doc + maker-checker note) and the actions area was restyled (primary Apply & post is full-width)."
-  },
-  {
     "id": "c_1pi2c6045fa",
     "route": "#/workspace",
     "anchor": "ws.queue",
