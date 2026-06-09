@@ -398,5 +398,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_aoph8bosnou",
+    "route": "#/workspace",
+    "anchor": "ws.allocation",
+    "anchorLabel": "Workspace · Open invoices & proposed allocation",
+    "xPct": 48.68421052631579,
+    "yPct": 94.9612452109702,
+    "author": "SME",
+    "text": "nothing is changing based on the dropdown change.",
+    "status": "open",
+    "createdAt": "2026-06-09T11:19:57.678Z",
+    "updatedAt": "2026-06-09T11:19:57.678Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
