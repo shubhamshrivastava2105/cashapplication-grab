@@ -392,12 +392,12 @@
     "yPct": 4.943748447315186,
     "author": "SME",
     "text": "give sorting based on date and amount on this table",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T12:50:02.144Z",
-    "updatedAt": "2026-06-09T12:50:02.144Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-09T13:06:21.158Z",
+    "resolvedAt": "2026-06-09T13:06:21.158Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Dashboard table now sorts by Date, Amount and Age (click the header)."
   },
   {
     "id": "c_k6xypu71sxp",
