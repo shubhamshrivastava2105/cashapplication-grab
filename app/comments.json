@@ -222,5 +222,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_pierb8vemfc",
+    "route": "#/dashboard",
+    "anchor": "page",
+    "anchorLabel": "Page / navigation",
+    "xPct": 92.48275862068965,
+    "yPct": 3.7652270210409746,
+    "author": "SME",
+    "text": "this button should be removed from here.\n\nshould be placed on the navbar, we should give the option to add multiple bank accounts.\n\nfor each bank account - there could be a direct feed by account through mt940 from bank or there is an option to manually upload by the user",
+    "status": "open",
+    "createdAt": "2026-06-09T10:41:03.240Z",
+    "updatedAt": "2026-06-09T10:41:03.242Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
