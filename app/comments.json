@@ -392,12 +392,12 @@
     "yPct": 68.87906028317873,
     "author": "SME",
     "text": "change customer should list all the customers in the dropdown",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T11:29:17.320Z",
-    "updatedAt": "2026-06-09T11:29:17.320Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-09T11:42:10.728Z",
+    "resolvedAt": "2026-06-09T11:42:10.728Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Change customer now lists all customers in a searchable dropdown."
   },
   {
     "id": "c_9ofaqi6iyjv",
