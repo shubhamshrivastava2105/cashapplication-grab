@@ -160,22 +160,6 @@
     "resolutionNote": "Removed the Export button from Reports."
   },
   {
-    "id": "c_q4giaajpt0l",
-    "route": "#/dashboard",
-    "anchor": "dash.kpis",
-    "anchorLabel": "Dashboard · KPI tiles",
-    "xPct": 89.71631205673759,
-    "yPct": 44.07278565694408,
-    "author": "SME",
-    "text": "the exceptions should not be same for each entity",
-    "status": "resolved",
-    "createdAt": "2026-06-09T12:41:43.462Z",
-    "updatedAt": "2026-06-09T13:06:12.069Z",
-    "resolvedAt": "2026-06-09T13:06:12.069Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "Exception count now varies per entity (170–319), no longer 250 for everyone."
-  },
-  {
     "id": "c_mdfw9y9tm3x",
     "route": "#/dashboard",
     "anchor": "page",
