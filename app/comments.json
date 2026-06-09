@@ -352,22 +352,6 @@
     "resolutionNote": "Descriptions are now realistic MT940-style bank narration, varied by channel (INWARD TT /ORG.../OUR ref, IBG GIRO, FAST, DUITNOW, PROMPTPAY, etc.)."
   },
   {
-    "id": "c_ttlw84362t0",
-    "route": "#/workspace",
-    "anchor": "ws.queue",
-    "anchorLabel": "Workspace · Credit queue",
-    "xPct": 64.8936170212766,
-    "yPct": 37.66073405433024,
-    "author": "SME",
-    "text": "the amount should also be consistent in all the tabs.",
-    "status": "resolved",
-    "createdAt": "2026-06-09T12:54:22.644Z",
-    "updatedAt": "2026-06-09T13:06:25.683Z",
-    "resolvedAt": "2026-06-09T13:06:25.683Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "All tabs now derive from one shared entity dataset, so amounts are consistent everywhere (not isolated)."
-  },
-  {
     "id": "c_g7mav7f8vp6",
     "route": "#/workspace",
     "anchor": "ws.credit",
