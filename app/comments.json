@@ -574,5 +574,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_gts3vdci6t2",
+    "route": "#/workspace",
+    "anchor": "ws.gap",
+    "anchorLabel": "Workspace · Gap classification & actions",
+    "xPct": 34.11764705882353,
+    "yPct": 50.95651810701307,
+    "author": "SME",
+    "text": "discount will also be on an invoice level and user should be able to add it on an invoice level",
+    "status": "open",
+    "createdAt": "2026-06-09T13:03:47.702Z",
+    "updatedAt": "2026-06-09T13:03:47.702Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
