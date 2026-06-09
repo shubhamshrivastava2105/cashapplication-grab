@@ -206,5 +206,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_ww5gjxc5eeb",
+    "route": "#/dashboard",
+    "anchor": "dash.kpis",
+    "anchorLabel": "Dashboard · KPI tiles",
+    "xPct": 75.177304964539,
+    "yPct": 76.85968104463234,
+    "author": "SME",
+    "text": "remove this metric.",
+    "status": "open",
+    "createdAt": "2026-06-09T10:33:52.931Z",
+    "updatedAt": "2026-06-09T10:33:52.933Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
