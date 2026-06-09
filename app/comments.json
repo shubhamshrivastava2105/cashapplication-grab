@@ -462,5 +462,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_g7mav7f8vp6",
+    "route": "#/workspace",
+    "anchor": "ws.credit",
+    "anchorLabel": "Workspace · The credit + identified customer",
+    "xPct": 41.875,
+    "yPct": 50.42187043147738,
+    "author": "SME",
+    "text": "the customer names should match as it is on other tabs on an entity level",
+    "status": "open",
+    "createdAt": "2026-06-09T12:56:33.402Z",
+    "updatedAt": "2026-06-09T12:56:33.402Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
