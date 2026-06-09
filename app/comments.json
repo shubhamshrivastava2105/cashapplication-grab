@@ -462,5 +462,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_3brhvdmjh9d",
+    "route": "#/workspace",
+    "anchor": "ws.allocation",
+    "anchorLabel": "Workspace · Open invoices & proposed allocation",
+    "xPct": 44.4954128440367,
+    "yPct": 56.32144300007129,
+    "author": "SME",
+    "text": "the decision cant be made, the user should be able to change this if something is wrong",
+    "status": "open",
+    "createdAt": "2026-06-09T13:32:47.521Z",
+    "updatedAt": "2026-06-09T13:32:47.521Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
