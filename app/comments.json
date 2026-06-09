@@ -80,22 +80,6 @@
     "resolutionNote": "Top half now lists all open/unapplied credits received in the bank statement."
   },
   {
-    "id": "c_2yer35oalst",
-    "route": "#/workspace",
-    "anchor": "ws.credit",
-    "anchorLabel": "Workspace · The credit + identified customer",
-    "xPct": 71.875,
-    "yPct": 88.82035197769646,
-    "author": "SME",
-    "text": "Don't understand what this 0.88 parsed means, so reframe it or make it clearer.",
-    "status": "resolved",
-    "createdAt": "2026-06-09T11:05:55.421Z",
-    "updatedAt": "2026-06-09T11:42:11.823Z",
-    "resolvedAt": "2026-06-09T11:42:11.823Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "Already reframed: remittance now shows \"parse confidence 88%\" instead of \"parsed 0.88\"."
-  },
-  {
     "id": "c_akme7z0dq5y",
     "route": "#/workspace",
     "anchor": "screen",
