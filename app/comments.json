@@ -190,5 +190,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_4z6lvbt3okf",
+    "route": "#/dashboard",
+    "anchor": "dash.kpis",
+    "anchorLabel": "Dashboard · KPI tiles",
+    "xPct": 59.04255319148937,
+    "yPct": 66.58460879803062,
+    "author": "SME",
+    "text": "does this data tie to unapplied cash. it should also show the breakdown, when clicked on it. line by line",
+    "status": "open",
+    "createdAt": "2026-06-09T10:32:32.799Z",
+    "updatedAt": "2026-06-09T10:32:32.802Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
