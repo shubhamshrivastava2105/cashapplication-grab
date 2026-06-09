@@ -312,12 +312,12 @@
     "yPct": 4.208194905869324,
     "author": "SME",
     "text": "it should be a collapsible icon and not a hamburger icon.",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T11:21:52.356Z",
-    "updatedAt": "2026-06-09T11:21:52.356Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-09T11:42:09.713Z",
+    "resolvedAt": "2026-06-09T11:42:09.713Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Sidebar toggle is now a collapse chevron (rotates on collapse), not a hamburger."
   },
   {
     "id": "c_aokhs8fw5vl",
