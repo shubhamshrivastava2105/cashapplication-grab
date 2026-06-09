@@ -638,5 +638,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_mdo7gsev4qb",
+    "route": "#/customers",
+    "anchor": "cust.list",
+    "anchorLabel": "Customer 360 · Customer picker",
+    "xPct": 45.625,
+    "yPct": 2.6822865510652356,
+    "author": "SME",
+    "text": "as a user I should be able to search customers",
+    "status": "open",
+    "createdAt": "2026-06-09T13:13:51.539Z",
+    "updatedAt": "2026-06-09T13:13:51.539Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
