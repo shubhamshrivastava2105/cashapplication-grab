@@ -350,5 +350,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_6j5uanmw4mg",
+    "route": "#/dashboard",
+    "anchor": "dash.kpis",
+    "anchorLabel": "Dashboard · KPI tiles",
+    "xPct": 63.652482269503544,
+    "yPct": 65.19489786816519,
+    "author": "SME",
+    "text": "show amount instead of count for aged",
+    "status": "open",
+    "createdAt": "2026-06-09T12:46:38.440Z",
+    "updatedAt": "2026-06-09T12:46:38.440Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
