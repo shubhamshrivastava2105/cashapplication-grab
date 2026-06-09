@@ -222,5 +222,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_db0eogvh00d",
+    "route": "#/dashboard",
+    "anchor": "dash.exceptions",
+    "anchorLabel": "Dashboard · Exceptions by type",
+    "xPct": 16.18705035971223,
+    "yPct": 34.123539232053425,
+    "author": "SME",
+    "text": "unidentified customer, fix it",
+    "status": "open",
+    "createdAt": "2026-06-09T10:42:54.157Z",
+    "updatedAt": "2026-06-09T10:42:54.160Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
