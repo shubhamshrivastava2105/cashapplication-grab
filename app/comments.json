@@ -542,5 +542,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_aidtydsfyf9",
+    "route": "#/workspace",
+    "anchor": "ws.gap",
+    "anchorLabel": "Workspace · Gap classification & actions",
+    "xPct": 31.470588235294116,
+    "yPct": 40.129902677415316,
+    "author": "SME",
+    "text": "each invoice can have wht and there should be an option to take wht amount on a line item level",
+    "status": "open",
+    "createdAt": "2026-06-09T13:02:03.525Z",
+    "updatedAt": "2026-06-09T13:02:03.525Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
