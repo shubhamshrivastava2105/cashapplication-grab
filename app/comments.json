@@ -152,12 +152,12 @@
     "yPct": 3.9867109634551494,
     "author": "SME",
     "text": "this button doesn't work",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T11:50:34.732Z",
-    "updatedAt": "2026-06-09T11:50:34.732Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-09T12:35:44.659Z",
+    "resolvedAt": "2026-06-09T12:35:44.659Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Run aging escalation now opens a confirmation dialog and runs (toast)."
   },
   {
     "id": "c_ug2b6hnxvwz",
