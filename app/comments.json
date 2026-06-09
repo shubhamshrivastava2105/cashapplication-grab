@@ -238,5 +238,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_igdw0sl8j3s",
+    "route": "#/dashboard",
+    "anchor": "dash.pipeline",
+    "anchorLabel": "Dashboard · Pipeline strip",
+    "xPct": 18.085106382978726,
+    "yPct": 25.84680750619615,
+    "author": "SME",
+    "text": "remove this section",
+    "status": "open",
+    "createdAt": "2026-06-09T10:36:19.001Z",
+    "updatedAt": "2026-06-09T10:36:19.003Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
