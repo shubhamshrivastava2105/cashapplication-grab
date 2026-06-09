@@ -104,12 +104,12 @@
     "yPct": 7.957932385250787,
     "author": "SME",
     "text": "The first half of the screen should show all the open and unapplied cash Received in the bank statement.",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T11:01:23.324Z",
-    "updatedAt": "2026-06-09T11:01:23.327Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-09T11:21:08.569Z",
+    "resolvedAt": "2026-06-09T11:21:08.569Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Top half now lists all open/unapplied credits received in the bank statement."
   },
   {
     "id": "c_xwulo0k5phw",
