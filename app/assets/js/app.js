@@ -36,7 +36,7 @@
     const nav = $("#sidebar-nav");
     nav.innerHTML = routes.map((r) => {
       const b = r.badge ? r.badge() : null;
-      return `<button class="navlink" data-route="${r.id}">${icon(r.id)}<span>${r.label}</span>${b ? `<span class="navlink__badge">${b}</span>` : ""}</button>`;
+      return `<button class="navlink" data-route="${r.id}" title="${r.label}">${icon(r.id)}<span>${r.label}</span>${b ? `<span class="navlink__badge">${b}</span>` : ""}</button>`;
     }).join("");
     nav.querySelectorAll(".navlink").forEach((a) => {
       a.onclick = () => { location.hash = "#/" + a.dataset.route; };
@@ -491,8 +491,31 @@
     if (window.COMMENTS) COMMENTS.refresh();
   }
 
+  // ── Sidebar collapse + mobile drawer ───────────────────────────────────────
+  function setupNavToggle() {
+    const KEY = "neoflo_nav_collapsed";
+    if (localStorage.getItem(KEY) === "1") document.body.classList.add("nav-collapsed");
+    const toggle = $("#sidebar-toggle");
+    if (toggle) {
+      const sync = () => { toggle.title = document.body.classList.contains("nav-collapsed") ? "Expand menu" : "Collapse menu"; };
+      sync();
+      toggle.onclick = () => {
+        const collapsed = document.body.classList.toggle("nav-collapsed");
+        localStorage.setItem(KEY, collapsed ? "1" : "0");
+        sync();
+        if (window.COMMENTS) COMMENTS.refresh();
+      };
+    }
+    const mob = $("#mobile-nav-btn");
+    if (mob) mob.onclick = () => document.body.classList.toggle("nav-mobile-open");
+    $("#sidebar-nav").addEventListener("click", (e) => {
+      if (e.target.closest(".navlink")) document.body.classList.remove("nav-mobile-open");
+    });
+  }
+
   // ── Boot ──────────────────────────────────────────────────────────────────
   buildNav();
+  setupNavToggle();
   window.addEventListener("hashchange", router);
   if (!location.hash) location.hash = "#/dashboard";
   router();

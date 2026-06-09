@@ -23,8 +23,11 @@ python3 -m http.server 8000
 
 1. Push this repo to git.
 2. Import it in Vercel as a project. Framework preset: **Other** (no build).
-3. `vercel.json` already points the static output at the `app/` folder, so the
-   `prd/` and `Designs/` source folders are not published.
+3. `vercel.json` points the static output at the `app/` folder (so `prd/` and
+   `Designs/` are not published), and the `api/` folder deploys as a serverless
+   function at `/api/comments`.
+4. Add the `GITHUB_TOKEN` env var for the comment feature — see
+   *Review / comment workflow → One-time setup* below.
 
 ## Screens (interactive prototype)
 
@@ -41,44 +44,75 @@ Sample data is illustrative only (`app/assets/js/data.js`).
 
 ---
 
-## Review / comment workflow (temporary)
+## Review / comment workflow (temporary, GitHub-backed)
 
-The whole feature is isolated and easy to remove later (see *Removing it*).
+Comments are saved **straight to `app/comments.json` in this repo** by a Vercel
+serverless function (`api/comments.js`) using the GitHub API. No "enable", no
+"export" — the reviewer just clicks and types, and Claude reads the file from
+git. The whole feature is isolated and easy to remove later (see *Removing it*).
+
+```
+Reviewer clicks "Comment" → clicks anywhere on screen → types
+        │
+        ▼
+   POST /api/comments  (Vercel function)
+        │  commits to
+        ▼
+   app/comments.json in GitHub  ←─ Claude reads via `git pull`, resolves by committing
+        │  GET /api/comments
+        ▼
+   live app renders the pin (and any resolution)
+```
+
+### One-time setup (required for saving to work)
+
+The function needs a GitHub token with write access to this repo:
+
+1. GitHub → **Settings → Developer settings → Fine-grained tokens → Generate**.
+   - Repository access: **Only select repositories → `cashapplication-grab`**.
+   - Permissions: **Repository → Contents → Read and write**.
+2. Vercel → your project → **Settings → Environment Variables**, add:
+   - `GITHUB_TOKEN` = the token (all environments).
+   - *(optional)* `COMMENTS_WRITE_KEY` = any string; if set, the app must send it
+     (anti-abuse for the public URL — see note below).
+3. Redeploy. Test by visiting `https://<your-site>/api/comments` — it should
+   return `[]` (or the current comments), not an error.
+
+Defaults baked into `api/comments.js` (override via env if needed):
+`GITHUB_REPO=shubhamshrivastava2105/cashapplication-grab`,
+`GITHUB_BRANCH=main`, `COMMENTS_PATH=app/comments.json`.
 
 ### For the SME (reviewer)
 
-1. Open the app. Bottom-centre is a **Review** bar.
-2. Enter your name in **All comments → name field** (saved to your browser).
-3. Click **Enable comments**. A 💬 pin appears on every commentable section.
-4. Click a pin → write a comment → **Add comment**. Comments save to your
-   browser instantly. Pins are colour-coded:
-   - 🟠 orange = has open comments
-   - 🟢 green  = all comments on that section resolved
-5. When done, click **Export** (or **Export comments.json** in the drawer).
-   This downloads `comments.json`.
-6. Replace `app/comments.json` with the downloaded file and **commit/push it**
-   (or just send the file). That is the hand-off to Claude.
+1. Open the deployed app. Bottom-right: a **Comment** button.
+2. Click it, then **click anywhere on the screen** where the feedback applies.
+3. Type your name (saved locally) + comment → **Comment**. It saves to GitHub
+   automatically; an 🟠 orange pin appears at that spot.
+4. Click any pin to read/resolve it. The **count button** opens the full list.
+   Resolved comments show a 🟢 green ✓ pin.
 
 ### For Claude (acting on comments)
 
-- Read `app/comments.json`. Each item: `sectionId`, `sectionLabel`, `author`,
-  `text`, `status`.
+- `git pull`, then read `app/comments.json`. Each item carries `route`,
+  `anchor`, `anchorLabel`, `xPct/yPct` (where on screen), `author`, `text`,
+  `status`.
 - Action each **open** comment in the code.
-- When an action is taken, flip that comment to **resolved** in
-  `app/comments.json` and fill in `resolvedAt`, `resolvedBy: "Claude"`, and a
-  short `resolutionNote`. This is the "auto-resolve when action is taken".
-- Comments where **no action is taken stay `open`** (e.g. add a note asking for
-  clarification, but leave `status: "open"`).
-- Commit. When the SME pulls and reopens the app, resolutions show with a green
-  ✓ and the merge rule keeps them resolved.
+- **Auto-resolve on action:** when the change is made, set that comment to
+  `status: "resolved"` with `resolvedAt`, `resolvedBy: "Claude"`, and a short
+  `resolutionNote`, then commit + push. The live app reflects it on next load
+  (GET reads from GitHub).
+- Comments with **no action taken stay `open`**.
 
 ### Comment record shape (`comments.json`)
 
 ```json
 {
   "id": "c_ab12cd34",
-  "sectionId": "ws.allocation",
-  "sectionLabel": "Workspace · Open invoices & proposed allocation",
+  "route": "#/workspace",
+  "anchor": "ws.allocation",
+  "anchorLabel": "Workspace · Open invoices & proposed allocation",
+  "xPct": 64.2,
+  "yPct": 38.1,
   "author": "Sundip",
   "text": "Allocation rule should default to remittance, then FIFO.",
   "status": "open",
@@ -90,19 +124,20 @@ The whole feature is isolated and easy to remove later (see *Removing it*).
 }
 ```
 
-Merge rule on load: file + browser are merged by `id`; the entry with the later
-`updatedAt` wins (resolved beats open on a tie). So Claude's committed
-resolutions override the SME's older local copy.
+### Notes
 
-### Why a committed file (not GitHub Issues)
-
-It keeps the site pure-static (no API token, no serverless function), works on
-Vercel and offline, and gives Claude the comments in one readable file in the
-repo. If you later want issues, each `open` comment maps 1:1 to an issue.
+- **Public repo / public endpoint.** Comment text lands in public git history,
+  and `/api/comments` is open by default. For an internal review that's usually
+  fine; to lock writes, set `COMMENTS_WRITE_KEY` (and tell me — I'll have the app
+  send it). To keep comments private, make the repo private in GitHub settings.
+- **Local preview** (`python3 -m http.server` from `app/`) has no function, so
+  saving won't work offline; it falls back to reading the static `comments.json`
+  for display. Use `vercel dev` with `GITHUB_TOKEN` set to test saving locally.
 
 ## Removing the review layer before launch
 
 Delete:
+- `api/comments.js`
 - `app/assets/js/comments.js`
 - `app/comments.json`
 - `<script src="assets/js/comments.js">` and `<div id="review-layer">` in `app/index.html`
