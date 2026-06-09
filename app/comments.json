@@ -590,5 +590,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_jn62mrzs7ko",
+    "route": "#/deductions",
+    "anchor": "page",
+    "anchorLabel": "Page / navigation",
+    "xPct": 10.137931034482758,
+    "yPct": 27.131782945736433,
+    "author": "SME",
+    "text": "remove decuctions/claims page entirely",
+    "status": "open",
+    "createdAt": "2026-06-09T13:11:35.256Z",
+    "updatedAt": "2026-06-09T13:11:35.256Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
