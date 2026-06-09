@@ -36,7 +36,18 @@ window.DATA = (function () {
   const CCY_SCALE = { SGD: 1, MYR: 3.1, THB: 25, PHP: 42, IDR: 11000 };
   const REASONS = ["Unidentified customer", "Partial / short & deductions", "Overpayment", "WHT certificate pending"];
   const REASON_TONE = { "Unidentified customer": "error", "Partial / short & deductions": "warn", "Overpayment": "neutral", "WHT certificate pending": "info" };
-  const SEA_CUSTOMERS = ["Lazada SG", "Sea Group Pte Ltd", "Shopee Pay", "Tokopedia Ads", "Bukalapak Enterprise", "Sinar Jaya Retail Pte Ltd", "Central Group TH", "FairPrice Group", "Maju Jaya Sdn Bhd", "PTT Retail", "VNG Corporation", "Gojek Niaga", "BliBli Commerce", "Zalora SEA", "Sentosa Media Pte Ltd"];
+
+  // Country-appropriate SEA customer pools (used per entity so names always match
+  // the entity's country). Add freely — every tab derives from these.
+  const CUSTOMERS_BY_COUNTRY = {
+    Singapore:   ["Lazada Singapore", "Sea Group Pte Ltd", "Shopee Pay SG", "FairPrice Group", "Sentosa Media Pte Ltd", "Razer Merchant Services", "Sheng Siong Pte Ltd", "Challenger Technologies", "Love Bonito Pte Ltd", "Charles & Keith SG", "Secretlab SG", "Ninja Van SG"],
+    Malaysia:    ["AirAsia Digital Sdn Bhd", "Mr DIY Trading Sdn Bhd", "Maxis Berhad", "Petronas Dagangan", "Hong Leong Retail", "Padini Holdings Bhd", "ZUS Coffee Sdn Bhd", "Lazada Malaysia", "Maju Jaya Sdn Bhd", "Senheng Electric", "Watsons Malaysia", "PappaRich Group"],
+    Indonesia:   ["Tokopedia Niaga", "Bukalapak Enterprise", "Gojek Indonesia", "BliBli Commerce", "Sinar Jaya Retail", "Sumber Alfaria Trijaya", "Indomaret Group", "Traveloka Indonesia", "Kopi Kenangan", "Erajaya Swasembada", "Matahari Dept Store", "Wings Surya"],
+    Thailand:    ["Central Group TH", "PTT Oil & Retail", "CP All Pcl", "Lazada Thailand", "Bangchak Retail", "ThaiBev Distribution", "Robinson Dept Store", "Makro Pcl", "LINE MAN Wongnai", "Major Cineplex", "Boots Retail TH", "Singha Corporation"],
+    Philippines: ["Zalora Philippines", "Jollibee Foods Corp", "SM Retail Inc", "PLDT Enterprise", "Globe Telecom", "Puregold Price Club", "Mercury Drug Corp", "GCash Merchant", "Shopee Philippines", "Ayala Malls", "Robinsons Retail", "Penshoppe Inc"],
+  };
+  const poolFor = (ent) => CUSTOMERS_BY_COUNTRY[ent.country] || CUSTOMERS_BY_COUNTRY.Singapore;
+  const RELATIONSHIPS = ["Parent / treasury", "Trading as", "Group treasury", "Factor", "Subsidiary"];
   const CHANNELS = ["MEPS IBG TT", "INWARD TT", "INWARD TT FCY", "FAST GIRO COLLECTION", "GIRO BULK CR", "DUITNOW TRANSFER", "PROMPTPAY QR", "CHEQUE DEPOSIT"];
 
   function fmtCompact(n, ccy = "SGD") {
@@ -60,12 +71,13 @@ window.DATA = (function () {
     if (_cache[entityId]) return _cache[entityId];
     const ent = entities.find((e) => e.id === entityId) || entities[0];
     const ccy = ent.currency, scale = CCY_SCALE[ccy] || 1;
+    const pool = poolFor(ent);
     const seed = (entityId.length * 7 + ccy.charCodeAt(0) + ccy.charCodeAt(1)) % 97;
     const N = 250;
     const list = [];
     for (let i = 0; i < N; i++) {
       const reason = REASONS[(i + seed) % REASONS.length];
-      const customer = reason === "Unidentified customer" ? "— unidentified —" : SEA_CUSTOMERS[(i * 3 + seed) % SEA_CUSTOMERS.length];
+      const customer = reason === "Unidentified customer" ? "— unidentified —" : pool[(i * 3 + seed) % pool.length];
       const channel = CHANNELS[(i + seed) % CHANNELS.length];
       const ageDays = (i * 13 + seed * 3) % 230;
       const baseUnits = 700 + ((i * 97 + seed * 53) % 9300);     // 700–10000 base
@@ -89,19 +101,65 @@ window.DATA = (function () {
     const totalUnapplied = list.reduce((s, x) => s + x.amount, 0);
     const autoApply = 72 + (seed % 16);   // 72–87 %
     const custId = 90 + (seed % 9);       // 90–98 %
+    const over = list.filter((x) => x.ageDays > 30).length;
     const kpis = [
-      { key: "autoApply",  label: "Auto-apply rate",        value: autoApply + "%", tone: "good", delta: "▲ 6 pts QoQ", deltaTone: "up",
-        info: "Share of cash applied with no human touch this quarter — the headline efficiency metric." },
-      { key: "custId",     label: "Customer identification", value: custId + "%",   tone: "good", delta: "▲ 3 pts QoQ", deltaTone: "up",
-        info: "Share of incoming credits attributed to a customer (the O2C floor metric — identity is the minimum viable outcome)." },
-      { key: "unapplied",  label: "Unapplied cash",          value: fmtCompact(totalUnapplied, ccy), tone: "warn", delta: "▼ 4% QoQ", deltaTone: "up", drill: "unapplied",
-        info: "On-account cash identified but not yet matched to invoices. Click for the line-by-line breakdown." },
-      { key: "exceptions", label: "Open exceptions",         value: String(N), tone: "warn", delta: "▼ 12 QoQ", deltaTone: "up", drill: "exceptions",
-        info: "Credits needing analyst attention, grouped by exception type. Click for the breakdown." },
+      { key: "autoApply",  label: "Auto-apply rate",         value: autoApply + "%", tone: "good", accent: "success", delta: "▲ 6 pts QoQ", deltaTone: "up",
+        sub: "Quarter to date · " + lastStatementDate, info: "Share of cash applied with no human touch this quarter — the headline efficiency metric." },
+      { key: "custId",     label: "Customer identification", value: custId + "%",   tone: "good", accent: "primary", delta: "▲ 3 pts QoQ", deltaTone: "up",
+        sub: "Quarter to date · " + lastStatementDate, info: "Share of incoming credits attributed to a customer (the O2C floor metric — identity is the minimum viable outcome)." },
+      { key: "unapplied",  label: "Unapplied cash",          value: fmtCompact(totalUnapplied, ccy), tone: "warn", accent: "brand", delta: "▼ 4% QoQ", deltaTone: "up", drill: "unapplied",
+        sub: `${N} on-account · ${over} aged > 30d`, info: "On-account cash identified but not yet matched to invoices. Click for the line-by-line breakdown." },
+      { key: "exceptions", label: "Open exceptions",         value: String(N), tone: "warn", accent: "error", delta: "▼ 12 QoQ", deltaTone: "up", drill: "exceptions",
+        sub: "Open · needs analyst action", info: "Credits needing analyst attention, grouped by exception type. Click for the breakdown." },
     ];
     const res = { ent, ccy, count: N, list, byType, ageing, totalUnapplied, kpis };
     _cache[entityId] = res;
     return res;
+  }
+
+  // All customers for an entity (country pool) — for the change-customer picker
+  function customersPoolFor(entityId) {
+    const ent = entities.find((e) => e.id === entityId) || entities[0];
+    return poolFor(ent);
+  }
+
+  // Customer 360 records, derived from the entity's line items so figures tie out
+  const _custCache = {};
+  function customersFor(entityId) {
+    if (_custCache[entityId]) return _custCache[entityId];
+    const db = dashboardFor(entityId), ccy = db.ccy, ent = db.ent, pool = poolFor(ent);
+    const byCust = {};
+    db.list.forEach((x) => { if (x.customer !== "— unidentified —") (byCust[x.customer] = byCust[x.customer] || []).push(x); });
+    const out = pool.map((name, idx) => {
+      const items = byCust[name] || [];
+      const unapplied = items.reduce((s, x) => s + x.amount, 0);
+      const openAr = Math.round(unapplied * (3 + (idx % 4)) + 5000 * (CCY_SCALE[ccy] || 1));
+      const idRate = 0.90 + ((idx * 7) % 9) / 100;
+      const terms = ["Net 30", "Net 45", "Net 60"][idx % 3];
+      const aliases = idx % 3 === 0 ? [{ name: name.split(" ")[0] + " Treasury", acct: "OCBC …" + (200 + idx), rel: RELATIONSHIPS[idx % RELATIONSHIPS.length] }] : [];
+      const fingerprints = [{ pattern: CHANNELS[idx % CHANNELS.length] + " " + name.toUpperCase().slice(0, 6) + "*", weight: 0.6 + ((idx * 5) % 35) / 100, lastSeen: dateMinus((idx * 9) % 60) }];
+      const invoices = (items.length ? items : db.list).slice(0, 4).map((x, j) => ({ inv: "INV-" + (7000 + idx * 10 + j), due: dateMinus(-(j * 7 + 3)), open: Math.round((x.amount || 4000) * 1.4) }));
+      return { id: "C-" + (1000 + idx), name, country: ent.country, ccy, terms, openAr, unapplied, idRate, aliases, fingerprints, invoices };
+    });
+    _custCache[entityId] = out;
+    return out;
+  }
+
+  // Deductions / claims, drawn from the entity's Partial/short & deductions items
+  function deductionsFor(entityId) {
+    const db = dashboardFor(entityId);
+    const items = db.list.filter((x) => x.reason === "Partial / short & deductions").slice(0, 40);
+    const codes = [
+      ["WHT-5", "Withholding tax", "Cert pending", "warn", "Tax desk"],
+      ["SHRT", "Shortage claim", "Open", "error", "Claims — Priya"],
+      ["PRC", "Pricing dispute", "Disputed", "error", "Claims — Wei"],
+      ["RBT", "Rebate taken", "Approved", "success", "Claims — Priya"],
+      ["DISC", "Ineligible discount", "Chasing", "warn", "AR — Sam"],
+    ];
+    return items.map((x, i) => {
+      const c = codes[i % codes.length];
+      return { id: "DD-" + (900 - i), invoice: "INV-" + (7000 + i), customer: x.customer === "— unidentified —" ? poolFor(db.ent)[i % poolFor(db.ent).length] : x.customer, amount: Math.max(50, Math.round(x.amount * 0.15)), reason: c[1], code: c[0], status: c[2], tone: c[3], owner: c[4] };
+    });
   }
 
   // ── Dashboard ──────────────────────────────────────────────────────────
@@ -311,5 +369,5 @@ window.DATA = (function () {
   // ── Pipeline (reference strip on dashboard) ─────────────────────────────
   const pipeline = ["① Identify customer", "② Identify obligations", "③ Reconcile amount", "④ Apply & post", "⑤ Resolve residual"];
 
-  return { fmt, fmtCompact, entities, banks, lastStatementDate, dashboardFor, customerNames: SEA_CUSTOMERS, receipts, deductions, customers, reports, pipeline };
+  return { fmt, fmtCompact, entities, banks, lastStatementDate, dashboardFor, customersFor, deductionsFor, customersPoolFor, receipts, reports, pipeline };
 })();

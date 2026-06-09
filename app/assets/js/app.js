@@ -24,31 +24,53 @@
       deductions: '<path d="M4 7h16M4 12h10M4 17h7"/><circle cx="18" cy="16" r="3"/>',
       customers: '<circle cx="9" cy="8" r="3.5"/><path d="M3 20a6 6 0 0 1 12 0"/><path d="M16 5a3 3 0 0 1 0 6M21 20a6 6 0 0 0-4-5.6"/>',
       reports: '<path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/>',
+      reporting: '<path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/>',
+      forecast: '<path d="M3 17l6-6 4 4 8-8"/><path d="M21 7v5h-5"/>',
+      cashapp: '<rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/>',
+      freight: '<rect x="1" y="6" width="13" height="10" rx="1"/><path d="M14 9h4l3 3v4h-7z"/><circle cx="6" cy="18" r="1.6"/><circle cx="18" cy="18" r="1.6"/>',
+      ask: '<circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.8.4-1 .9-1 1.7M12 17h.01"/>',
+      vendor: '<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h3"/>',
+      driver: '<circle cx="12" cy="8" r="3.5"/><path d="M5 21a7 7 0 0 1 14 0"/>',
+      finance: '<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
     }[name] || "";
     return `<svg class="navlink__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
   };
 
-  // ── Routes ────────────────────────────────────────────────────────────────
+  // ── Routes (the functional Cash Application sub-pages) ─────────────────────
   const routes = [
     { id: "dashboard",  label: "Dashboard",   render: viewDashboard },
     { id: "workspace",  label: "Apply cash",  render: viewWorkspace },
     { id: "unapplied",  label: "Unapplied / on-account", render: viewUnapplied },
     { id: "deductions", label: "Deductions / claims", render: viewDeductions },
     { id: "customers",  label: "Customers 360", render: viewCustomers },
-    { id: "reports",    label: "Reports",     render: viewReports },
+    { id: "reports",    label: "Reports & close", render: viewReports },
   ];
+  // Product chrome around the functional section (non-routing in this prototype)
+  const NAV_TOP = [{ label: "Dashboard", icon: "dashboard" }, { label: "Reporting", icon: "reporting" }, { label: "AR Forecast", icon: "forecast" }];
+  const NAV_BOTTOM = [{ label: "Freight", icon: "freight" }, { label: "Ask Neo", icon: "ask" }, { label: "Vendor Onboarding", icon: "vendor" }, { label: "Driver Onboarding", icon: "driver" }, { label: "Finance OS", icon: "finance" }];
 
   function buildNav() {
     const nav = $("#sidebar-nav");
-    nav.innerHTML = routes.map((r) =>
-      `<button class="navlink" data-route="${r.id}" title="${r.label}">${icon(r.id)}<span>${r.label}</span></button>`
-    ).join("");
-    nav.querySelectorAll(".navlink").forEach((a) => {
-      a.onclick = () => { location.hash = "#/" + a.dataset.route; };
-    });
+    const muted = (it) => `<button class="navlink navlink--muted" data-muted="${it.label}" title="${it.label} (not in this prototype)">${icon(it.icon)}<span>${it.label}</span></button>`;
+    const subs = routes.map((r) =>
+      `<button class="navsub" data-route="${r.id}" title="${r.label}"><span class="navsub__dot"></span><span>${r.label}</span></button>`).join("");
+    nav.innerHTML = `
+      ${NAV_TOP.map(muted).join("")}
+      <div class="navgroup" id="navgroup-cashapp">
+        <button class="navlink navlink--group is-open" id="cashapp-toggle">
+          ${icon("cashapp")}<span>Cash Application</span>
+          <svg class="navlink__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="navsubs" id="cashapp-subs">${subs}</div>
+      </div>
+      ${NAV_BOTTOM.map(muted).join("")}`;
+    nav.querySelectorAll(".navsub").forEach((a) => { a.onclick = () => { location.hash = "#/" + a.dataset.route; }; });
+    nav.querySelectorAll(".navlink--muted").forEach((a) => { a.onclick = () => toast(`${a.dataset.muted} is outside this Cash Application prototype`); });
+    const grp = nav.querySelector("#cashapp-toggle");
+    grp.onclick = () => { nav.querySelector("#navgroup-cashapp").classList.toggle("collapsed"); grp.classList.toggle("is-open"); };
   }
   function setActiveNav(id) {
-    document.querySelectorAll(".navlink").forEach((a) => a.classList.toggle("is-active", a.dataset.route === id));
+    document.querySelectorAll(".navsub").forEach((a) => a.classList.toggle("is-active", a.dataset.route === id));
   }
 
   // ── Topbar helper ───────────────────────────────────────────────────────
@@ -67,6 +89,15 @@
   const pill = (text, tone) => `<span class="pill pill--${tone}">${text}</span>`;
   function dc(id, label) { return `data-comment="${id}" data-comment-label="${label}"`; }
   function escapeAttr(s) { return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+  function svgLine(vals, stroke) {
+    const w = 480, h = 150, pad = 12;
+    const max = Math.max(...vals), min = Math.min(...vals);
+    const pts = vals.map((v, i) => [pad + i * (w - 2 * pad) / (vals.length - 1), h - pad - ((v - min) / ((max - min) || 1)) * (h - 2 * pad)]);
+    const line = pts.map((p, i) => (i ? "L" : "M") + p[0].toFixed(1) + " " + p[1].toFixed(1)).join(" ");
+    const area = `M${pad} ${h - pad} ` + pts.map((p) => "L" + p[0].toFixed(1) + " " + p[1].toFixed(1)).join(" ") + ` L${w - pad} ${h - pad} Z`;
+    const dots = pts.map((p) => `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="3" fill="${stroke}"/>`).join("");
+    return `<svg viewBox="0 0 ${w} ${h}" class="svgchart" preserveAspectRatio="none"><path d="${area}" fill="${stroke}" opacity="0.08"/><path d="${line}" fill="none" stroke="${stroke}" stroke-width="2.5" stroke-linejoin="round"/>${dots}</svg>`;
+  }
 
   // ════════════════════════════════════════════════════════════════════════
   //  DASHBOARD
@@ -85,14 +116,14 @@
       "");
 
     const kpis = db.kpis.map((k) => `
-      <div class="kpi kpi--${k.tone} ${k.drill ? "kpi--clickable" : ""}" ${k.drill ? `data-drill="${k.drill}"` : ""}>
-        <div class="kpi__head">
-          <div class="kpi__label">${k.label}</div>
+      <div class="kpi kpi--${k.tone} kpi--accent-${k.accent || "primary"} ${k.drill ? "kpi--clickable" : ""}" ${k.drill ? `data-drill="${k.drill}"` : ""}>
+        <div class="kpi__top">
+          <span class="kpi__run"><i></i> Last run: Yesterday</span>
           ${k.info ? `<button class="info-btn" data-info="${escapeAttr(k.info)}" aria-label="What is this metric?">i</button>` : ""}
         </div>
-        <div class="kpi__value">${k.value}</div>
-        <div class="kpi__delta ${k.deltaTone ? "delta-" + k.deltaTone : "muted"}">${k.delta}</div>
-        ${k.drill ? `<div class="kpi__drill">View breakdown →</div>` : ""}
+        <div class="kpi__label">${k.label}</div>
+        <div class="kpi__value">${k.value} <span class="kpi__trend ${k.deltaTone === "up" ? "up" : "down"}">${k.delta}</span></div>
+        <div class="kpi__sub">${k.sub || ""}${k.drill ? ` · <span class="kpi__drill">view breakdown →</span>` : ""}</div>
       </div>`).join("");
 
     const maxAge = Math.max(...db.ageing.map((b) => b.amount));
@@ -458,7 +489,7 @@
 
   // Reassign the credit to a different customer (lists all customers + search)
   function openCustomerPicker(r) {
-    const names = Array.from(new Set([...D.customers.map((c) => c.name), ...D.customerNames])).sort();
+    const names = D.customersPoolFor(selectedEntityId).slice().sort();
     const opts = names.map((n) => `<button class="picker-item" data-name="${escapeAttr(n)}"><span class="cell-main">${n}</span></button>`).join("");
     openModal("Change customer", `
       <div class="modal-sub">Re-attribute this credit if the suggested customer looks wrong. Your choice is logged and trains the identification model.</div>
@@ -531,7 +562,7 @@
     const list = db.list, total = db.totalUnapplied;
     setTopbar("Unapplied / on-account cash", "Identified cash with no clean match — aged and escalated, never lost",
       `<span class="topbar__chip"><span>Entity</span> ${currentEntity().name}</span><span class="topbar__chip"><span>Total</span> ${D.fmtCompact(total, ccy)}</span><span class="topbar__chip"><span>Items</span> ${list.length}</span>`,
-      `<button class="btn btn--primary">Run aging escalation</button>`);
+      `<button class="btn btn--primary" id="run-aging">Run aging escalation</button>`);
 
     const rows = list.slice().sort((a, b) => b.ageDays - a.ageDays).map((u) => `
       <tr>
@@ -564,23 +595,36 @@
           </table></div></div>
         </div>
       </div>`;
+
+    const ra = $("#run-aging");
+    if (ra) ra.onclick = () => {
+      const over30 = list.filter((u) => u.ageDays > 30).length, over90 = list.filter((u) => u.ageDays > 90).length;
+      openModal("Aging escalation", `
+        <div class="modal-sub">Escalate aged on-account cash to owners per policy.</div>
+        <p style="margin:0">${over30} items aged &gt; 30 days will be escalated to the AR leads, and ${over90} items &gt; 90 days flagged for write-off review.</p>
+        <div style="margin-top:18px;display:flex;justify-content:flex-end;gap:8px"><button class="btn btn--ghost" id="ra-cancel">Cancel</button><button class="btn btn--primary" id="ra-go">Run escalation</button></div>`);
+      document.getElementById("ra-cancel").onclick = closeModal;
+      document.getElementById("ra-go").onclick = () => { closeModal(); toast("Aging escalation run — owners notified"); };
+    };
   }
 
   // ════════════════════════════════════════════════════════════════════════
   //  DEDUCTIONS / CLAIMS
   // ════════════════════════════════════════════════════════════════════════
   function viewDeductions() {
-    const total = D.deductions.reduce((s, d) => s + d.amount, 0);
+    const ccy = D.dashboardFor(selectedEntityId).ccy;
+    const ded = D.deductionsFor(selectedEntityId);
+    const total = ded.reduce((s, d) => s + d.amount, 0);
     setTopbar("Deductions / claims", "Coded short-payments carried into the claims workflow",
-      `<span class="topbar__chip"><span>Open value</span> ${fmt(total)}</span>`,
+      `<span class="topbar__chip"><span>Entity</span> ${currentEntity().name}</span><span class="topbar__chip"><span>Open value</span> ${D.fmtCompact(total, ccy)}</span><span class="topbar__chip"><span>Items</span> ${ded.length}</span>`,
       `<button class="btn btn--primary">+ New deduction</button>`);
 
-    const rows = D.deductions.map((d) => `
+    const rows = ded.map((d) => `
       <tr>
         <td class="cell-main">${d.id}</td>
         <td>${d.invoice}</td>
         <td>${d.customer}</td>
-        <td class="num strong">${fmt(d.amount)}</td>
+        <td class="num strong">${fmt(d.amount, ccy)}</td>
         <td>${d.reason} <span class="tag">${d.code}</span></td>
         <td>${pill(d.status, d.tone)}</td>
         <td class="muted">${d.owner}</td>
@@ -590,8 +634,8 @@
     content.innerHTML = `
       <div class="section" ${dc("dd.table", "Deductions · Claims table")}>
         <div class="card">
-          <div class="card__head"><div class="card__title">Open deductions &amp; claims</div></div>
-          <div class="card__body card__body--flush"><div class="table-wrap"><table class="tbl">
+          <div class="card__head"><div class="card__title">Open deductions &amp; claims</div><span class="muted" style="font-size:12px">from Partial / short &amp; deductions · ${ded.length} items</span></div>
+          <div class="card__body card__body--flush"><div class="table-wrap table-scroll"><table class="tbl">
             <thead><tr><th>ID</th><th>Invoice</th><th>Customer</th><th class="num">Amount</th><th>Reason</th><th>Status</th><th>Owner</th><th class="t-right">Action</th></tr></thead>
             <tbody>${rows}</tbody>
           </table></div></div>
@@ -602,16 +646,19 @@
   // ════════════════════════════════════════════════════════════════════════
   //  CUSTOMERS 360
   // ════════════════════════════════════════════════════════════════════════
-  let activeCustomerId = D.customers[0].id;
+  let activeCustomerId = null;
   function viewCustomers() {
-    const c = D.customers.find((x) => x.id === activeCustomerId) || D.customers[0];
-    setTopbar("Customers 360", "Aliases, learned fingerprints, open AR — the evidence behind identification");
+    const all = D.customersFor(selectedEntityId);
+    const c = all.find((x) => x.id === activeCustomerId) || all[0];
+    activeCustomerId = c.id;
+    setTopbar("Customers 360", "Aliases, learned fingerprints, open AR — the evidence behind identification",
+      `<span class="topbar__chip"><span>Entity</span> ${currentEntity().name}</span><span class="topbar__chip"><span>Customers</span> ${all.length}</span>`);
 
-    const list = D.customers.map((x) => `
+    const list = all.map((x) => `
       <div class="cmt-card" data-cid="${x.id}" style="${x.id === c.id ? "border-color:var(--border-primary-default);background:var(--surface-primary-subtle)" : ""}">
         <div class="cell-main">${x.name}</div>
         <div class="cell-sub">${x.country} · ${x.ccy} · ${x.terms}</div>
-        <div class="cmt-card__foot"><span>Open AR ${fmt(x.openAr, x.ccy)}</span></div>
+        <div class="cmt-card__foot"><span>Open AR ${D.fmtCompact(x.openAr, x.ccy)}</span></div>
       </div>`).join("");
 
     const aliases = c.aliases.length ? c.aliases.map((a) => `
@@ -633,9 +680,9 @@
             <div class="card__body">
               <div class="section__head"><div class="section__title" style="font-size:20px">${c.name}</div>${pill(c.country, "neutral")}</div>
               <div class="kpis" style="grid-template-columns:repeat(3,1fr);margin-top:var(--scale-200)">
-                <div class="kpi kpi--info"><div class="kpi__label">Open AR</div><div class="kpi__value" style="font-size:22px">${fmt(c.openAr, c.ccy)}</div></div>
-                <div class="kpi kpi--warn"><div class="kpi__label">Unapplied</div><div class="kpi__value" style="font-size:22px">${fmt(c.unapplied, c.ccy)}</div></div>
-                <div class="kpi kpi--good"><div class="kpi__label">ID rate</div><div class="kpi__value" style="font-size:22px">${Math.round(c.idRate * 100)}%</div></div>
+                <div class="kpi kpi--accent-primary"><div class="kpi__label">Open AR</div><div class="kpi__value" style="font-size:22px">${D.fmtCompact(c.openAr, c.ccy)}</div></div>
+                <div class="kpi kpi--accent-brand"><div class="kpi__label">Unapplied</div><div class="kpi__value" style="font-size:22px">${D.fmtCompact(c.unapplied, c.ccy)}</div></div>
+                <div class="kpi kpi--accent-success"><div class="kpi__label">ID rate</div><div class="kpi__value" style="font-size:22px">${Math.round(c.idRate * 100)}%</div></div>
               </div>
             </div>
           </div>
@@ -677,30 +724,74 @@
   //  REPORTS
   // ════════════════════════════════════════════════════════════════════════
   function viewReports() {
-    setTopbar("Reports", "Success metrics — design against these and sell with them",
-      `<span class="topbar__chip"><span>Period</span> Month to date</span>`,
-      `<button class="btn btn--ghost">Export CSV</button>`);
+    const db = D.dashboardFor(selectedEntityId), ccy = db.ccy;
+    const custs = D.customersFor(selectedEntityId);
+    const autoApply = parseInt(db.kpis[0].value), custId = parseInt(db.kpis[1].value);
+    setTopbar("Reports & close", "Success metrics, trends and the close pack — all in " + ccy,
+      `<span class="topbar__chip"><span>Entity</span> ${currentEntity().name}</span><span class="topbar__chip"><span>Period</span> Quarter to date</span>`,
+      `<button class="btn btn--ghost">Export close pack</button>`);
 
-    const cards = D.reports.map((m) => `
-      <div class="metric-row">
-        <div><div class="cell-main">${m.metric}</div><div class="cell-sub">${m.note}</div></div>
-        <div class="m-val">${m.value}</div>
-      </div>`).join("");
+    // derive 12-week trends from the entity seed so they tie to the KPIs
+    const wk = (end, span) => Array.from({ length: 12 }, (_, i) => Math.round((end - span) + span * (i / 11)));
+    const aaTrend = wk(autoApply, 14), idTrend = wk(custId, 8);
+    const maxBy = Math.max(...db.byType.map((b) => b.count));
+    const exBars = db.byType.map((b) => `
+      <div class="barcol"><div class="barpair"><div class="bar bar--applied" style="height:${(b.count / maxBy) * 100}%" title="${b.count}"></div></div><div class="barlabel" style="font-size:9px">${b.label.split(" ")[0]}</div></div>`).join("");
+    const maxAge = Math.max(...db.ageing.map((a) => a.amount));
+    const ageBars = db.ageing.map((a) => `
+      <div class="hbar"><span>${a.label}</span><div class="hbar__track"><div class="hbar__fill hbar__fill--age" style="width:${maxAge ? (a.amount / maxAge) * 100 : 0}%"></div></div><span class="hbar__val">${D.fmtCompact(a.amount, ccy)}</span></div>`).join("");
+    const topCust = custs.slice().sort((a, b) => b.openAr - a.openAr).slice(0, 8).map((c) => `
+      <tr><td class="cell-main">${c.name}</td><td class="num strong">${D.fmtCompact(c.openAr, ccy)}</td><td class="num">${D.fmtCompact(c.unapplied, ccy)}</td><td class="num">${Math.round(c.idRate * 100)}%</td></tr>`).join("");
+    const metrics = [
+      ["Auto-apply rate", autoApply + "%", "Cash applied with no human touch"],
+      ["Customer identification", custId + "%", "Credits attributed to a customer"],
+      ["Unapplied cash", D.fmtCompact(db.totalUnapplied, ccy), `${db.count} on-account items`],
+      ["Open exceptions", String(db.count), "Across 4 exception types"],
+      ["Median time to apply", "4.2 hrs", "Credit received → applied"],
+      ["WHT recovered (QTD)", D.fmtCompact(Math.round(db.totalUnapplied * 0.12), ccy), "Cleared against certificates"],
+    ];
+    const metricRows = metrics.map((m) => `<div class="metric-row"><div><div class="cell-main">${m[0]}</div><div class="cell-sub">${m[2]}</div></div><div class="m-val">${m[1]}</div></div>`).join("");
 
     content.innerHTML = `
-      <div class="grid" style="grid-template-columns:1fr 1fr;align-items:start">
-        <div class="card" ${dc("rep.metrics", "Reports · Success metrics")}>
-          <div class="card__head"><div class="card__title">Success metrics</div></div>
-          <div class="card__body">${cards}</div>
+      <div class="section" ${dc("rep.kpis", "Reports · Headline metrics")}>
+        <div class="kpis">
+          ${metrics.slice(0, 4).map((m, i) => `<div class="kpi kpi--accent-${["success", "primary", "brand", "error"][i]}"><div class="kpi__label">${m[0]}</div><div class="kpi__value">${m[1]}</div><div class="kpi__sub">${m[2]}</div></div>`).join("")}
         </div>
-        <div class="card" ${dc("rep.trend", "Reports · Auto-apply trend")}>
-          <div class="card__head"><div class="card__title">Auto-apply trend (6 weeks)</div></div>
-          <div class="card__body">
-            <div class="barchart">
-              ${[64, 68, 70, 73, 76, 78].map((v, i) => `<div class="barcol"><div class="barpair"><div class="bar bar--applied" style="height:${v}%" title="${v}%"></div></div><div class="barlabel">W${i + 1}</div></div>`).join("")}
-            </div>
-            <p class="muted" style="margin-top:12px">Headline efficiency number — share of cash applied with no human touch. Trending up as the model learns each analyst confirmation.</p>
-          </div>
+      </div>
+
+      <div class="grid" style="grid-template-columns:1fr 1fr;align-items:start">
+        <div class="card" ${dc("rep.aatrend", "Reports · Auto-apply trend (line)")}>
+          <div class="card__head"><div class="card__title">Auto-apply rate — 12-week trend</div></div>
+          <div class="card__body">${svgLine(aaTrend, "var(--surface-success-default)")}<p class="muted" style="margin-top:8px">Trending up as the model learns each analyst confirmation.</p></div>
+        </div>
+        <div class="card" ${dc("rep.idtrend", "Reports · Customer identification trend (line)")}>
+          <div class="card__head"><div class="card__title">Customer identification — 12-week trend</div></div>
+          <div class="card__body">${svgLine(idTrend, "var(--surface-primary-default)")}<p class="muted" style="margin-top:8px">The O2C floor metric — share of credits attributed to a customer.</p></div>
+        </div>
+      </div>
+
+      <div class="grid" style="grid-template-columns:1fr 1fr;align-items:start;margin-top:var(--scale-300)">
+        <div class="card" ${dc("rep.exbar", "Reports · Exceptions by type (bar)")}>
+          <div class="card__head"><div class="card__title">Open exceptions by type</div><span class="muted" style="font-size:12px">${db.count} total</span></div>
+          <div class="card__body"><div class="barchart">${exBars}</div></div>
+        </div>
+        <div class="card" ${dc("rep.agebar", "Reports · Unapplied ageing (bars)")}>
+          <div class="card__head"><div class="card__title">Unapplied cash ageing — ${D.fmtCompact(db.totalUnapplied, ccy)}</div></div>
+          <div class="card__body"><div class="hbars hbars--age">${ageBars}</div></div>
+        </div>
+      </div>
+
+      <div class="grid" style="grid-template-columns:1.3fr 1fr;align-items:start;margin-top:var(--scale-300)">
+        <div class="card" ${dc("rep.topcust", "Reports · Top customers by open AR")}>
+          <div class="card__head"><div class="card__title">Top customers by open AR</div></div>
+          <div class="card__body card__body--flush"><div class="table-wrap"><table class="tbl">
+            <thead><tr><th>Customer</th><th class="num">Open AR</th><th class="num">Unapplied</th><th class="num">ID rate</th></tr></thead>
+            <tbody>${topCust}</tbody>
+          </table></div></div>
+        </div>
+        <div class="card" ${dc("rep.metrics", "Reports · Success metrics")}>
+          <div class="card__head"><div class="card__title">Success metrics &amp; close pack</div></div>
+          <div class="card__body">${metricRows}</div>
         </div>
       </div>`;
   }
@@ -757,7 +848,7 @@
         <input id="bank-name" placeholder="e.g. UOB · …321 (SGD)" />
         <div class="bankform__feeds">
           <label><input type="radio" name="feed" value="MT940 direct feed" checked> Direct feed — MT940 from bank</label>
-          <label><input type="radio" name="feed" value="Manual upload"> Manual upload by user</label>
+          <label><input type="radio" name="feed" value="Manual upload"> Manual upload</label>
         </div>
         <div id="upload-row" style="display:none;margin-top:8px;align-items:center;gap:8px">
           <input type="file" id="bank-file" accept=".mt940,.940,.txt,.csv,.xml,.sta,.camt" style="display:none">
