@@ -168,12 +168,12 @@
     "yPct": 25.84680750619615,
     "author": "SME",
     "text": "remove this section",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T10:36:19.001Z",
-    "updatedAt": "2026-06-09T10:36:19.003Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-09T10:50:30.537Z",
+    "resolvedAt": "2026-06-09T10:50:30.537Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Removed the cash application pipeline section from the dashboard."
   },
   {
     "id": "c_6lz400sais8",
