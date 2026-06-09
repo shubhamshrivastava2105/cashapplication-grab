@@ -152,12 +152,12 @@
     "yPct": 54.580398801320065,
     "author": "SME",
     "text": "This is a partial match because only 8,750 is utilized from this one. You should just highlight that this is a partial match and let the user take action whether this is correct or not.",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T11:04:24.637Z",
-    "updatedAt": "2026-06-09T11:04:24.639Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-09T11:21:11.834Z",
+    "resolvedAt": "2026-06-09T11:21:11.834Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Partial matches are now highlighted (Partial badge + row tint) with a confirm/re-work banner."
   },
   {
     "id": "c_1vw97xva2a1",
