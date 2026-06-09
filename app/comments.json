@@ -176,22 +176,6 @@
     "resolutionNote": "Latest date is now 08 Jun 2026; statement dates rebased to it."
   },
   {
-    "id": "c_dtcwkr2y2e8",
-    "route": "#/dashboard",
-    "anchor": "dash.kpis",
-    "anchorLabel": "Dashboard · KPI tiles",
-    "xPct": 83.77659574468085,
-    "yPct": 84.60440638658461,
-    "author": "SME",
-    "text": "show the same modal on click of view breakdown as we are showing in unapplied cash",
-    "status": "resolved",
-    "createdAt": "2026-06-09T12:48:08.864Z",
-    "updatedAt": "2026-06-09T13:06:18.866Z",
-    "resolvedAt": "2026-06-09T13:06:18.866Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "Exceptions View breakdown now opens a line-by-line modal (same shape as unapplied) with an exception-type column."
-  },
-  {
     "id": "c_qf28njbzqaf",
     "route": "#/dashboard",
     "anchor": "dash.exceptions",
