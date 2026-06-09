@@ -446,5 +446,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_9n00vvzr4ba",
+    "route": "#/dashboard",
+    "anchor": "page",
+    "anchorLabel": "Page / navigation",
+    "xPct": 10.689655172413794,
+    "yPct": 84.82834994462901,
+    "author": "SME",
+    "text": "At least two bank accounts per entity, so make this drop down bigger than one.",
+    "status": "open",
+    "createdAt": "2026-06-09T11:18:45.910Z",
+    "updatedAt": "2026-06-09T11:18:45.910Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
