@@ -126,5 +126,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_71sguxvyr25",
+    "route": "#/dashboard",
+    "anchor": "dash.kpis",
+    "anchorLabel": "Dashboard · KPI tiles",
+    "xPct": 9.574468085106384,
+    "yPct": 63.15958471583003,
+    "author": "SME",
+    "text": "the period is missing - show for last 3 months\n\nshow - quarter on quarter improvements. eg: 6 pts QoQ",
+    "status": "open",
+    "createdAt": "2026-06-09T10:28:42.749Z",
+    "updatedAt": "2026-06-09T10:28:42.751Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
