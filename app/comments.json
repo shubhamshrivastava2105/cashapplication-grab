@@ -318,5 +318,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_yjgkhkpviut",
+    "route": "#/dashboard",
+    "anchor": "dash.kpis",
+    "anchorLabel": "Dashboard · KPI tiles",
+    "xPct": 65.26073619631902,
+    "yPct": 81.45072536268134,
+    "author": "SME",
+    "text": "can we keep the view breakdown button down. \n\nit looks visually noisy right now",
+    "status": "open",
+    "createdAt": "2026-06-09T12:18:10.614Z",
+    "updatedAt": "2026-06-09T12:18:10.614Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
