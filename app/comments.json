@@ -398,5 +398,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_dypqh1zm4ed",
+    "route": "#/dashboard",
+    "anchor": "page",
+    "anchorLabel": "Page / navigation",
+    "xPct": 67.17241379310344,
+    "yPct": 4.097452934662237,
+    "author": "SME",
+    "text": "the data is not changing based on the entity and everything should match",
+    "status": "open",
+    "createdAt": "2026-06-09T11:14:52.741Z",
+    "updatedAt": "2026-06-09T11:14:52.741Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
