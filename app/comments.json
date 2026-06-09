@@ -160,22 +160,6 @@
     "resolutionNote": "No, re-work now resets the allocation and reloads the credit (real flow), banner disappears."
   },
   {
-    "id": "c_njjsloxdv7m",
-    "route": "#/workspace",
-    "anchor": "ws.allocation",
-    "anchorLabel": "Workspace · Open invoices & proposed allocation",
-    "xPct": 32.11009174311927,
-    "yPct": 84.37199782799382,
-    "author": "SME",
-    "text": "the yes confirm should also behave like a real flow",
-    "status": "resolved",
-    "createdAt": "2026-06-09T13:00:26.050Z",
-    "updatedAt": "2026-06-09T13:22:22.763Z",
-    "resolvedAt": "2026-06-09T13:22:22.763Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "Yes, confirm now confirms the partial (keeps balance open) and dismisses the banner."
-  },
-  {
     "id": "c_mntv5buehiu",
     "route": "#/workspace",
     "anchor": "ws.allocation",
