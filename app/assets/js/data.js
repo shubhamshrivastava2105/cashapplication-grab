@@ -26,7 +26,7 @@ window.DATA = (function () {
     { id: "bdo-php",   entity: "grab-ph",     name: "BDO · …884 (PHP)",      feed: "MT940 direct feed" },
     { id: "bpi-php",   entity: "grab-ph",     name: "BPI · …205 (PHP)",      feed: "Manual upload" },
   ];
-  const lastStatementDate = "03 May 2026";
+  const lastStatementDate = "08 Jun 2026";
 
   // ── Entity-driven, internally-consistent dashboard data (O2C) ─────────────
   // One generator builds the open exceptions = unapplied line items for an
@@ -56,9 +56,34 @@ window.DATA = (function () {
     return ccy + " " + v.toFixed(2).replace(/\.?0+$/, "") + s;
   }
   function dateMinus(days) {
-    const base = new Date("2026-05-03T00:00:00Z");
+    const base = new Date("2026-06-08T00:00:00Z");
     base.setUTCDate(base.getUTCDate() - days);
     return base.toISOString().slice(0, 10);
+  }
+  const MON = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+  function stmtDate(iso) { const p = iso.split("-"); return p[2] + MON[(+p[1]) - 1] + p[0].slice(2); } // 08JUN26
+  // A realistic bank-statement narration, varied by channel (MT940 style)
+  function narrate(channel, customer, ref, iso) {
+    const d = stmtDate(iso);
+    const payer = customer === "— unidentified —" ? "OBO PAYMENT NO BNF REF" : customer.toUpperCase();
+    switch (channel) {
+      case "INWARD TT": return `INWARD TT ${d} /ORG ${payer} /OUR ${ref}`;
+      case "INWARD TT FCY": return `INWARD TT FCY ${d} /CHG OUR /ORG ${payer} /${ref}`;
+      case "MEPS IBG TT": return `IBG GIRO ${d} ${payer} ${ref}`;
+      case "FAST GIRO COLLECTION": return `FAST ${d} ${payer} OTHR ${ref}`;
+      case "GIRO BULK CR": return `GIRO BULK CR ${d} ${payer} ${ref}`;
+      case "DUITNOW TRANSFER": return `DUITNOW ${d} ${payer} REF${ref}`;
+      case "PROMPTPAY QR": return `PROMPTPAY ${d} ${payer} ${ref}`;
+      default: return `CHQ DEP ${d} ${payer} ${ref}`;
+    }
+  }
+  // Skewed-but-deterministic reason so the split looks real (not 4 equal buckets)
+  function reasonFor(i, seed) {
+    const r = (i * 37 + seed * 13) % 100;
+    if (r < 22) return "Unidentified customer";
+    if (r < 55) return "Partial / short & deductions";
+    if (r < 80) return "Overpayment";
+    return "WHT certificate pending";
   }
   function ageBucket(d) {
     if (d <= 15) return "0–15 days"; if (d <= 30) return "15–30 days";
@@ -73,20 +98,21 @@ window.DATA = (function () {
     const ccy = ent.currency, scale = CCY_SCALE[ccy] || 1;
     const pool = poolFor(ent);
     const seed = (entityId.length * 7 + ccy.charCodeAt(0) + ccy.charCodeAt(1)) % 97;
-    const N = 250;
+    const N = 170 + (seed % 150);   // varies per entity (170–319), not the same everywhere
     const list = [];
     for (let i = 0; i < N; i++) {
-      const reason = REASONS[(i + seed) % REASONS.length];
+      const reason = reasonFor(i, seed);
       const customer = reason === "Unidentified customer" ? "— unidentified —" : pool[(i * 3 + seed) % pool.length];
       const channel = CHANNELS[(i + seed) % CHANNELS.length];
       const ageDays = (i * 13 + seed * 3) % 230;
       const baseUnits = 700 + ((i * 97 + seed * 53) % 9300);     // 700–10000 base
       const amount = Math.round(baseUnits * scale);
+      const date = dateMinus(ageDays);
+      const ref = (reason === "WHT certificate pending" ? "WHT" : "") + (100000 + ((i * 31 + seed) % 899999));
       list.push({
         id: "UC-" + (3200 - i),
-        date: dateMinus(ageDays),
-        channel,
-        desc: `${channel} / ${customer === "— unidentified —" ? "NO BNF REF" : customer.toUpperCase().slice(0, 14)} / ${reason === "WHT certificate pending" ? "WHT" : "REF " + (10000 + ((i * 31 + seed) % 89999))}`,
+        date, channel,
+        desc: narrate(channel, customer, ref, date),
         customer, amount, ageDays, reason, tone: REASON_TONE[reason],
       });
     }
@@ -101,20 +127,43 @@ window.DATA = (function () {
     const totalUnapplied = list.reduce((s, x) => s + x.amount, 0);
     const autoApply = 72 + (seed % 16);   // 72–87 %
     const custId = 90 + (seed % 9);       // 90–98 %
-    const over = list.filter((x) => x.ageDays > 30).length;
+    const amtOver30 = list.filter((x) => x.ageDays > 30).reduce((s, x) => s + x.amount, 0);
+    const autoApplyDelta = 3 + (seed % 7), idDelta = 1 + (seed % 5);
     const kpis = [
-      { key: "autoApply",  label: "Auto-apply rate",         value: autoApply + "%", tone: "good", accent: "success", delta: "▲ 6 pts QoQ", deltaTone: "up",
+      { key: "autoApply",  label: "Auto-apply rate",         value: autoApply + "%", exact: autoApply + "%", tone: "good", accent: "success", delta: "▲ " + autoApplyDelta + " pts QoQ", deltaTone: "up",
         sub: "Quarter to date · " + lastStatementDate, info: "Share of cash applied with no human touch this quarter — the headline efficiency metric." },
-      { key: "custId",     label: "Customer identification", value: custId + "%",   tone: "good", accent: "primary", delta: "▲ 3 pts QoQ", deltaTone: "up",
+      { key: "custId",     label: "Customer identification", value: custId + "%",   exact: custId + "%", tone: "good", accent: "primary", delta: "▲ " + idDelta + " pts QoQ", deltaTone: "up",
         sub: "Quarter to date · " + lastStatementDate, info: "Share of incoming credits attributed to a customer (the O2C floor metric — identity is the minimum viable outcome)." },
-      { key: "unapplied",  label: "Unapplied cash",          value: fmtCompact(totalUnapplied, ccy), tone: "warn", accent: "brand", delta: "▼ 4% QoQ", deltaTone: "up", drill: "unapplied",
-        sub: `${N} on-account · ${over} aged > 30d`, info: "On-account cash identified but not yet matched to invoices. Click for the line-by-line breakdown." },
-      { key: "exceptions", label: "Open exceptions",         value: String(N), tone: "warn", accent: "error", delta: "▼ 12 QoQ", deltaTone: "up", drill: "exceptions",
+      { key: "unapplied",  label: "Unapplied cash",          value: fmtCompact(totalUnapplied, ccy), exact: fmt(totalUnapplied, ccy), tone: "warn", accent: "brand", delta: "▼ 4% QoQ", deltaTone: "up", drill: "unapplied",
+        sub: `${N} on-account · ${fmtCompact(amtOver30, ccy)} aged > 30d`, info: "On-account cash identified but not yet matched to invoices. Click for the line-by-line breakdown." },
+      { key: "exceptions", label: "Open exceptions",         value: String(N), exact: N + " exceptions", tone: "warn", accent: "error", delta: "▼ " + (4 + seed % 9) + " QoQ", deltaTone: "up", drill: "exceptions",
         sub: "Open · needs analyst action", info: "Credits needing analyst attention, grouped by exception type. Click for the breakdown." },
     ];
     const res = { ent, ccy, count: N, list, byType, ageing, totalUnapplied, kpis };
     _cache[entityId] = res;
     return res;
+  }
+
+  // Build a workspace cockpit (invoices + gap + remittance) for a credit line so
+  // the Apply-cash screen uses the SAME data as the dashboard — amounts tie out.
+  function buildCockpit(it, ccy) {
+    if (it.reason === "Unidentified customer") {
+      return { customer: null, invoices: [], remittance: { listed: 0, parsed: 0 }, aiConf: 0, sla: "OVERDUE",
+        gap: { wht: 0, discount: 0, bankCharge: 0, unexplained: it.amount, note: "No customer resolved at any tier → suspense queue; pick the right customer.", allocRule: "—" } };
+    }
+    const cust = { name: it.customer, id: "C-auto", confidence: 0.72 + ((it.amount % 26) / 100), how: "amount + timing fingerprint (ID-6)" };
+    let invTotal;
+    if (it.reason === "WHT certificate pending") invTotal = Math.round(it.amount / 0.95);
+    else if (it.reason === "Partial / short & deductions") invTotal = Math.round(it.amount * 1.25);
+    else invTotal = Math.round(it.amount * 0.8); // Overpayment
+    const cnt = 1 + (Math.abs(it.amount) % 3);
+    const invs = []; let rem = invTotal;
+    for (let j = 0; j < cnt; j++) { const open = j === cnt - 1 ? rem : Math.round(invTotal / cnt); rem -= open; invs.push({ inv: "INV-" + (7000 + (Math.abs(it.amount) % 900) + j), due: dateMinus(-(j * 7 + 3)), open, apply: 0, sel: false }); }
+    const gap = { wht: 0, discount: 0, bankCharge: 0, unexplained: 0, note: "", allocRule: "Remittance" };
+    if (it.reason === "WHT certificate pending") { invs.forEach((i) => { i.apply = i.open; i.sel = true; }); gap.wht = it.amount - invTotal; gap.note = `Short by ${fmt(Math.abs(gap.wht), ccy)} → WHT ~5% (certificate pending); clear invoice in full, book WHT receivable.`; }
+    else if (it.reason === "Overpayment") { invs.forEach((i) => { i.apply = i.open; i.sel = true; }); gap.unexplained = -(it.amount - invTotal); gap.note = `Over by ${fmt(it.amount - invTotal, ccy)} → clear invoices, park residual on-account or flag refund.`; }
+    else { let r2 = it.amount; invs.forEach((i) => { const ap = Math.min(i.open, r2); i.apply = ap; i.sel = ap > 0; r2 -= ap; }); gap.unexplained = invTotal - it.amount; gap.note = `Short by ${fmt(gap.unexplained, ccy)} → partial; keep balance open or code a deduction.`; }
+    return { customer: cust, invoices: invs, remittance: { listed: invs.length, parsed: 0.82 + ((Math.abs(it.amount) % 15) / 100) }, aiConf: cust.confidence, sla: (3 + (Math.abs(it.amount) % 9)) + ":" + ("0" + (Math.abs(it.amount) % 60)).slice(-2) + ":00", gap };
   }
 
   // All customers for an entity (country pool) — for the change-customer picker
@@ -369,5 +418,5 @@ window.DATA = (function () {
   // ── Pipeline (reference strip on dashboard) ─────────────────────────────
   const pipeline = ["① Identify customer", "② Identify obligations", "③ Reconcile amount", "④ Apply & post", "⑤ Resolve residual"];
 
-  return { fmt, fmtCompact, entities, banks, lastStatementDate, dashboardFor, customersFor, deductionsFor, customersPoolFor, receipts, reports, pipeline };
+  return { fmt, fmtCompact, entities, banks, lastStatementDate, dashboardFor, buildCockpit, customersFor, deductionsFor, customersPoolFor, reports, pipeline };
 })();

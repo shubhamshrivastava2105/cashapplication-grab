@@ -94,6 +94,7 @@
   // ════════════════════════════════════════════════════════════════════════
   //  DASHBOARD
   // ════════════════════════════════════════════════════════════════════════
+  let dashSort = { key: "ageDays", dir: -1 };
   function viewDashboard() {
     const db = D.dashboardFor(selectedEntityId);
     const ccy = db.ccy;
@@ -110,11 +111,10 @@
     const kpis = db.kpis.map((k) => `
       <div class="kpi kpi--${k.tone} kpi--accent-${k.accent || "primary"} ${k.drill ? "kpi--clickable" : ""}" ${k.drill ? `data-drill="${k.drill}"` : ""}>
         <div class="kpi__top">
-          <span class="kpi__run"><i></i> Last run: Yesterday</span>
+          <div class="kpi__label">${k.label}</div>
           ${k.info ? `<button class="info-btn" data-info="${escapeAttr(k.info)}" aria-label="What is this metric?">i</button>` : ""}
         </div>
-        <div class="kpi__label">${k.label}</div>
-        <div class="kpi__value">${k.value} <span class="kpi__trend ${k.deltaTone === "up" ? "up" : "down"}">${k.delta}</span></div>
+        <div class="kpi__value" ${k.exact ? `title="${escapeAttr(k.exact)}"` : ""}>${k.value} <span class="kpi__trend ${k.deltaTone === "up" ? "up" : "down"}">${k.delta}</span></div>
         <div class="kpi__sub">${k.sub || ""}</div>
         ${k.drill ? `<div class="kpi__drill">View breakdown →</div>` : ""}
       </div>`).join("");
@@ -136,8 +136,14 @@
         <span class="hbar__val">${e.count} · ${D.fmtCompact(e.amount, ccy)}</span>
       </div>`).join("");
 
-    // Aged unapplied — bank-statement style, full 250-line list (scrollable)
-    const queue = db.list.slice().sort((a, b) => b.ageDays - a.ageDays).map((u) => `
+    // Aged unapplied — bank-statement style, full list (scrollable, sortable)
+    const sortArrow = (k) => dashSort.key === k ? (dashSort.dir < 0 ? " ▾" : " ▴") : "";
+    const sorted = db.list.slice().sort((a, b) => {
+      const av = dashSort.key === "date" ? a.date : dashSort.key === "amount" ? a.amount : a.ageDays;
+      const bv = dashSort.key === "date" ? b.date : dashSort.key === "amount" ? b.amount : b.ageDays;
+      return (av < bv ? -1 : av > bv ? 1 : 0) * dashSort.dir;
+    });
+    const queue = sorted.map((u) => `
       <tr>
         <td class="muted" style="white-space:nowrap">${u.date}</td>
         <td><div class="cell-main" style="font-weight:var(--font-weight-medium)">${u.desc}</div><div class="cell-sub">${u.customer} · ${u.id}</div></td>
@@ -167,7 +173,7 @@
           <div class="card__head"><div class="card__title">Bank statement — aged unapplied credits (oldest first)</div><span class="muted" style="font-size:12px">${db.list.length} line items</span></div>
           <div class="card__body card__body--flush"><div class="table-wrap table-scroll"><table class="tbl tbl--fixed">
             <colgroup><col style="width:12%"><col style="width:40%"><col style="width:16%"><col style="width:12%"><col style="width:20%"></colgroup>
-            <thead><tr><th>Date</th><th>Description</th><th class="num">Amount</th><th>Age</th><th>Reason / exception type</th></tr></thead>
+            <thead><tr><th class="sortable" data-sort="date">Date${sortArrow("date")}</th><th>Description</th><th class="num sortable" data-sort="amount">Amount${sortArrow("amount")}</th><th class="sortable" data-sort="ageDays">Age${sortArrow("ageDays")}</th><th>Reason / exception type</th></tr></thead>
             <tbody>${queue}</tbody>
           </table></div></div>
         </div>
@@ -189,6 +195,13 @@
     content.querySelectorAll(".info-btn").forEach((b) => {
       b.onclick = (e) => { e.stopPropagation(); showInfo(b, b.dataset.info); };
     });
+    content.querySelectorAll("th.sortable").forEach((th) => {
+      th.onclick = () => {
+        const k = th.dataset.sort;
+        if (dashSort.key === k) dashSort.dir *= -1; else { dashSort.key = k; dashSort.dir = -1; }
+        viewDashboard(); if (window.COMMENTS) COMMENTS.refresh();
+      };
+    });
   }
 
   // ── KPI breakdown modal (derived from the same entity data, always ties) ──
@@ -204,13 +217,14 @@
           <tbody>${rows}<tr class="modal-total"><td colspan="3" class="num">Total</td><td class="num strong">${fmt(db.totalUnapplied, ccy)}</td></tr></tbody>
         </table></div>`);
     } else {
-      const rows = db.byType.map((e) => `
-        <tr><td class="cell-main">${e.label}</td><td class="num strong">${e.count}</td><td class="num">${fmt(e.amount, ccy)}</td></tr>`).join("");
-      openModal("Open exceptions — by type", `
-        <div class="modal-sub">Grouped by exception type; counts sum to the tile total <b>${db.count}</b>, amounts to <b>${D.fmtCompact(db.totalUnapplied, ccy)}</b>.</div>
-        <div class="table-wrap"><table class="tbl">
-          <thead><tr><th>Exception type</th><th class="num">Count</th><th class="num">Amount</th></tr></thead>
-          <tbody>${rows}<tr class="modal-total"><td class="num">Total</td><td class="num strong">${db.count}</td><td class="num strong">${fmt(db.totalUnapplied, ccy)}</td></tr></tbody>
+      // Line-by-line, same shape as the unapplied modal, with an exception-type column
+      const rows = db.list.slice().sort((a, b) => b.ageDays - a.ageDays).map((u) => `
+        <tr><td class="muted" style="white-space:nowrap">${u.date}</td><td class="cell-main">${u.desc}</td><td>${pill(u.reason, u.tone)}</td><td class="num strong">${fmt(u.amount, ccy)}</td></tr>`).join("");
+      openModal("Open exceptions — line by line", `
+        <div class="modal-sub">All ${db.count} open exceptions from the bank statement, by exception type. Total ties to <b>${D.fmtCompact(db.totalUnapplied, ccy)}</b> (${fmt(db.totalUnapplied, ccy)}).</div>
+        <div class="table-wrap table-scroll"><table class="tbl">
+          <thead><tr><th>Value date</th><th>Description</th><th>Exception type</th><th class="num">Amount</th></tr></thead>
+          <tbody>${rows}<tr class="modal-total"><td colspan="3" class="num">Total (${db.count})</td><td class="num strong">${fmt(db.totalUnapplied, ccy)}</td></tr></tbody>
         </table></div>`);
     }
   }
@@ -247,30 +261,47 @@
   // ════════════════════════════════════════════════════════════════════════
   //  WORKSPACE  (analyst cockpit + queue)
   // ════════════════════════════════════════════════════════════════════════
-  let activeReceiptId = D.receipts[0].id;
+  let activeReceiptId = null;
+  const _cockpit = {};                       // per credit, so edits persist across renders
+  function bankName() { const b = D.banks.find((x) => x.id === selectedBankId); return b ? b.name : "—"; }
+  function confOf(it) { return it.reason === "Unidentified customer" ? "—" : (0.72 + ((Math.abs(it.amount) % 26) / 100)).toFixed(2); }
+  function getCredit(id) {
+    const db = D.dashboardFor(selectedEntityId);
+    const it = (id && db.list.find((x) => x.id === id)) || db.list[0];
+    const key = selectedEntityId + ":" + it.id;
+    if (!_cockpit[key]) {
+      const cp = D.buildCockpit(it, db.ccy);
+      _cockpit[key] = { id: it.id, bankRef: it.id, amount: it.amount, ccy: db.ccy, valueDate: it.date,
+        narration: it.desc, bankAcct: bankName(), customer: cp.customer, invoices: cp.invoices,
+        gap: cp.gap, remittance: cp.remittance, aiConf: cp.aiConf, sla: cp.sla, reason: it.reason };
+    } else { _cockpit[key].bankAcct = bankName(); }
+    return _cockpit[key];
+  }
 
   function viewWorkspace() {
-    const r = D.receipts.find((x) => x.id === activeReceiptId) || D.receipts[0];
-    setTopbar("Apply cash", `Credit ${fmt(r.amount, r.ccy)} · ${r.valueDate} · ref ${r.bankRef}`,
-      `<span class="topbar__chip"><span>Statement</span> ${currentEntity().name}</span><span class="topbar__chip"><span>Open credits</span> ${D.receipts.length}</span>`,
+    const db = D.dashboardFor(selectedEntityId), ccy = db.ccy;
+    const r = getCredit(activeReceiptId); activeReceiptId = r.id;
+    setTopbar("Apply cash", `Credit ${fmt(r.amount, ccy)} · ${r.valueDate} · ref ${r.bankRef}`,
+      `<span class="topbar__chip"><span>Statement</span> ${currentEntity().name}</span><span class="topbar__chip"><span>Open credits</span> ${db.list.length}</span>`,
       "");
 
-    // Bank-statement style: Date · Description · Amount · Identified customer · Confidence
-    const queueRows = D.receipts.map((x) => `
+    // Same bank-statement credits as the dashboard (consistent data + amounts)
+    const queueRows = db.list.map((x) => `
       <tr class="queue-row ${x.id === r.id ? "is-active" : ""}" data-rid="${x.id}">
-        <td class="muted" style="white-space:nowrap">${x.valueDate}</td>
-        <td><div class="cell-main" style="font-weight:var(--font-weight-medium)">${x.narration}</div><div class="cell-sub">${x.bankAcct} · ref ${x.bankRef}</div></td>
-        <td class="num strong">${fmt(x.amount, x.ccy)}</td>
-        <td>${x.customer ? `<span class="cell-main">${x.customer.name}</span>` : `<span class="pill pill--error">Unidentified</span>`}</td>
-        <td class="dot-conf">${x.customer ? x.customer.confidence.toFixed(2) : "—"}</td>
+        <td class="muted" style="white-space:nowrap">${x.date}</td>
+        <td><div class="cell-main" style="font-weight:var(--font-weight-medium)">${x.desc}</div><div class="cell-sub">${bankName()} · ref ${x.id}</div></td>
+        <td class="num strong">${fmt(x.amount, ccy)}</td>
+        <td>${x.customer === "— unidentified —" ? `<span class="pill pill--error">Unidentified</span>` : `<span class="cell-main">${x.customer}</span>`}</td>
+        <td class="dot-conf">${confOf(x)}</td>
       </tr>`).join("");
 
     content.innerHTML = `
       <div class="section" ${dc("ws.queue", "Workspace · Credit queue")}>
         <div class="card">
-          <div class="card__head"><div class="card__title">Bank statement — open &amp; unapplied credits</div><span class="muted" style="font-size:12px">${D.receipts.length} lines</span></div>
-          <div class="card__body card__body--flush"><div class="table-wrap"><table class="tbl">
-            <thead><tr><th>Date</th><th>Description</th><th class="num">Amount</th><th>Identified customer</th><th>Confidence</th></tr></thead>
+          <div class="card__head"><div class="card__title">Bank statement — open &amp; unapplied credits</div><span class="muted" style="font-size:12px">${db.list.length} lines</span></div>
+          <div class="card__body card__body--flush"><div class="table-wrap table-scroll"><table class="tbl tbl--fixed">
+            <colgroup><col style="width:11%"><col style="width:45%"><col style="width:15%"><col style="width:19%"><col style="width:10%"></colgroup>
+            <thead><tr><th>Date</th><th>Description</th><th class="num">Amount</th><th>Identified customer</th><th>Conf.</th></tr></thead>
             <tbody>${queueRows}</tbody>
           </table></div></div>
         </div>
