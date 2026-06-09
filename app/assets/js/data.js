@@ -99,7 +99,7 @@ window.DATA = (function () {
   const receipts = [
     {
       id: "FT77A21B", amount: 48250.00, ccy: "SGD", valueDate: "2026-05-03", bankRef: "FT77A21B",
-      narration: "TT REF AX99 INV mix", bankAcct: "DBS …450",
+      narration: "MEPS IBG TT / SINARJAYA RETAIL / INV AX99 BATCH", bankAcct: "DBS …450",
       customer: { name: "Sinar Jaya Retail Pte Ltd", id: "C-1042", confidence: 0.91, how: "remittance + alias (ID-1/ID-4)" },
       remittance: { listed: 5, parsed: 0.88 },
       state: "Matched", stateTone: "primary", ageHrs: 6, sla: "06:12:40", aiConf: 0.91,
@@ -115,7 +115,7 @@ window.DATA = (function () {
     },
     {
       id: "FT88C04Z", amount: 126400.00, ccy: "SGD", valueDate: "2026-05-03", bankRef: "FT88C04Z",
-      narration: "INWARD TT /BNF GRAB /REF 99XQ", bankAcct: "DBS …450",
+      narration: "INWARD TT / ORD: LAZADA SG TREASURY / BNF: GRAB ADS / REF 99XQ", bankAcct: "DBS …450",
       customer: { name: "Lazada SG (treasury)", id: "C-1108", confidence: 0.62, how: "amount+timing fingerprint (ID-6) — confirm payer" },
       remittance: { listed: 0, parsed: 0 },
       state: "Identified", stateTone: "warn", ageHrs: 11, sla: "02:44:10", aiConf: 0.62,
@@ -130,7 +130,7 @@ window.DATA = (function () {
     },
     {
       id: "FT90D17K", amount: 9980.00, ccy: "SGD", valueDate: "2026-05-04", bankRef: "FT90D17K",
-      narration: "CROSS-BORDER WIRE USD7500", bankAcct: "DBS …450",
+      narration: "INWARD TT FCY / USD 7,500.00 @ 1.331 / CHARGES OUR", bankAcct: "DBS …450",
       customer: { name: "Tokopedia Ads", id: "C-1190", confidence: 0.97, how: "in-narration invoice ref (ID-3)" },
       remittance: { listed: 1, parsed: 0.95 },
       state: "Matched", stateTone: "primary", ageHrs: 3, sla: "08:50:00", aiConf: 0.97,
@@ -142,7 +142,7 @@ window.DATA = (function () {
     },
     {
       id: "FT91E22M", amount: 5000.00, ccy: "SGD", valueDate: "2026-05-04", bankRef: "FT91E22M",
-      narration: "GIRO PAYMENT — NO REF", bankAcct: "DBS …450",
+      narration: "FAST GIRO COLLECTION / BULK / NO REMITTANCE REF", bankAcct: "DBS …450",
       customer: null,
       remittance: { listed: 0, parsed: 0 },
       state: "Unidentified", stateTone: "error", ageHrs: 28, sla: "OVERDUE", aiConf: 0.0,

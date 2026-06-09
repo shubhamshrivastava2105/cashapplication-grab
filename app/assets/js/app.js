@@ -220,24 +220,25 @@
   function viewWorkspace() {
     const r = D.receipts.find((x) => x.id === activeReceiptId) || D.receipts[0];
     setTopbar("Apply cash", `Credit ${fmt(r.amount, r.ccy)} · ${r.valueDate} · ref ${r.bankRef}`,
-      `<span class="topbar__chip"><span>Queue</span> ${D.receipts.length} credits</span>`,
-      `<button class="btn btn--ghost" onclick="location.hash='#/dashboard'">Back to dashboard</button>`);
+      `<span class="topbar__chip"><span>Statement</span> ${currentEntity().name}</span><span class="topbar__chip"><span>Open credits</span> ${D.receipts.length}</span>`,
+      "");
 
+    // Bank-statement style: Date · Description · Amount · Identified customer · Confidence
     const queueRows = D.receipts.map((x) => `
       <tr class="queue-row ${x.id === r.id ? "is-active" : ""}" data-rid="${x.id}">
-        <td><div class="cell-main">${x.customer ? x.customer.name : "— unidentified —"}</div><div class="cell-sub">${x.bankRef} · ${x.narration}</div></td>
+        <td class="muted" style="white-space:nowrap">${x.valueDate}</td>
+        <td><div class="cell-main" style="font-weight:var(--font-weight-medium)">${x.narration}</div><div class="cell-sub">${x.bankAcct} · ref ${x.bankRef}</div></td>
         <td class="num strong">${fmt(x.amount, x.ccy)}</td>
-        <td>${pill(x.state, x.stateTone)}</td>
+        <td>${x.customer ? `<span class="cell-main">${x.customer.name}</span>` : `<span class="pill pill--error">Unidentified</span>`}</td>
         <td class="dot-conf">${x.customer ? x.customer.confidence.toFixed(2) : "—"}</td>
-        <td class="muted">${x.sla}</td>
       </tr>`).join("");
 
     content.innerHTML = `
       <div class="section" ${dc("ws.queue", "Workspace · Credit queue")}>
         <div class="card">
-          <div class="card__head"><div class="card__title">Credit queue — ranked by value &amp; age</div></div>
+          <div class="card__head"><div class="card__title">Bank statement — open &amp; unapplied credits</div><span class="muted" style="font-size:12px">${D.receipts.length} lines</span></div>
           <div class="card__body card__body--flush"><div class="table-wrap"><table class="tbl">
-            <thead><tr><th>Customer / credit</th><th class="num">Amount</th><th>State</th><th>Conf.</th><th>SLA</th></tr></thead>
+            <thead><tr><th>Date</th><th>Description</th><th class="num">Amount</th><th>Identified customer</th><th>Confidence</th></tr></thead>
             <tbody>${queueRows}</tbody>
           </table></div></div>
         </div>
@@ -257,14 +258,18 @@
     const identified = r.customer ? `
       <div class="identified-box">
         <div class="name">${r.customer.name} &nbsp;·&nbsp; conf ${r.customer.confidence.toFixed(2)}</div>
-      </div>
-      <div class="howline">how: ${r.customer.how}</div>` : `
+        <div class="howline">how: ${r.customer.how}</div>
+        <button class="btn btn--ghost btn--sm" id="change-customer" style="margin-top:10px">Change customer</button>
+      </div>` : `
       <div class="identified-box" style="border-color:var(--border-error-default);background:var(--surface-error-subtle)">
         <div class="name" style="color:var(--text-error-hover)">No customer resolved</div>
-      </div>
-      <div class="howline">Routed to suspense — pick a suggested match to identify.</div>`;
+        <div class="howline">Routed to suspense — pick the right customer.</div>
+        <button class="btn btn--ghost btn--sm" id="change-customer" style="margin-top:10px">Pick customer</button>
+      </div>`;
 
-    const remit = r.remittance.listed ? `${r.remittance.listed} invoices listed · parsed ${r.remittance.parsed.toFixed(2)}` : "No remittance advice received";
+    const remit = r.remittance.listed
+      ? `${r.remittance.listed} invoices listed · parse confidence ${Math.round(r.remittance.parsed * 100)}%`
+      : "No remittance advice received";
 
     const left = `
       <div class="ws-pane" ${dc("ws.credit", "Workspace · The credit + identified customer")}>
@@ -286,14 +291,17 @@
     // middle pane — allocation
     const allocated = r.invoices.filter((i) => i.sel).reduce((s, i) => s + i.apply, 0);
     const variance = r.amount - allocated;
-    const rows = r.invoices.length ? r.invoices.map((i) => `
-      <tr>
+    const anyPartial = r.invoices.some((i) => i.sel && i.apply > 0 && i.apply < i.open);
+    const rows = r.invoices.length ? r.invoices.map((i) => {
+      const partial = i.sel && i.apply > 0 && i.apply < i.open;
+      return `
+      <tr class="${partial ? "row-partial" : ""}">
         <td><span class="chk ${i.sel ? "on" : ""}">${i.sel ? "✓" : ""}</span></td>
-        <td class="cell-main">${i.inv}</td>
+        <td class="cell-main">${i.inv}${partial ? ` <span class="pill pill--warn pill--plain" style="padding:1px 7px">Partial</span>` : ""}</td>
         <td class="muted">${i.due}</td>
         <td class="num">${fmt(i.open, r.ccy).replace(r.ccy + " ", "")}</td>
         <td class="num ${i.apply ? "apply-amt" : "muted"}">${i.apply ? fmt(i.apply, r.ccy).replace(r.ccy + " ", "") : "0.00"}</td>
-      </tr>`).join("") : `<tr><td colspan="5" class="cmt-empty">No open invoices selected — identify the customer first.</td></tr>`;
+      </tr>`; }).join("") : `<tr><td colspan="5" class="cmt-empty">No open invoices selected — identify the customer first.</td></tr>`;
 
     const mid = `
       <div class="ws-pane" ${dc("ws.allocation", "Workspace · Open invoices & proposed allocation")}>
@@ -307,6 +315,10 @@
           <span>Variance: <span class="${Math.abs(variance) < 0.01 ? "ok" : ""}" style="${Math.abs(variance) >= 0.01 ? "color:var(--text-brand-default)" : ""}">${variance.toFixed(2)}</span></span>
         </div>
         <div class="gap-note">${r.gap.note}</div>
+        ${anyPartial ? `<div class="partial-banner">
+          <span>⚠ <b>Partial match</b> — an invoice is only part-paid. Is this correct?</span>
+          <span class="partial-banner__btns"><button class="btn btn--success btn--sm" data-act="confirm-partial">Yes, confirm</button><button class="btn btn--ghost btn--sm" data-act="not-correct">No, re-work</button></span>
+        </div>` : ""}
         <div class="alloc-rule">Allocation rule:
           <select id="alloc-rule"><option ${r.gap.allocRule === "Remittance" ? "selected" : ""}>Remittance</option><option ${r.gap.allocRule === "Subset-sum" ? "selected" : ""}>Subset-sum</option><option ${r.gap.allocRule === "Exact" ? "selected" : ""}>Exact</option><option>FIFO (oldest-first)</option><option>By due date</option><option>By PO</option><option>Manual</option></select>
         </div>
@@ -318,22 +330,19 @@
     const moneyOrDash = (n) => (n ? (n < 0 ? "− " : "+ ") + Math.abs(n).toFixed(2) : "—");
     const right = `
       <div class="ws-pane" ${dc("ws.gap", "Workspace · Gap classification & actions")}>
-        <div class="ws-pane__title">Gap &amp; actions</div>
+        <div class="ws-pane__title">Gap classification</div>
         <div class="ws-pane__body">
+          <p class="gap-explain">The gap is <b>cash received − invoices selected</b>, classified by cause before anything posts.</p>
           ${gapRow("WHT", g.wht ? `${moneyOrDash(g.wht)} → receivable` : "—", g.wht ? "brand" : "")}
           ${gapRow("Discount", moneyOrDash(g.discount))}
           ${gapRow("Bank charge", moneyOrDash(g.bankCharge), g.bankCharge ? "brand" : "")}
           ${gapRow("Unexplained", g.unexplained ? moneyOrDash(-g.unexplained) : "0.00", g.unexplained ? "brand" : "ok")}
-          <div class="ws-pane__title" style="padding-left:0;margin-top:14px">Actions</div>
+          <button class="btn btn--ghost btn--block" id="simulate-entry" style="margin-top:14px">Simulate accounting entry</button>
+          <div class="ws-pane__title" style="padding-left:0;margin-top:18px">Action</div>
           <div class="actions-grid">
             <button class="btn btn--success ws-action ws-action--primary" data-act="apply">Apply &amp; post</button>
-            <button class="btn btn--ghost ws-action" data-act="split">Split</button>
-            <button class="btn btn--ghost ws-action" data-act="park">Park on-account</button>
-            <button class="btn btn--ghost ws-action" data-act="deduction">Open deduction</button>
-            <button class="btn btn--ghost ws-action" data-act="reassign">Reassign customer</button>
-            <button class="btn btn--ghost ws-action" data-act="reverse">Reverse</button>
           </div>
-          <div class="conf-line">AI confidence <span class="conf">${r.aiConf.toFixed(2)}</span></div>
+          <div class="conf-line" style="margin-top:14px">AI confidence <span class="conf">${r.aiConf.toFixed(2)}</span></div>
           <div class="conf-line">SLA <span class="sla">${r.sla}</span></div>
         </div>
       </div>`;
@@ -345,6 +354,45 @@
     });
     const ruleSel = $("#alloc-rule");
     if (ruleSel) ruleSel.onchange = () => toast(`Re-allocated by: ${ruleSel.value}`);
+    const cc = $("#change-customer");
+    if (cc) cc.onclick = () => openCustomerPicker(r);
+    const sim = $("#simulate-entry");
+    if (sim) sim.onclick = () => simulateEntry(r);
+  }
+
+  // Reassign the credit to a different customer
+  function openCustomerPicker(r) {
+    const opts = D.customers.map((c) => `<button class="picker-item" data-cid="${c.id}" data-name="${escapeAttr(c.name)}"><span class="cell-main">${c.name}</span><span class="muted"> · ${c.country} · ${c.ccy}</span></button>`).join("");
+    openModal("Change customer", `
+      <div class="modal-sub">Re-attribute this credit if the suggested customer looks wrong. Your choice is logged and trains the identification model.</div>
+      <div class="picker-list">${opts}</div>`);
+    document.querySelectorAll(".picker-item").forEach((b) => {
+      b.onclick = () => {
+        r.customer = { name: b.dataset.name, id: b.dataset.cid, confidence: 1.0, how: "manually set by analyst" };
+        closeModal(); renderCockpit(r); toast(`Customer set to ${b.dataset.name}`);
+      };
+    });
+  }
+
+  // Preview the journal entry this application would post (PRD §12 conventions)
+  function simulateEntry(r) {
+    const g = r.gap, cust = r.customer ? r.customer.name : "Unidentified";
+    const wht = Math.abs(g.wht || 0), bc = Math.abs(g.bankCharge || 0), disc = Math.abs(g.discount || 0);
+    const arCredit = r.amount + wht + bc + disc;
+    const lines = [["Bank", r.amount, 0]];
+    if (wht) lines.push(["WHT receivable (asset)", wht, 0]);
+    if (bc) lines.push(["Bank charges (expense)", bc, 0]);
+    if (disc) lines.push(["Cash discount allowed", disc, 0]);
+    lines.push([`AR — ${cust}`, 0, arCredit]);
+    const body = lines.map((l) => `<tr><td class="cell-main">${l[0]}</td><td class="num">${l[1] ? fmt(l[1], r.ccy) : ""}</td><td class="num">${l[2] ? fmt(l[2], r.ccy) : ""}</td></tr>`).join("");
+    const totD = lines.reduce((s, l) => s + l[1], 0), totC = lines.reduce((s, l) => s + l[2], 0);
+    openModal("Simulated accounting entry", `
+      <div class="modal-sub">Preview of the journal entry this application would post to the ERP. Nothing posts until you Apply &amp; post (under maker-checker).</div>
+      <div class="table-wrap"><table class="tbl">
+        <thead><tr><th>Account</th><th class="num">Debit</th><th class="num">Credit</th></tr></thead>
+        <tbody>${body}<tr class="modal-total"><td>Total</td><td class="num">${fmt(totD, r.ccy)}</td><td class="num">${fmt(totC, r.ccy)}</td></tr></tbody>
+      </table></div>
+      ${g.unexplained ? `<div class="gap-note" style="padding:12px 0 0">Note: ${fmt(g.unexplained, r.ccy)} is unexplained / partial — that balance stays open on the invoice.</div>` : ""}`);
   }
 
   // Action buttons open a confirmation dialog (clear, visible feedback)
@@ -357,6 +405,8 @@
       deduction: { t: "Open deduction", danger: false, body: `Open a coded deduction for the short amount and route it to the claims owner.` },
       reassign:  { t: "Reassign customer", danger: false, body: `Attribute this credit to a different customer (re-runs the identification ladder).` },
       reverse:   { t: "Reverse application", danger: true, body: `Unapply the cash and reopen the invoice(s), with a full audit trail.` },
+      "confirm-partial": { t: "Confirm partial match", danger: false, body: `Apply the part amount and keep the remaining balance open on the invoice.` },
+      "not-correct":     { t: "Re-work allocation", danger: true, body: `Flag this proposed allocation as incorrect and send it back for re-work.` },
     };
     const m = map[act] || { t: "Action", body: "", danger: false };
     openModal(m.t, `<p style="margin:0 0 4px">${m.body}</p>
