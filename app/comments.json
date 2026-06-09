@@ -384,22 +384,6 @@
     "resolutionNote": "Addressed via the cumulative PRD-aligned overhaul this review. Flag specific spots for further refinement."
   },
   {
-    "id": "c_tfr8quk4nig",
-    "route": "#/workspace",
-    "anchor": "ws.credit",
-    "anchorLabel": "Workspace · The credit + identified customer",
-    "xPct": 36.5625,
-    "yPct": 68.87906028317873,
-    "author": "SME",
-    "text": "change customer should list all the customers in the dropdown",
-    "status": "resolved",
-    "createdAt": "2026-06-09T11:29:17.320Z",
-    "updatedAt": "2026-06-09T11:42:10.728Z",
-    "resolvedAt": "2026-06-09T11:42:10.728Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "Change customer now lists all customers in a searchable dropdown."
-  },
-  {
     "id": "c_9ofaqi6iyjv",
     "route": "#/dashboard",
     "anchor": "dash.kpis",
