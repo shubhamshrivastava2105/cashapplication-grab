@@ -408,12 +408,12 @@
     "yPct": 17.81476618045451,
     "author": "SME",
     "text": "make the description look real - as it comes on the bank statements. it should look exactly like it comes on statement. it doesn't come like this.",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T12:51:03.229Z",
-    "updatedAt": "2026-06-09T12:51:03.229Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-09T13:06:22.342Z",
+    "resolvedAt": "2026-06-09T13:06:22.342Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Descriptions are now realistic MT940-style bank narration, varied by channel (INWARD TT /ORG.../OUR ref, IBG GIRO, FAST, DUITNOW, PROMPTPAY, etc.)."
   },
   {
     "id": "c_6nh8d2l3c2f",
