@@ -286,5 +286,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_4zcsuqft7rq",
+    "route": "#/workspace",
+    "anchor": "ws.gap",
+    "anchorLabel": "Workspace · Gap classification & actions",
+    "xPct": 83.4375,
+    "yPct": 48.997966889340695,
+    "author": "SME",
+    "text": "ui elements are going out of the box",
+    "status": "open",
+    "createdAt": "2026-06-09T10:52:24.086Z",
+    "updatedAt": "2026-06-09T10:52:24.089Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
