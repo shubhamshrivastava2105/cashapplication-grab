@@ -112,22 +112,6 @@
     "resolutionNote": "Run aging escalation now opens a confirmation dialog and runs (toast)."
   },
   {
-    "id": "c_ug2b6hnxvwz",
-    "route": "#/reports",
-    "anchor": "page",
-    "anchorLabel": "Page / navigation",
-    "xPct": 33.241379310344826,
-    "yPct": 2.8792912513842746,
-    "author": "SME",
-    "text": "the reporting can be a lot more dense and detailed. each having a different chart, line chart, bar graph, tables etc",
-    "status": "resolved",
-    "createdAt": "2026-06-09T11:52:01.235Z",
-    "updatedAt": "2026-06-09T12:35:45.749Z",
-    "resolvedAt": "2026-06-09T12:35:45.749Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "Reports & close is now dense: 2 line charts (auto-apply, customer ID trends), exceptions bar chart, ageing bars, top-customers table and metrics table — all entity-derived."
-  },
-  {
     "id": "c_nk510qxyk71",
     "route": "#/reports",
     "anchor": "page",
