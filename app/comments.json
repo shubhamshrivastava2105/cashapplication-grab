@@ -206,21 +206,5 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
-  },
-  {
-    "id": "c_0g2ndu04a4l",
-    "route": "#/dashboard",
-    "anchor": "dash.kpis",
-    "anchorLabel": "Dashboard · KPI tiles",
-    "xPct": 55.053191489361694,
-    "yPct": 64.52959434871026,
-    "author": "SME",
-    "text": "everything should be quarter on quarter and not week on week",
-    "status": "open",
-    "createdAt": "2026-06-09T10:33:00.742Z",
-    "updatedAt": "2026-06-09T10:33:00.744Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
   }
 ]
