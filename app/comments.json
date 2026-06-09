@@ -382,5 +382,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_dtcwkr2y2e8",
+    "route": "#/dashboard",
+    "anchor": "dash.kpis",
+    "anchorLabel": "Dashboard · KPI tiles",
+    "xPct": 83.77659574468085,
+    "yPct": 84.60440638658461,
+    "author": "SME",
+    "text": "show the same modal on click of view breakdown as we are showing in unapplied cash",
+    "status": "open",
+    "createdAt": "2026-06-09T12:48:08.864Z",
+    "updatedAt": "2026-06-09T12:48:08.864Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
