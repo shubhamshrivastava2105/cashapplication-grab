@@ -80,22 +80,6 @@
     "resolutionNote": "Addressed via the cumulative PRD-aligned overhaul this review. Flag specific spots for further refinement."
   },
   {
-    "id": "c_esebvrbwn1b",
-    "route": "#/unapplied",
-    "anchor": "page",
-    "anchorLabel": "Page / navigation",
-    "xPct": 45.58620689655172,
-    "yPct": 3.9867109634551494,
-    "author": "SME",
-    "text": "improve this entire page based on the prd and all the context you have till now based on all the comments and changes you made",
-    "status": "resolved",
-    "createdAt": "2026-06-09T11:23:03.455Z",
-    "updatedAt": "2026-06-09T11:42:17.159Z",
-    "resolvedAt": "2026-06-09T11:42:17.159Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "Addressed via the cumulative PRD-aligned overhaul this review. Flag specific spots for further refinement."
-  },
-  {
     "id": "c_19wq56uoetm",
     "route": "#/workspace",
     "anchor": "ws.credit",
