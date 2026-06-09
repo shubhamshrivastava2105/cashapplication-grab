@@ -1,0 +1,8 @@
+.DS_Store
+node_modules/
+.vercel
+*.log
+
+# Confidential source material — kept out of the public repo
+prd/
+Designs/
