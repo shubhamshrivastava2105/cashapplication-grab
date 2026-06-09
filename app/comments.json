@@ -1,1 +1,18 @@
-[]
+[
+  {
+    "id": "c_qggkcoh2pnp",
+    "route": "#/dashboard",
+    "anchor": "dash.kpis",
+    "anchorLabel": "Dashboard · KPI tiles",
+    "xPct": 42.641843971631204,
+    "yPct": 83.7097292090335,
+    "author": "SME",
+    "text": "not consistent",
+    "status": "open",
+    "createdAt": "2026-06-09T10:03:47.941Z",
+    "updatedAt": "2026-06-09T10:03:47.941Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
+  }
+]
