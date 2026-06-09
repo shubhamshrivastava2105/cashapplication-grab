@@ -184,12 +184,12 @@
     "yPct": 17.721084544102506,
     "author": "SME",
     "text": "Create customer identification instead of just identification rate.",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T11:10:37.539Z",
-    "updatedAt": "2026-06-09T11:10:37.539Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-09T11:36:13.894Z",
+    "resolvedAt": "2026-06-09T11:36:13.894Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Renamed the metric to \"Customer identification\"."
   },
   {
     "id": "c_86z6h6cikh3",
