@@ -192,22 +192,6 @@
     "resolutionNote": "Apply/Refund buttons restyled — inline with consistent spacing, Apply is primary."
   },
   {
-    "id": "c_7fecm87m019",
-    "route": "#/unapplied",
-    "anchor": "ua.table",
-    "anchorLabel": "Unapplied · On-account ledger",
-    "xPct": 24.604569420035148,
-    "yPct": 13.75437824932854,
-    "author": "SME",
-    "text": "the entire column needs to be improved from the ui and ux point of view",
-    "status": "resolved",
-    "createdAt": "2026-06-09T12:10:46.317Z",
-    "updatedAt": "2026-06-09T12:35:51.084Z",
-    "resolvedAt": "2026-06-09T12:35:51.084Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "On-account ledger columns reworked: fixed widths, customer-first description, cleaner layout."
-  },
-  {
     "id": "c_k4wr502q0j4",
     "route": "#/unapplied",
     "anchor": "screen",
