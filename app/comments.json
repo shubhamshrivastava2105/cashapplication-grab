@@ -606,5 +606,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_8swqjl5ugna",
+    "route": "#/customers",
+    "anchor": "cust.header",
+    "anchorLabel": "Customer 360 · Header & metrics",
+    "xPct": 42.09183673469388,
+    "yPct": 27.736570015733875,
+    "author": "SME",
+    "text": "show the total view that we see on SAP. \nEG: open items, all items etc",
+    "status": "open",
+    "createdAt": "2026-06-09T13:13:20.326Z",
+    "updatedAt": "2026-06-09T13:13:20.326Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
