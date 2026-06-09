@@ -48,22 +48,6 @@
     "resolutionNote": "Credit queue is now a bank-statement view: Date, Description (varied by channel — TT/inward TT/FCY/FAST GIRO), Amount, Identified customer, Confidence."
   },
   {
-    "id": "c_30l5iui4ruk",
-    "route": "#/workspace",
-    "anchor": "ws.queue",
-    "anchorLabel": "Workspace · Credit queue",
-    "xPct": 31.028368794326237,
-    "yPct": 7.957932385250787,
-    "author": "SME",
-    "text": "The first half of the screen should show all the open and unapplied cash Received in the bank statement.",
-    "status": "resolved",
-    "createdAt": "2026-06-09T11:01:23.324Z",
-    "updatedAt": "2026-06-09T11:21:08.569Z",
-    "resolvedAt": "2026-06-09T11:21:08.569Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "Top half now lists all open/unapplied credits received in the bank statement."
-  },
-  {
     "id": "c_akme7z0dq5y",
     "route": "#/workspace",
     "anchor": "screen",
