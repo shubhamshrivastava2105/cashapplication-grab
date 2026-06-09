@@ -352,22 +352,6 @@
     "resolutionNote": "Descriptions are now realistic MT940-style bank narration, varied by channel (INWARD TT /ORG.../OUR ref, IBG GIRO, FAST, DUITNOW, PROMPTPAY, etc.)."
   },
   {
-    "id": "c_h0xmk1p4grt",
-    "route": "#/workspace",
-    "anchor": "ws.queue",
-    "anchorLabel": "Workspace · Credit queue",
-    "xPct": 16.93262411347518,
-    "yPct": 21.310567997956227,
-    "author": "SME",
-    "text": "the description should look real as on bank statement",
-    "status": "resolved",
-    "createdAt": "2026-06-09T12:53:07.433Z",
-    "updatedAt": "2026-06-09T13:06:24.610Z",
-    "resolvedAt": "2026-06-09T13:06:24.610Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "Workspace descriptions use the same realistic bank-statement narration."
-  },
-  {
     "id": "c_ttlw84362t0",
     "route": "#/workspace",
     "anchor": "ws.queue",
