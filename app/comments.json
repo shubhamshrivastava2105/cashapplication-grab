@@ -168,12 +168,12 @@
     "yPct": 47.667097949359224,
     "author": "SME",
     "text": "You should also give me an option to see if there is a payment remittance advice. Basically, what we are trying to do is we will connect our AR email box with this system. If there is a related payment remittance advice which can be identified based on this payment, or if the user manually uploads, I should be able to see a payment reference link. I can also apply the payments to the respective invoices for a particular customer.",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T11:08:21.046Z",
-    "updatedAt": "2026-06-09T11:08:21.049Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-09T11:36:26.720Z",
+    "resolvedAt": "2026-06-09T11:36:26.720Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Added a remittance-advice panel: shows the linked advice + payment reference, View link, and Upload (PDF/email) which links a reference; framed as auto-matched from the connected AR mailbox. Invoices are applied via the allocation table."
   },
   {
     "id": "c_4tbv466gnhf",
