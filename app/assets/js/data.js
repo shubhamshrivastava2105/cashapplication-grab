@@ -7,13 +7,17 @@ window.DATA = (function () {
     ccy + " " + n.toLocaleString("en-SG", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
   // ── Dashboard ──────────────────────────────────────────────────────────
+  // Each KPI carries a consistent secondary line: a directional week-on-week
+  // trend ({arrow} {value} WoW), coloured green when the movement is an
+  // improvement for that metric. Uniform format and time reference across all
+  // six tiles (no mixing of trends with raw counts).
   const kpis = [
-    { key: "autoApply",   label: "Auto-apply rate",   value: "78%",        tone: "good",    delta: "+6 pts WoW", deltaTone: "up" },
-    { key: "idRate",      label: "Identification rate", value: "94%",       tone: "good",    delta: "+1 pt WoW",  deltaTone: "up" },
-    { key: "unapplied",   label: "Unapplied cash",    value: "SGD 1.24M",  tone: "warn",    delta: "61 receipts",deltaTone: "" },
-    { key: "exceptions",  label: "Open exceptions",   value: "61",         tone: "warn",    delta: "−8 vs yest.",deltaTone: "up" },
-    { key: "wht",         label: "WHT receivable",    value: "SGD 312k",   tone: "info",    delta: "23 certs pending", deltaTone: "" },
-    { key: "deductions",  label: "Deductions open",   value: "SGD 88k",    tone: "warn",    delta: "14 claims", deltaTone: "" },
+    { key: "autoApply",   label: "Auto-apply rate",     value: "78%",       tone: "good", delta: "▲ 6 pts WoW", deltaTone: "up" },
+    { key: "idRate",      label: "Identification rate", value: "94%",       tone: "good", delta: "▲ 1 pt WoW",  deltaTone: "up" },
+    { key: "unapplied",   label: "Unapplied cash",      value: "SGD 1.24M", tone: "warn", delta: "▼ 4% WoW",    deltaTone: "up" },
+    { key: "exceptions",  label: "Open exceptions",     value: "61",        tone: "warn", delta: "▼ 8 WoW",     deltaTone: "up" },
+    { key: "wht",         label: "WHT receivable",      value: "SGD 312k",  tone: "info", delta: "▼ 3% WoW",    deltaTone: "up" },
+    { key: "deductions",  label: "Deductions open",     value: "SGD 88k",   tone: "warn", delta: "▼ 5% WoW",    deltaTone: "up" },
   ];
 
   const dailyChart = [
