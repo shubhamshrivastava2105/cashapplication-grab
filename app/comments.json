@@ -424,12 +424,12 @@
     "yPct": 6.050413012007153,
     "author": "SME",
     "text": "the list should be exact match on the dashboard, not just 4 line items",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T12:52:14.679Z",
-    "updatedAt": "2026-06-09T12:52:14.681Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-09T13:06:23.492Z",
+    "resolvedAt": "2026-06-09T13:06:23.492Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Workspace credit list is now the same bank statement as the dashboard (all lines), not 4."
   },
   {
     "id": "c_h0xmk1p4grt",
