@@ -168,12 +168,12 @@
     "yPct": 2.8792912513842746,
     "author": "SME",
     "text": "the reporting can be a lot more dense and detailed. each having a different chart, line chart, bar graph, tables etc",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T11:52:01.235Z",
-    "updatedAt": "2026-06-09T11:52:01.235Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-09T12:35:45.749Z",
+    "resolvedAt": "2026-06-09T12:35:45.749Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Reports & close is now dense: 2 line charts (auto-apply, customer ID trends), exceptions bar chart, ageing bars, top-customers table and metrics table — all entity-derived."
   },
   {
     "id": "c_nk510qxyk71",
