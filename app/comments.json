@@ -184,12 +184,12 @@
     "yPct": 20.74892443924648,
     "author": "SME",
     "text": "i should also be able to remove the auto applied wht",
-    "status": "resolved",
+    "status": "open",
     "createdAt": "2026-06-09T13:03:01.360Z",
-    "updatedAt": "2026-06-09T13:22:27.230Z",
-    "resolvedAt": "2026-06-09T13:22:27.230Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "Auto-applied WHT can be removed (set a line to 0, or use the clear link in the gap panel)."
+    "updatedAt": "2026-06-09T13:33:05.665Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   },
   {
     "id": "c_gts3vdci6t2",
