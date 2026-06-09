@@ -174,5 +174,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_21giw591foj",
+    "route": "#/dashboard",
+    "anchor": "dash.kpis",
+    "anchorLabel": "Dashboard · KPI tiles",
+    "xPct": 45.39007092198582,
+    "yPct": 79.5997003103928,
+    "author": "SME",
+    "text": "when clicked on this - it should open details modal- line by line and the data should match to 1.24m\n\nit should show the bank account, date, descripation, and amount",
+    "status": "open",
+    "createdAt": "2026-06-09T10:30:47.971Z",
+    "updatedAt": "2026-06-09T10:30:47.973Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
