@@ -219,6 +219,9 @@ body.nav-collapsed .sidebar__user-meta { display: none; }
 /* ─── Tables ────────────────────────────────────────────────────────────── */
 .table-wrap { overflow-x: auto; }
 table.tbl { width: 100%; border-collapse: collapse; font-size: 14px; }
+table.tbl--fixed { table-layout: fixed; }
+.tbl--fixed td, .tbl--fixed th { overflow: hidden; text-overflow: ellipsis; }
+.tbl--fixed td.cell-main { white-space: nowrap; }
 .tbl thead th {
   text-align: left; padding: var(--scale-250) var(--scale-300);
   background: var(--table-header-surface); color: var(--table-header-text);

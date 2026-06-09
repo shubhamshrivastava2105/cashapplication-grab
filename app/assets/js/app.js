@@ -141,7 +141,8 @@
       <div class="section" style="margin-top:var(--scale-300)" ${dc("dash.queue", "Dashboard · Aged unapplied work queue")}>
         <div class="card">
           <div class="card__head"><div class="card__title">Aged unapplied cash — oldest first (work queue)</div></div>
-          <div class="card__body card__body--flush"><div class="table-wrap"><table class="tbl">
+          <div class="card__body card__body--flush"><div class="table-wrap"><table class="tbl tbl--fixed">
+            <colgroup><col style="width:28%"><col style="width:16%"><col style="width:18%"><col style="width:14%"><col style="width:24%"></colgroup>
             <thead><tr><th>Customer</th><th>Ref</th><th class="num">Amount</th><th>Age</th><th>Reason</th></tr></thead>
             <tbody>${queue}</tbody>
           </table></div></div>
