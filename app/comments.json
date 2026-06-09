@@ -136,12 +136,12 @@
     "yPct": 56.41680560975322,
     "author": "SME",
     "text": "change customer should list all the customers in the dropdown",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T11:44:39.178Z",
-    "updatedAt": "2026-06-09T11:44:39.178Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-09T12:35:43.572Z",
+    "resolvedAt": "2026-06-09T12:35:43.572Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Change customer now lists all entity customers in a searchable dropdown."
   },
   {
     "id": "c_5beekhuw164",
