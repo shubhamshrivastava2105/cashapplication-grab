@@ -446,5 +446,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_vcr74aoblrn",
+    "route": "#/workspace",
+    "anchor": "page",
+    "anchorLabel": "Page / navigation",
+    "xPct": 89.86206896551724,
+    "yPct": 3.875968992248062,
+    "author": "SME",
+    "text": "remove this button - back to dashboard from here",
+    "status": "open",
+    "createdAt": "2026-06-09T11:06:42.035Z",
+    "updatedAt": "2026-06-09T11:06:42.037Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
