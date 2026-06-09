@@ -238,5 +238,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_mbvej0tex8r",
+    "route": "#/dashboard",
+    "anchor": "page",
+    "anchorLabel": "Page / navigation",
+    "xPct": 10.965517241379311,
+    "yPct": 39.42414174972315,
+    "author": "SME",
+    "text": "a button should be placed on the navbar, we should give the option to add multiple bank accounts.\n\nfor each bank account - there could be a direct feed by account through mt940 from bank or there is an option to manually upload by the user",
+    "status": "open",
+    "createdAt": "2026-06-09T10:41:17.259Z",
+    "updatedAt": "2026-06-09T10:41:17.261Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
