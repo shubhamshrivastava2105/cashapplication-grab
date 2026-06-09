@@ -168,12 +168,12 @@
     "yPct": 3.875968992248062,
     "author": "SME",
     "text": "remove this button - back to dashboard from here",
-    "status": "resolved",
+    "status": "open",
     "createdAt": "2026-06-09T11:06:42.035Z",
-    "updatedAt": "2026-06-09T11:21:15.171Z",
-    "resolvedAt": "2026-06-09T11:21:15.171Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "Removed the Back to dashboard button (use the left nav)."
+    "updatedAt": "2026-06-09T11:25:19.794Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   },
   {
     "id": "c_q074rtbcgbg",
