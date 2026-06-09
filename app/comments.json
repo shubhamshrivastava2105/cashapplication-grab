@@ -430,5 +430,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_1vw97xva2a1",
+    "route": "#/workspace",
+    "anchor": "ws.gap",
+    "anchorLabel": "Workspace · Gap classification & actions",
+    "xPct": 39.6875,
+    "yPct": 14.712621421886599,
+    "author": "SME",
+    "text": "This whole section is not very clear: the gap section. Give a simulation action for the accounting entry.",
+    "status": "open",
+    "createdAt": "2026-06-09T11:05:30.121Z",
+    "updatedAt": "2026-06-09T11:05:30.124Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
