@@ -398,5 +398,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_on9r4d66xw6",
+    "route": "#/workspace",
+    "anchor": "ws.credit",
+    "anchorLabel": "Workspace · The credit + identified customer",
+    "xPct": 70.3125,
+    "yPct": 88.26276354765639,
+    "author": "SME",
+    "text": "Don't understand what this 0.88 past means, so reframe it or make it clearer.",
+    "status": "open",
+    "createdAt": "2026-06-09T11:03:04.470Z",
+    "updatedAt": "2026-06-09T11:03:04.476Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
