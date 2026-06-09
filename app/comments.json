@@ -344,12 +344,12 @@
     "yPct": 41.78931406654179,
     "author": "SME",
     "text": "on hover, show exact amount",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T12:47:24.301Z",
-    "updatedAt": "2026-06-09T12:47:24.301Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-09T13:06:17.765Z",
+    "resolvedAt": "2026-06-09T13:06:17.765Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Hovering a KPI value shows the exact amount (title tooltip)."
   },
   {
     "id": "c_dtcwkr2y2e8",
