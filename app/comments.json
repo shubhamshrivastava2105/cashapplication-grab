@@ -344,12 +344,12 @@
     "yPct": 94.9612452109702,
     "author": "SME",
     "text": "nothing is changing based on the dropdown change.",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T11:19:57.678Z",
-    "updatedAt": "2026-06-09T11:19:57.678Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-09T11:36:24.538Z",
+    "resolvedAt": "2026-06-09T11:36:24.538Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "The allocation-rule dropdown now actually re-allocates (FIFO/due-date/exact greedily re-spread the receipt; Remittance restores the directed allocation)."
   },
   {
     "id": "c_8q69obyv46c",
