@@ -430,5 +430,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_4tbv466gnhf",
+    "route": "#/dashboard",
+    "anchor": "dash.kpis",
+    "anchorLabel": "Dashboard · KPI tiles",
+    "xPct": 36.258865248226954,
+    "yPct": 17.721084544102506,
+    "author": "SME",
+    "text": "Create customer identification instead of just identification rate.",
+    "status": "open",
+    "createdAt": "2026-06-09T11:10:37.539Z",
+    "updatedAt": "2026-06-09T11:10:37.539Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
