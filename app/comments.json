@@ -200,12 +200,12 @@
     "yPct": 65.31289326164055,
     "author": "SME",
     "text": "The breakdown is not matching the 250 open exception line items that we have.",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T11:12:06.951Z",
-    "updatedAt": "2026-06-09T11:12:06.951Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-09T11:36:14.960Z",
+    "resolvedAt": "2026-06-09T11:36:14.960Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Exceptions breakdown is now derived from the same 250-line dataset, so by-type counts sum exactly to 250 and amounts tie to the unapplied total."
   },
   {
     "id": "c_ff44pvxl7gh",
