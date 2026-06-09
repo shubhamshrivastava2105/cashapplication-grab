@@ -176,22 +176,6 @@
     "resolutionNote": "Latest date is now 08 Jun 2026; statement dates rebased to it."
   },
   {
-    "id": "c_qf28njbzqaf",
-    "route": "#/dashboard",
-    "anchor": "dash.exceptions",
-    "anchorLabel": "Dashboard · Exceptions by type",
-    "xPct": 76.79856115107914,
-    "yPct": 54.781368490625105,
-    "author": "SME",
-    "text": "make the split look real, 62,62,63,63 looks unreal.",
-    "status": "resolved",
-    "createdAt": "2026-06-09T12:49:26.487Z",
-    "updatedAt": "2026-06-09T13:06:19.979Z",
-    "resolvedAt": "2026-06-09T13:06:19.979Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "Exception split is now realistic/skewed (e.g. unidentified ~22%, partial ~33%, overpayment ~25%, WHT ~20%), not 62/62/63/63."
-  },
-  {
     "id": "c_o0qiasc0hsw",
     "route": "#/dashboard",
     "anchor": "dash.queue",
