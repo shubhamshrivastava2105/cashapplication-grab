@@ -494,5 +494,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_m2rmay1mf2z",
+    "route": "#/workspace",
+    "anchor": "ws.gap",
+    "anchorLabel": "Workspace · Gap classification & actions",
+    "xPct": 72.05882352941177,
+    "yPct": 23.77314099669669,
+    "author": "SME",
+    "text": "this should be editable",
+    "status": "open",
+    "createdAt": "2026-06-09T13:35:04.667Z",
+    "updatedAt": "2026-06-09T13:35:04.667Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
