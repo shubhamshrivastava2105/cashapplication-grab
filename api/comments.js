@@ -24,7 +24,9 @@
 const REPO = process.env.GITHUB_REPO || "shubhamshrivastava2105/cashapplication-grab";
 const BRANCH = process.env.GITHUB_BRANCH || "main";
 const PATH = process.env.COMMENTS_PATH || "app/comments.json";
-const TOKEN = process.env.GITHUB_TOKEN;
+// Primary name is GITHUB_TOKEN; fall back to alternative names that may already
+// be configured on the deployment (e.g. githubtokengrab).
+const TOKEN = process.env.GITHUB_TOKEN || process.env.githubtokengrab || process.env.GH_TOKEN;
 const WRITE_KEY = process.env.COMMENTS_WRITE_KEY || "";
 
 const GH = `https://api.github.com/repos/${REPO}/contents/${encodeURIComponent(PATH).replace(/%2F/g, "/")}`;
