@@ -96,22 +96,6 @@
     "resolutionNote": "Top half now lists all open/unapplied credits received in the bank statement."
   },
   {
-    "id": "c_o583sp66fxc",
-    "route": "#/workspace",
-    "anchor": "ws.credit",
-    "anchorLabel": "Workspace · The credit + identified customer",
-    "xPct": 74.0625,
-    "yPct": 63.50583725387698,
-    "author": "SME",
-    "text": "If I feel the customer is wrong, I should be able to change the customer from here.",
-    "status": "open",
-    "createdAt": "2026-06-09T11:02:41.184Z",
-    "updatedAt": "2026-06-09T11:23:53.547Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
-  },
-  {
     "id": "c_1vw97xva2a1",
     "route": "#/workspace",
     "anchor": "ws.gap",
