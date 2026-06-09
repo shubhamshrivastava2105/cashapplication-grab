@@ -136,12 +136,12 @@
     "yPct": 76.85968104463234,
     "author": "SME",
     "text": "remove this metric.",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T10:33:52.931Z",
-    "updatedAt": "2026-06-09T10:33:52.933Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-09T10:50:28.052Z",
+    "resolvedAt": "2026-06-09T10:50:28.052Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Removed the WHT receivable KPI tile."
   },
   {
     "id": "c_q09spq55psf",
