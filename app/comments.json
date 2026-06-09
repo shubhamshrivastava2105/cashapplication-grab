@@ -254,5 +254,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_6lz400sais8",
+    "route": "#/dashboard",
+    "anchor": "dash.dailychart",
+    "anchorLabel": "Dashboard · Cash applied vs unapplied",
+    "xPct": 53.597122302158276,
+    "yPct": 11.948474977790939,
+    "author": "SME",
+    "text": "remove this and add ageing rather for 1.24M. ageing should be 0-15days, 15-30days, 1-3 months, 3-6 months etc",
+    "status": "open",
+    "createdAt": "2026-06-09T10:37:51.896Z",
+    "updatedAt": "2026-06-09T10:37:51.896Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
