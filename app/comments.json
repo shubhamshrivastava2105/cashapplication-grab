@@ -222,5 +222,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_p63ew1xhcp9",
+    "route": "#/dashboard",
+    "anchor": "page",
+    "anchorLabel": "Page / navigation",
+    "xPct": 8.275862068965518,
+    "yPct": 89.92248062015504,
+    "author": "SME",
+    "text": "change \"manual upload by user\" to \"manual upload\"",
+    "status": "open",
+    "createdAt": "2026-06-09T12:07:09.453Z",
+    "updatedAt": "2026-06-09T12:07:09.453Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
