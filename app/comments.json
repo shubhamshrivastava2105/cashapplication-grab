@@ -360,12 +360,12 @@
     "yPct": 84.60440638658461,
     "author": "SME",
     "text": "show the same modal on click of view breakdown as we are showing in unapplied cash",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T12:48:08.864Z",
-    "updatedAt": "2026-06-09T12:48:08.864Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-09T13:06:18.866Z",
+    "resolvedAt": "2026-06-09T13:06:18.866Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Exceptions View breakdown now opens a line-by-line modal (same shape as unapplied) with an exception-type column."
   },
   {
     "id": "c_qf28njbzqaf",
