@@ -282,7 +282,7 @@
     const db = D.dashboardFor(selectedEntityId), ccy = db.ccy;
     const r = getCredit(activeReceiptId); activeReceiptId = r.id;
     setTopbar("Apply cash", `Credit ${fmt(r.amount, ccy)} · ${r.valueDate} · ref ${r.bankRef}`,
-      `<span class="topbar__chip"><span>Statement</span> ${currentEntity().name}</span><span class="topbar__chip"><span>Open credits</span> ${db.list.length}</span>`,
+      `<span class="topbar__chip"><span>Statement</span> ${currentEntity().name}</span>`,
       "");
 
     // Same bank-statement credits as the dashboard (consistent data + amounts)
@@ -361,69 +361,68 @@
         </div>
       </div>`;
 
-    // middle pane — allocation
+    // middle pane — allocation with per-invoice WHT + discount
+    const ccy = r.ccy, num = (n) => fmt(n, ccy).replace(ccy + " ", "");
+    const cleared = (i) => i.apply + (i.wht || 0) + (i.discount || 0);
     const allocated = r.invoices.filter((i) => i.sel).reduce((s, i) => s + i.apply, 0);
-    const variance = r.amount - allocated;
-    const anyPartial = r.invoices.some((i) => i.sel && i.apply > 0 && i.apply < i.open);
-    const rows = r.invoices.length ? r.invoices.map((i) => {
-      const partial = i.sel && i.apply > 0 && i.apply < i.open;
+    const whtTotal = r.invoices.filter((i) => i.sel).reduce((s, i) => s + (i.wht || 0), 0);
+    const discTotal = r.invoices.filter((i) => i.sel).reduce((s, i) => s + (i.discount || 0), 0);
+    const bankCharge = r.gap.bankCharge || 0;
+    const rebateTotal = r.adjustments.reduce((s, a) => s + a.amount, 0);
+    const unexplained = r.amount - allocated - bankCharge - rebateTotal;
+    const anyPartial = r.invoices.some((i) => i.sel && cleared(i) > 0 && cleared(i) < i.open - 0.5);
+    const rows = r.invoices.length ? r.invoices.map((i, idx) => {
+      const partial = i.sel && cleared(i) > 0 && cleared(i) < i.open - 0.5;
       return `
       <tr class="${partial ? "row-partial" : ""}">
-        <td><span class="chk ${i.sel ? "on" : ""}">${i.sel ? "✓" : ""}</span></td>
+        <td><span class="chk ${i.sel ? "on" : ""}" data-toggle="${idx}">${i.sel ? "✓" : ""}</span></td>
         <td class="cell-main">${i.inv}${partial ? ` <span class="pill pill--warn pill--plain" style="padding:1px 7px">Partial</span>` : ""}</td>
         <td class="muted">${i.due}</td>
-        <td class="num">${fmt(i.open, r.ccy).replace(r.ccy + " ", "")}</td>
-        <td class="num ${i.apply ? "apply-amt" : "muted"}">${i.apply ? fmt(i.apply, r.ccy).replace(r.ccy + " ", "") : "0.00"}</td>
-      </tr>`; }).join("") : `<tr><td colspan="5" class="cmt-empty">No open invoices selected — identify the customer first.</td></tr>`;
+        <td class="num">${num(i.open)}</td>
+        <td class="num"><input class="line-in" data-i="${idx}" data-f="wht" value="${i.wht || 0}" ${i.sel ? "" : "disabled"} /></td>
+        <td class="num"><input class="line-in" data-i="${idx}" data-f="discount" value="${i.discount || 0}" ${i.sel ? "" : "disabled"} /></td>
+        <td class="num ${i.apply ? "apply-amt" : "muted"}">${num(i.apply)}</td>
+      </tr>`; }).join("") : `<tr><td colspan="7" class="cmt-empty">No open invoices — identify the customer first.</td></tr>`;
 
     const mid = `
       <div class="ws-pane" ${dc("ws.allocation", "Workspace · Open invoices & proposed allocation")}>
         <div class="ws-pane__title">Open invoices — proposed allocation</div>
         <div class="table-wrap" style="padding:12px 8px 0"><table class="tbl">
-          <thead><tr><th>✓</th><th>Invoice</th><th>Due</th><th class="num">Open</th><th class="num">Apply</th></tr></thead>
+          <thead><tr><th>✓</th><th>Invoice</th><th>Due</th><th class="num">Open</th><th class="num">WHT</th><th class="num">Disc.</th><th class="num">Apply</th></tr></thead>
           <tbody>${rows}</tbody>
         </table></div>
         <div class="alloc-summary">
-          <span>Allocated: <span class="ok">${fmt(allocated, r.ccy).replace(r.ccy + " ", "")}</span></span>
-          <span>Variance: <span class="${Math.abs(variance) < 0.01 ? "ok" : ""}" style="${Math.abs(variance) >= 0.01 ? "color:var(--text-brand-default)" : ""}">${variance.toFixed(2)}</span></span>
+          <span>Applied: <span class="ok">${num(allocated)}</span></span>
+          <span>WHT: ${num(whtTotal)}</span>
+          <span>Variance: <span style="${Math.abs(unexplained) >= 0.5 ? "color:var(--text-brand-default)" : "color:var(--text-success-hover)"}">${unexplained.toFixed(2)}</span></span>
         </div>
         <div class="gap-note">${r.gap.note}</div>
-        ${anyPartial ? `<div class="partial-banner">
+        ${anyPartial && !r._partialOk ? `<div class="partial-banner">
           <span>⚠ <b>Partial match</b> — an invoice is only part-paid. Is this correct?</span>
-          <span class="partial-banner__btns"><button class="btn btn--success btn--sm" data-act="confirm-partial">Yes, confirm</button><button class="btn btn--ghost btn--sm" data-act="not-correct">No, re-work</button></span>
+          <span class="partial-banner__btns"><button class="btn btn--success btn--sm" id="partial-yes">Yes, confirm</button><button class="btn btn--ghost btn--sm" id="partial-no">No, re-work</button></span>
         </div>` : ""}
-        <div class="alloc-rule">Allocation rule:
-          <select id="alloc-rule"><option ${r.gap.allocRule === "Remittance" ? "selected" : ""}>Remittance</option><option ${r.gap.allocRule === "Subset-sum" ? "selected" : ""}>Subset-sum</option><option ${r.gap.allocRule === "Exact" ? "selected" : ""}>Exact</option><option>FIFO (oldest-first)</option><option>By due date</option><option>By PO</option><option>Manual</option></select>
-        </div>
       </div>`;
 
-    // right pane — gap & actions
-    const g = r.gap;
-    const gapRow = (lbl, val, cls) => `<div class="gap-row"><span class="lbl">${lbl}</span><span class="val ${cls || ""}">${val}</span></div>`;
-    const moneyOrDash = (n) => (n ? (n < 0 ? "− " : "+ ") + Math.abs(n).toFixed(2) : "—");
-    const sumAdj = r.adjustments.reduce((s, a) => s + a.amount, 0);
-    const remainUnexplained = (g.unexplained || 0) - sumAdj;
+    // right pane — gap (line-level WHT/discount totals + total-level bank charge/rebate)
+    const gapRow = (lbl, val, cls, extra) => `<div class="gap-row"><span class="lbl">${lbl}${extra || ""}</span><span class="val ${cls || ""}">${val}</span></div>`;
     const adjRows = r.adjustments.map((a, idx) =>
-      `<div class="gap-row"><span class="lbl">${a.type}</span><span class="val brand">− ${a.amount.toFixed(2)} <button class="adj-del" data-adj="${idx}" title="Remove">×</button></span></div>`).join("");
+      `<div class="gap-row"><span class="lbl">${a.type} (total)</span><span class="val brand">− ${a.amount.toFixed(2)} <button class="adj-del" data-adj="${idx}" title="Remove">×</button></span></div>`).join("");
     const right = `
       <div class="ws-pane" ${dc("ws.gap", "Workspace · Gap classification & actions")}>
         <div class="ws-pane__title">Gap classification</div>
         <div class="ws-pane__body">
-          <p class="gap-explain">The gap is <b>cash received − invoices selected</b>, classified by cause before anything posts. Account for any agreed GST, discount, rebate or deduction below.</p>
-          ${gapRow("WHT", g.wht ? `${moneyOrDash(g.wht)} → receivable` : "—", g.wht ? "brand" : "")}
-          ${gapRow("Discount", moneyOrDash(g.discount))}
-          ${gapRow("Bank charge", moneyOrDash(g.bankCharge), g.bankCharge ? "brand" : "")}
+          <p class="gap-explain">WHT &amp; discount are taken <b>per invoice</b> (middle); bank charge &amp; rebate/deduction are <b>total-level</b> below.</p>
+          ${gapRow("WHT (per-invoice)", whtTotal ? "− " + whtTotal.toFixed(2) + " → receivable" : "—", whtTotal ? "brand" : "", whtTotal ? ` <button class="lnk-clear" id="clear-wht">clear</button>` : "")}
+          ${gapRow("Discount (per-invoice)", discTotal ? "− " + discTotal.toFixed(2) : "—")}
+          <div class="gap-row"><span class="lbl">Bank charge (total)</span><span class="val"><input class="gap-in" id="bankcharge-in" value="${bankCharge}" /></span></div>
           ${adjRows}
-          ${gapRow("Unexplained", Math.abs(remainUnexplained) < 0.01 ? "0.00" : moneyOrDash(-remainUnexplained), Math.abs(remainUnexplained) < 0.01 ? "ok" : "brand")}
+          ${gapRow("Unexplained", Math.abs(unexplained) < 0.5 ? "0.00" : (unexplained < 0 ? "+ " : "− ") + Math.abs(unexplained).toFixed(2), Math.abs(unexplained) < 0.5 ? "ok" : "brand")}
 
           <div class="adj-box">
-            <div class="adj-title">Account for a difference</div>
+            <div class="adj-title">Add a total-level rebate / deduction</div>
             <div class="adj-form">
-              <select id="adj-type">
-                <option>GST</option><option>Cash discount</option><option>Payment discount</option>
-                <option>Rebate</option><option>Agreed deduction</option><option>WHT</option>
-              </select>
-              <input id="adj-amt" type="number" min="0" step="0.01" placeholder="Amount (${r.ccy})" />
+              <select id="adj-type"><option>Rebate</option><option>Agreed deduction</option><option>Claim</option><option>GST</option></select>
+              <input id="adj-amt" type="number" min="0" step="0.01" placeholder="Amount (${ccy})" />
               <button class="btn btn--ghost btn--sm" id="adj-add">Add</button>
             </div>
           </div>
@@ -443,14 +442,31 @@
     cockpit.querySelectorAll("[data-act]").forEach((b) => {
       b.onclick = () => actionConfirm(b.dataset.act, r);
     });
-    const ruleSel = $("#alloc-rule");
-    if (ruleSel) ruleSel.onchange = () => { reallocate(r, ruleSel.value); renderCockpit(r); toast(`Re-allocated by: ${ruleSel.value}`); };
     const cc = $("#change-customer");
     if (cc) cc.onclick = () => openCustomerPicker(r);
     const sim = $("#simulate-entry");
     if (sim) sim.onclick = () => simulateEntry(r);
 
-    // deduction / GST / rebate adjustments
+    // per-invoice select toggle + WHT/discount editing (recompute apply)
+    const recomputeLine = (i) => { i.apply = Math.max(0, Math.round((i.open - (i.wht || 0) - (i.discount || 0)) * 100) / 100); };
+    cockpit.querySelectorAll(".chk[data-toggle]").forEach((el) => {
+      el.onclick = () => { const i = r.invoices[+el.dataset.toggle]; i.sel = !i.sel; if (i.sel && !i.apply) recomputeLine(i); if (!i.sel) i.apply = 0; r._partialOk = false; renderCockpit(r); };
+    });
+    cockpit.querySelectorAll(".line-in").forEach((inp) => {
+      inp.onchange = () => { const i = r.invoices[+inp.dataset.i]; i[inp.dataset.f] = Math.max(0, parseFloat(inp.value) || 0); recomputeLine(i); r._partialOk = false; renderCockpit(r); };
+    });
+    const clrWht = $("#clear-wht");
+    if (clrWht) clrWht.onclick = () => { r.invoices.forEach((i) => { i.wht = 0; recomputeLine(i); }); renderCockpit(r); toast("Auto-applied WHT removed"); };
+    const bcIn = $("#bankcharge-in");
+    if (bcIn) bcIn.onchange = () => { r.gap.bankCharge = Math.max(0, parseFloat(bcIn.value) || 0); renderCockpit(r); };
+
+    // real partial flow
+    const py = $("#partial-yes");
+    if (py) py.onclick = () => { r._partialOk = true; renderCockpit(r); toast("Partial confirmed — balance kept open on the invoice"); };
+    const pn = $("#partial-no");
+    if (pn) pn.onclick = () => { delete _cockpit[selectedEntityId + ":" + r.id]; activeReceiptId = r.id; viewWorkspace(); toast("Sent for re-work — allocation reset"); };
+
+    // total-level rebate / deduction
     const adjAdd = $("#adj-add");
     if (adjAdd) adjAdd.onclick = () => {
       const type = $("#adj-type").value;
@@ -499,16 +515,31 @@
 
   // Show the parsed remittance advice lines
   function viewRemittance(r) {
-    const cust = r.customer ? r.customer.name : "—";
+    const ccy = r.ccy, cust = r.customer ? r.customer.name : "—";
     const inv = r.invoices.filter((i) => i.sel);
-    const rows = inv.length ? inv.map((i) => `<tr><td class="cell-main">${i.inv}</td><td class="muted">${i.due}</td><td class="num strong">${fmt(i.apply, r.ccy)}</td></tr>`).join("")
-      : `<tr><td colspan="3" class="muted">No lines parsed.</td></tr>`;
+    const total = inv.reduce((s, i) => s + i.open, 0);
+    const rows = inv.length ? inv.map((i) => `<tr><td class="cell-main">${i.inv}</td><td class="muted">${i.due}</td><td class="num">${fmt(i.open, ccy)}</td><td class="num">${i.wht ? "− " + fmt(i.wht, ccy) : "—"}</td><td class="num strong">${fmt(i.apply, ccy)}</td></tr>`).join("")
+      : `<tr><td colspan="5" class="muted">No lines parsed.</td></tr>`;
     openModal(`Remittance advice — RA-${r.bankRef}`, `
-      <div class="modal-sub">${r.remittance.file ? "Uploaded file: <b>" + escapeAttr(r.remittance.file) + "</b>. " : "Auto-matched from the AR mailbox. "}Payment reference linked to <b>${cust}</b>.</div>
-      <div class="table-wrap"><table class="tbl">
-        <thead><tr><th>Invoice</th><th>Due</th><th class="num">Amount advised</th></tr></thead>
-        <tbody>${rows}</tbody>
-      </table></div>`);
+      <div class="remit-doc">
+        <div class="remit-doc__head">
+          <div><div class="remit-doc__logo">${cust}</div><div class="remit-doc__sub">Payment / Remittance Advice</div></div>
+          <div class="remit-doc__meta">
+            <div><span>Advice no.</span> RA-${r.bankRef}</div>
+            <div><span>Payment date</span> ${r.valueDate}</div>
+            <div><span>Currency</span> ${ccy}</div>
+            <div><span>Source</span> ${r.remittance.file ? escapeAttr(r.remittance.file) : "AR mailbox (auto-matched)"}</div>
+          </div>
+        </div>
+        <div class="remit-doc__to"><span>Paid to</span> Neoflo · ${currentEntity().name} &nbsp;|&nbsp; <span>Bank ref</span> ${r.bankRef} &nbsp;|&nbsp; <span>Payment reference</span> PMT-${r.bankRef}</div>
+        <table class="tbl remit-doc__tbl">
+          <thead><tr><th>Invoice</th><th>Due date</th><th class="num">Invoice amt</th><th class="num">WHT</th><th class="num">Paid</th></tr></thead>
+          <tbody>${rows}
+            <tr class="modal-total"><td colspan="2" class="num">Total remitted</td><td class="num">${fmt(total, ccy)}</td><td class="num">${fmt(inv.reduce((s, i) => s + (i.wht || 0), 0), ccy)}</td><td class="num strong">${fmt(r.amount, ccy)}</td></tr>
+          </tbody>
+        </table>
+        <div class="remit-doc__foot">This is a system-generated remittance advice rendered from the ${r.remittance.file ? "uploaded document" : "AR mailbox match"}. Apply the lines via the allocation table.</div>
+      </div>`);
   }
 
   // Reassign the credit to a different customer (lists all customers + search)
@@ -536,23 +567,30 @@
 
   // Preview the journal entry this application would post (PRD §12 conventions)
   function simulateEntry(r) {
-    const g = r.gap, cust = r.customer ? r.customer.name : "Unidentified";
-    const wht = Math.abs(g.wht || 0), bc = Math.abs(g.bankCharge || 0), disc = Math.abs(g.discount || 0);
-    const arCredit = r.amount + wht + bc + disc;
-    const lines = [["Bank", r.amount, 0]];
+    const ccy = r.ccy, cust = r.customer ? r.customer.name : "Unidentified";
+    const sel = r.invoices.filter((i) => i.sel);
+    const applied = sel.reduce((s, i) => s + i.apply, 0);
+    const wht = sel.reduce((s, i) => s + (i.wht || 0), 0);
+    const disc = sel.reduce((s, i) => s + (i.discount || 0), 0);
+    const bc = r.gap.bankCharge || 0;
+    const rebate = r.adjustments.reduce((s, a) => s + a.amount, 0);
+    const arCredit = applied + wht + disc + bc + rebate;
+    const lines = [["Bank", applied, 0]];
     if (wht) lines.push(["WHT receivable (asset)", wht, 0]);
+    if (disc) lines.push(["Cash discount allowed (expense)", disc, 0]);
     if (bc) lines.push(["Bank charges (expense)", bc, 0]);
-    if (disc) lines.push(["Cash discount allowed", disc, 0]);
+    if (rebate) lines.push(["Deductions / claims (contra-AR)", rebate, 0]);
     lines.push([`AR — ${cust}`, 0, arCredit]);
-    const body = lines.map((l) => `<tr><td class="cell-main">${l[0]}</td><td class="num">${l[1] ? fmt(l[1], r.ccy) : ""}</td><td class="num">${l[2] ? fmt(l[2], r.ccy) : ""}</td></tr>`).join("");
+    const body = lines.map((l) => `<tr><td class="cell-main">${l[0]}</td><td class="num">${l[1] ? fmt(l[1], ccy) : ""}</td><td class="num">${l[2] ? fmt(l[2], ccy) : ""}</td></tr>`).join("");
     const totD = lines.reduce((s, l) => s + l[1], 0), totC = lines.reduce((s, l) => s + l[2], 0);
+    const unexplained = r.amount - applied - bc - rebate;
     openModal("Simulated accounting entry", `
       <div class="modal-sub">Preview of the journal entry this application would post to the ERP. Nothing posts until you Apply &amp; post (under maker-checker).</div>
       <div class="table-wrap"><table class="tbl">
         <thead><tr><th>Account</th><th class="num">Debit</th><th class="num">Credit</th></tr></thead>
-        <tbody>${body}<tr class="modal-total"><td>Total</td><td class="num">${fmt(totD, r.ccy)}</td><td class="num">${fmt(totC, r.ccy)}</td></tr></tbody>
+        <tbody>${body}<tr class="modal-total"><td>Total</td><td class="num">${fmt(totD, ccy)}</td><td class="num">${fmt(totC, ccy)}</td></tr></tbody>
       </table></div>
-      ${g.unexplained ? `<div class="gap-note" style="padding:12px 0 0">Note: ${fmt(g.unexplained, r.ccy)} is unexplained / partial — that balance stays open on the invoice.</div>` : ""}`);
+      ${Math.abs(unexplained) >= 0.5 ? `<div class="gap-note" style="padding:12px 0 0">Note: ${fmt(Math.abs(unexplained), ccy)} is ${unexplained > 0 ? "unexplained / partial — balance stays open" : "an overpayment — park residual on-account"}.</div>` : ""}`);
   }
 
   // Action buttons open a confirmation dialog (clear, visible feedback)

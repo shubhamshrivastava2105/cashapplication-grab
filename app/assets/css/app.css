@@ -366,6 +366,22 @@ th.sortable:hover { color: var(--text-default-heading); background: var(--grey-1
 .adj-form { display: grid; grid-template-columns: 1fr 1fr auto; gap: 6px; }
 .adj-form select, .adj-form input { font-family: var(--font-family-inter); font-size: 12px; border: 1px solid var(--border-default-default); border-radius: var(--radius-sm); padding: 6px; min-width: 0; }
 .adj-del { background: none; border: none; color: var(--text-error-default); cursor: pointer; font-size: 14px; font-weight: 700; padding: 0 0 0 4px; }
+.line-in, .gap-in { width: 72px; font-family: var(--font-family-inter); font-size: 12px; text-align: right; border: 1px solid var(--border-default-default); border-radius: var(--radius-sm); padding: 4px 6px; }
+.line-in:disabled { background: var(--grey-75); color: var(--text-default-placeholder); }
+.gap-in { width: 90px; }
+.lnk-clear { background: none; border: none; color: var(--text-primary-default); font-size: 11px; font-weight: var(--font-weight-semibold); cursor: pointer; padding: 0 0 0 6px; text-decoration: underline; }
+/* remittance advice document */
+.remit-doc { border: 1px solid var(--border-default-default); border-radius: var(--radius-sm); overflow: hidden; }
+.remit-doc__head { display: flex; justify-content: space-between; gap: var(--scale-400); padding: var(--scale-400); background: var(--grey-75); border-bottom: 2px solid var(--grey-300); }
+.remit-doc__logo { font-family: var(--font-family-plus-jakarta-sans); font-weight: var(--font-weight-bold); font-size: 18px; color: var(--text-default-heading); }
+.remit-doc__sub { font-size: 12px; color: var(--text-default-caption); margin-top: 2px; }
+.remit-doc__meta { font-size: 12px; color: var(--text-default-body); text-align: right; display: grid; gap: 3px; }
+.remit-doc__meta span { color: var(--text-default-caption); margin-right: 6px; }
+.remit-doc__to { font-size: 12px; color: var(--text-default-body); padding: var(--scale-250) var(--scale-400); border-bottom: 1px solid var(--border-default-default); }
+.remit-doc__to span { color: var(--text-default-caption); }
+.remit-doc__tbl { margin: 0; }
+.remit-doc__tbl thead th { background: var(--surface-pagecard-card-1); }
+.remit-doc__foot { font-size: 11px; color: var(--text-default-caption); padding: var(--scale-250) var(--scale-400); background: var(--grey-50); }
 
 /* allocation table */
 .alloc-summary { display: flex; gap: var(--scale-400); font-size: 14px; font-weight: var(--font-weight-bold); padding: var(--scale-300) var(--scale-400); border-top: 1px solid var(--border-default-default); }

@@ -158,11 +158,11 @@ window.DATA = (function () {
     else invTotal = Math.round(it.amount * 0.8); // Overpayment
     const cnt = 1 + (Math.abs(it.amount) % 3);
     const invs = []; let rem = invTotal;
-    for (let j = 0; j < cnt; j++) { const open = j === cnt - 1 ? rem : Math.round(invTotal / cnt); rem -= open; invs.push({ inv: "INV-" + (7000 + (Math.abs(it.amount) % 900) + j), due: dateMinus(-(j * 7 + 3)), open, apply: 0, sel: false }); }
-    const gap = { wht: 0, discount: 0, bankCharge: 0, unexplained: 0, note: "", allocRule: "Remittance" };
-    if (it.reason === "WHT certificate pending") { invs.forEach((i) => { i.apply = i.open; i.sel = true; }); gap.wht = it.amount - invTotal; gap.note = `Short by ${fmt(Math.abs(gap.wht), ccy)} → WHT ~5% (certificate pending); clear invoice in full, book WHT receivable.`; }
-    else if (it.reason === "Overpayment") { invs.forEach((i) => { i.apply = i.open; i.sel = true; }); gap.unexplained = -(it.amount - invTotal); gap.note = `Over by ${fmt(it.amount - invTotal, ccy)} → clear invoices, park residual on-account or flag refund.`; }
-    else { let r2 = it.amount; invs.forEach((i) => { const ap = Math.min(i.open, r2); i.apply = ap; i.sel = ap > 0; r2 -= ap; }); gap.unexplained = invTotal - it.amount; gap.note = `Short by ${fmt(gap.unexplained, ccy)} → partial; keep balance open or code a deduction.`; }
+    for (let j = 0; j < cnt; j++) { const open = j === cnt - 1 ? rem : Math.round(invTotal / cnt); rem -= open; invs.push({ inv: "INV-" + (7000 + (Math.abs(it.amount) % 900) + j), due: dateMinus(-(j * 7 + 3)), open, apply: 0, wht: 0, discount: 0, sel: false }); }
+    const gap = { bankCharge: 0, note: "", allocRule: "Remittance" };
+    if (it.reason === "WHT certificate pending") { invs.forEach((i) => { i.wht = Math.round(i.open * 0.05); i.apply = i.open - i.wht; i.sel = true; }); gap.note = "Each invoice is short by ~5% WHT — clear in full and book the WHT receivable per line (certificate pending)."; }
+    else if (it.reason === "Overpayment") { invs.forEach((i) => { i.apply = i.open; i.sel = true; }); gap.note = `Over by ${fmt(it.amount - invTotal, ccy)} → clear invoices, park residual on-account or flag refund.`; }
+    else { let r2 = it.amount; invs.forEach((i) => { const ap = Math.min(i.open, r2); i.apply = ap; i.sel = ap > 0; r2 -= ap; }); gap.note = `Short by ${fmt(invTotal - it.amount, ccy)} → partial; keep balance open or code a deduction.`; }
     return { customer: cust, invoices: invs, remittance: { listed: invs.length, parsed: 0.82 + ((Math.abs(it.amount) % 15) / 100) }, aiConf: cust.confidence, sla: (3 + (Math.abs(it.amount) % 9)) + ":" + ("0" + (Math.abs(it.amount) % 60)).slice(-2) + ":00", gap };
   }
 
