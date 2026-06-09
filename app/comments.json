@@ -192,22 +192,6 @@
     "resolutionNote": null
   },
   {
-    "id": "c_52op8g0bj5q",
-    "route": "#/dashboard",
-    "anchor": "dash.kpis",
-    "anchorLabel": "Dashboard · KPI tiles",
-    "xPct": 58.333333333333336,
-    "yPct": 80.68870838576821,
-    "author": "SME",
-    "text": "the breakdown looks bad visually. improve the ui and ux for it",
-    "status": "open",
-    "createdAt": "2026-06-09T12:02:37.886Z",
-    "updatedAt": "2026-06-09T12:02:37.889Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
-  },
-  {
     "id": "c_p63ew1xhcp9",
     "route": "#/dashboard",
     "anchor": "page",
