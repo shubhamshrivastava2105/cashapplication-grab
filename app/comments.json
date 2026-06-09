@@ -398,5 +398,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_8q69obyv46c",
+    "route": "#/dashboard",
+    "anchor": "page",
+    "anchorLabel": "Page / navigation",
+    "xPct": 14.827586206896552,
+    "yPct": 4.208194905869324,
+    "author": "SME",
+    "text": "it should be a collapsible icon and not a hamburger icon.",
+    "status": "open",
+    "createdAt": "2026-06-09T11:21:52.356Z",
+    "updatedAt": "2026-06-09T11:21:52.356Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
