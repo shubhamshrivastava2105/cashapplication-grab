@@ -1,21 +1,5 @@
 [
   {
-    "id": "c_of873c06oys",
-    "route": "#/dashboard",
-    "anchor": "screen",
-    "anchorLabel": "Dashboard",
-    "xPct": -2.1929824561403506,
-    "yPct": -0.529988643100505,
-    "author": "SME",
-    "text": "change this icon",
-    "status": "open",
-    "createdAt": "2026-06-09T10:06:53.668Z",
-    "updatedAt": "2026-06-09T10:06:53.668Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
-  },
-  {
     "id": "c_v54vh8rvwx6",
     "route": "#/customers",
     "anchor": "cust.list",
