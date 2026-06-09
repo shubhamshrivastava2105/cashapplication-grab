@@ -72,12 +72,12 @@
     "yPct": 5.537098560354374,
     "author": "SME",
     "text": "currency should be dependent on entity.",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T10:22:36.938Z",
-    "updatedAt": "2026-06-09T10:22:36.941Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-09T10:34:13.927Z",
+    "resolvedAt": "2026-06-09T10:34:13.927Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Currency is now derived from the selected entity (read-only) and updates when you change entity — e.g. SG->SGD, MY->MYR, ID->IDR."
   },
   {
     "id": "c_n6welmlrzy4",
