@@ -72,12 +72,12 @@
     "yPct": 65.89960398159049,
     "author": "SME",
     "text": "customer identification rate - this should also be quarter on quarter",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T10:29:07.313Z",
-    "updatedAt": "2026-06-09T10:29:07.315Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-09T10:50:23.290Z",
+    "resolvedAt": "2026-06-09T10:50:23.290Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Identification rate now shows QoQ (3 pts QoQ)."
   },
   {
     "id": "c_f4uuhcbzvsg",
