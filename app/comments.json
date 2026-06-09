@@ -318,5 +318,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_mdfw9y9tm3x",
+    "route": "#/dashboard",
+    "anchor": "page",
+    "anchorLabel": "Page / navigation",
+    "xPct": 82.27586206896552,
+    "yPct": 4.651162790697675,
+    "author": "SME",
+    "text": "show latest date - 8th june",
+    "status": "open",
+    "createdAt": "2026-06-09T12:44:41.133Z",
+    "updatedAt": "2026-06-09T12:44:41.133Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
