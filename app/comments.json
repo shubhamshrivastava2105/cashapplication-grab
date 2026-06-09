@@ -270,5 +270,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_k4wr502q0j4",
+    "route": "#/unapplied",
+    "anchor": "screen",
+    "anchorLabel": "Unapplied / on-account",
+    "xPct": 79.46298984034833,
+    "yPct": 96.74988952717631,
+    "author": "SME",
+    "text": "lot of blank space at the bottom, why is the table not using this space?",
+    "status": "open",
+    "createdAt": "2026-06-09T12:13:53.584Z",
+    "updatedAt": "2026-06-09T12:13:53.584Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
