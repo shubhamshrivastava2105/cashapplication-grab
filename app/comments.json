@@ -232,12 +232,12 @@
     "yPct": 34.123539232053425,
     "author": "SME",
     "text": "unidentified customer, fix it",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T10:42:54.157Z",
-    "updatedAt": "2026-06-09T10:42:54.160Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-09T11:08:27.090Z",
+    "resolvedAt": "2026-06-09T11:08:27.090Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Renamed the exceptions row to \"Unidentified customer\"."
   },
   {
     "id": "c_6b4aa1chred",
