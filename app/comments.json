@@ -398,5 +398,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_qf28njbzqaf",
+    "route": "#/dashboard",
+    "anchor": "dash.exceptions",
+    "anchorLabel": "Dashboard · Exceptions by type",
+    "xPct": 76.79856115107914,
+    "yPct": 54.781368490625105,
+    "author": "SME",
+    "text": "make the split look real, 62,62,63,63 looks unreal.",
+    "status": "open",
+    "createdAt": "2026-06-09T12:49:26.487Z",
+    "updatedAt": "2026-06-09T12:49:26.487Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
