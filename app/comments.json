@@ -446,21 +446,5 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
-  },
-  {
-    "id": "c_fph4aa6pbvv",
-    "route": "#/dashboard",
-    "anchor": "dash.queue",
-    "anchorLabel": "Dashboard · Aged unapplied work queue",
-    "xPct": 39.273049645390074,
-    "yPct": 3.486922752042193,
-    "author": "SME",
-    "text": "Looks like a bank statement. The date, description, and all those details are missing here.",
-    "status": "open",
-    "createdAt": "2026-06-09T11:17:22.411Z",
-    "updatedAt": "2026-06-09T11:17:22.411Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
   }
 ]
