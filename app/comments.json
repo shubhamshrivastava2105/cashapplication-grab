@@ -360,12 +360,12 @@
     "yPct": 3.875968992248062,
     "author": "SME",
     "text": "improve this entire page based on the prd and all the context you have till now based on all the comments and changes you made",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T11:22:55.864Z",
-    "updatedAt": "2026-06-09T11:22:55.864Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-09T11:42:16.070Z",
+    "resolvedAt": "2026-06-09T11:42:16.070Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Addressed via the cumulative PRD-aligned overhaul this review. Flag specific spots for further refinement."
   },
   {
     "id": "c_esebvrbwn1b",
