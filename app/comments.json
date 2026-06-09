@@ -88,12 +88,12 @@
     "yPct": 3.9867109634551494,
     "author": "SME",
     "text": "this should be on the navbar(left panel). give an option to select bank",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T10:23:27.676Z",
-    "updatedAt": "2026-06-09T10:23:27.678Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-09T10:34:16.438Z",
+    "resolvedAt": "2026-06-09T10:34:16.438Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Added a Bank account selector to the left nav (sidebar footer); options follow the selected entity."
   },
   {
     "id": "c_n2p68ibt8wi",
