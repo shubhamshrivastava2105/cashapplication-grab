@@ -176,22 +176,6 @@
     "resolutionNote": "Latest date is now 08 Jun 2026; statement dates rebased to it."
   },
   {
-    "id": "c_o0qiasc0hsw",
-    "route": "#/dashboard",
-    "anchor": "dash.queue",
-    "anchorLabel": "Dashboard · Aged unapplied work queue",
-    "xPct": 82.97872340425532,
-    "yPct": 4.943748447315186,
-    "author": "SME",
-    "text": "give sorting based on date and amount on this table",
-    "status": "resolved",
-    "createdAt": "2026-06-09T12:50:02.144Z",
-    "updatedAt": "2026-06-09T13:06:21.158Z",
-    "resolvedAt": "2026-06-09T13:06:21.158Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "Dashboard table now sorts by Date, Amount and Age (click the header)."
-  },
-  {
     "id": "c_g7mav7f8vp6",
     "route": "#/workspace",
     "anchor": "ws.credit",
