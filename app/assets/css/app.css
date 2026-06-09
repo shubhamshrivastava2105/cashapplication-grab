@@ -49,10 +49,9 @@ button { font-family: var(--font-family-plus-jakarta-sans); cursor: pointer; }
 .sidebar__toggle svg { width: 20px; height: 20px; transition: transform .18s ease; }
 body.nav-collapsed .sidebar__toggle svg { transform: rotate(180deg); }
 .sidebar__logo {
-  display: none; width: 34px; height: 34px; border-radius: var(--radius-sm);
-  background: var(--surface-primary-default); color: var(--text-on-colour-heading);
-  font-family: var(--font-family-plus-jakarta-sans); font-weight: var(--font-weight-bold);
-  font-size: 18px; place-items: center;
+  display: none; width: 34px; height: 26px;
+  background: url("../img/neoflo_logo.png?v=6") no-repeat left center;
+  background-size: auto 24px; filter: brightness(0) invert(1);
 }
 
 .sidebar__nav { flex: 1; padding: var(--scale-200) var(--scale-200); overflow-y: auto; }
@@ -124,10 +123,10 @@ body.nav-collapsed .sidebar__toggle svg { transform: rotate(180deg); }
 
 /* ── Collapsed (icon-rail) state — toggled by #sidebar-toggle ───────────── */
 body.nav-collapsed .sidebar { width: 72px; flex-basis: 72px; }
-body.nav-collapsed .sidebar__top { padding: var(--scale-400) 0; justify-content: center; }
+body.nav-collapsed .sidebar__top { flex-direction: column; gap: 12px; padding: var(--scale-300) 0; justify-content: center; }
 body.nav-collapsed .sidebar__logoimg { display: none; }
-body.nav-collapsed .sidebar__logo { display: grid; }
-body.nav-collapsed .sidebar__toggle { display: none; }
+body.nav-collapsed .sidebar__logo { display: block; }
+body.nav-collapsed .sidebar__toggle { display: grid; margin: 0; }
 body.nav-collapsed .sidebar__nav { padding-left: var(--scale-100); padding-right: var(--scale-100); }
 body.nav-collapsed .navlink { justify-content: center; padding-left: 0; padding-right: 0; position: relative; }
 body.nav-collapsed .navlink span:not(.navlink__badge), body.nav-collapsed .navlink__chev { display: none; }
@@ -225,7 +224,8 @@ body.nav-collapsed .sidebar__user-meta { display: none; }
 .kpi__trend.up { color: var(--text-success-default); }
 .kpi__trend.down { color: var(--text-error-default); }
 .kpi__sub { font-size: 12px; color: var(--text-default-caption); margin-top: 8px; }
-.kpi__drill { font-weight: var(--font-weight-semibold); color: var(--text-primary-default); }
+.kpi__drill { font-size: 12px; font-weight: var(--font-weight-semibold); color: var(--text-primary-default); margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--border-default-default); }
+.kpi--clickable:hover .kpi__drill { color: var(--text-primary-hover); }
 .kpi__head { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: var(--scale-200); }
 .info-btn {
   flex: 0 0 16px; width: 16px; height: 16px; border-radius: var(--radius-full);
@@ -325,8 +325,10 @@ table.tbl--fixed { table-layout: fixed; }
 .hbar__fill--age { background: var(--surface-primary-default); }
 .hbars--age .hbar { grid-template-columns: 110px 1fr 130px; }
 .hbar--ex { grid-template-columns: 190px 1fr 150px; }
-.table-scroll { max-height: 440px; overflow-y: auto; }
+.table-scroll { max-height: calc(100vh - 300px); min-height: 320px; overflow-y: auto; }
 .svgchart { width: 100%; height: 150px; display: block; }
+.row-actions { display: inline-flex; gap: 6px; justify-content: flex-end; }
+.tbl--fixed .cell-sub { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .table-scroll thead th { position: sticky; top: 0; z-index: 1; }
 .hbar__val { text-align: right; font-variant-numeric: tabular-nums; color: var(--text-default-caption); font-weight: var(--font-weight-semibold); }
 
@@ -341,7 +343,8 @@ table.tbl--fixed { table-layout: fixed; }
 .pipe-arrow { color: var(--text-default-placeholder); font-size: 16px; }
 
 /* ─── Workspace (3-pane analyst cockpit) ───────────────────────────────── */
-.workspace { display: grid; grid-template-columns: 320px minmax(0,1fr) 320px; gap: var(--scale-300); align-items: start; }
+.workspace { display: grid; grid-template-columns: 320px minmax(0,1fr) 340px; gap: var(--scale-300); align-items: stretch; }
+.workspace .ws-pane { display: flex; flex-direction: column; }
 .ws-pane { background: var(--surface-pagecard-card-1); border: 1px solid var(--border-default-default); border-radius: var(--radius-md); box-shadow: var(--shadow-small); }
 .ws-pane__title { font-size: 12px; font-weight: var(--font-weight-bold); letter-spacing: 1px; text-transform: uppercase; color: var(--text-success-hover); padding: var(--scale-300) var(--scale-400) 0; }
 .ws-pane__body { padding: var(--scale-300) var(--scale-400) var(--scale-400); }

@@ -45,27 +45,19 @@
     { id: "customers",  label: "Customers 360", render: viewCustomers },
     { id: "reports",    label: "Reports & close", render: viewReports },
   ];
-  // Product chrome around the functional section (non-routing in this prototype)
-  const NAV_TOP = [{ label: "Dashboard", icon: "dashboard" }, { label: "Reporting", icon: "reporting" }, { label: "AR Forecast", icon: "forecast" }];
-  const NAV_BOTTOM = [{ label: "Freight", icon: "freight" }, { label: "Ask Neo", icon: "ask" }, { label: "Vendor Onboarding", icon: "vendor" }, { label: "Driver Onboarding", icon: "driver" }, { label: "Finance OS", icon: "finance" }];
-
   function buildNav() {
     const nav = $("#sidebar-nav");
-    const muted = (it) => `<button class="navlink navlink--muted" data-muted="${it.label}" title="${it.label} (not in this prototype)">${icon(it.icon)}<span>${it.label}</span></button>`;
     const subs = routes.map((r) =>
       `<button class="navsub" data-route="${r.id}" title="${r.label}"><span class="navsub__dot"></span><span>${r.label}</span></button>`).join("");
     nav.innerHTML = `
-      ${NAV_TOP.map(muted).join("")}
       <div class="navgroup" id="navgroup-cashapp">
         <button class="navlink navlink--group is-open" id="cashapp-toggle">
           ${icon("cashapp")}<span>Cash Application</span>
           <svg class="navlink__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
         </button>
         <div class="navsubs" id="cashapp-subs">${subs}</div>
-      </div>
-      ${NAV_BOTTOM.map(muted).join("")}`;
+      </div>`;
     nav.querySelectorAll(".navsub").forEach((a) => { a.onclick = () => { location.hash = "#/" + a.dataset.route; }; });
-    nav.querySelectorAll(".navlink--muted").forEach((a) => { a.onclick = () => toast(`${a.dataset.muted} is outside this Cash Application prototype`); });
     const grp = nav.querySelector("#cashapp-toggle");
     grp.onclick = () => { nav.querySelector("#navgroup-cashapp").classList.toggle("collapsed"); grp.classList.toggle("is-open"); };
   }
@@ -123,7 +115,8 @@
         </div>
         <div class="kpi__label">${k.label}</div>
         <div class="kpi__value">${k.value} <span class="kpi__trend ${k.deltaTone === "up" ? "up" : "down"}">${k.delta}</span></div>
-        <div class="kpi__sub">${k.sub || ""}${k.drill ? ` · <span class="kpi__drill">view breakdown →</span>` : ""}</div>
+        <div class="kpi__sub">${k.sub || ""}</div>
+        ${k.drill ? `<div class="kpi__drill">View breakdown →</div>` : ""}
       </div>`).join("");
 
     const maxAge = Math.max(...db.ageing.map((b) => b.amount));
@@ -567,14 +560,14 @@
     const rows = list.slice().sort((a, b) => b.ageDays - a.ageDays).map((u) => `
       <tr>
         <td class="muted" style="white-space:nowrap">${u.date}</td>
-        <td><div class="cell-main">${u.desc}</div><div class="cell-sub">${u.customer} · ${u.id}</div></td>
+        <td><div class="cell-main">${u.customer}</div><div class="cell-sub">${u.desc} · ${u.id}</div></td>
         <td class="num strong">${fmt(u.amount, ccy)}</td>
         <td>${pill(u.ageDays + "d", u.tone)}</td>
         <td>${pill(u.reason, u.tone)}</td>
-        <td class="t-right">
-          <button class="btn btn--ghost btn--sm" onclick="location.hash='#/workspace'">Apply</button>
+        <td class="t-right"><div class="row-actions">
+          <button class="btn btn--primary btn--sm" onclick="location.hash='#/workspace'">Apply</button>
           <button class="btn btn--ghost btn--sm">Refund</button>
-        </td>
+        </div></td>
       </tr>`).join("");
 
     content.innerHTML = `
@@ -589,8 +582,9 @@
       <div class="section" ${dc("ua.table", "Unapplied · On-account ledger")}>
         <div class="card">
           <div class="card__head"><div class="card__title">On-account ledger — bank statement, oldest first</div><span class="muted" style="font-size:12px">${list.length} line items</span></div>
-          <div class="card__body card__body--flush"><div class="table-wrap table-scroll"><table class="tbl">
-            <thead><tr><th>Value date</th><th>Description</th><th class="num">Amount</th><th>Age</th><th>Reason / exception type</th><th class="t-right">Action</th></tr></thead>
+          <div class="card__body card__body--flush"><div class="table-wrap table-scroll"><table class="tbl tbl--fixed">
+            <colgroup><col style="width:11%"><col style="width:34%"><col style="width:14%"><col style="width:9%"><col style="width:18%"><col style="width:14%"></colgroup>
+            <thead><tr><th>Value date</th><th>Customer / description</th><th class="num">Amount</th><th>Age</th><th>Reason / exception type</th><th class="t-right">Action</th></tr></thead>
             <tbody>${rows}</tbody>
           </table></div></div>
         </div>
@@ -617,7 +611,7 @@
     const total = ded.reduce((s, d) => s + d.amount, 0);
     setTopbar("Deductions / claims", "Coded short-payments carried into the claims workflow",
       `<span class="topbar__chip"><span>Entity</span> ${currentEntity().name}</span><span class="topbar__chip"><span>Open value</span> ${D.fmtCompact(total, ccy)}</span><span class="topbar__chip"><span>Items</span> ${ded.length}</span>`,
-      `<button class="btn btn--primary">+ New deduction</button>`);
+      "");
 
     const rows = ded.map((d) => `
       <tr>
@@ -728,8 +722,8 @@
     const custs = D.customersFor(selectedEntityId);
     const autoApply = parseInt(db.kpis[0].value), custId = parseInt(db.kpis[1].value);
     setTopbar("Reports & close", "Success metrics, trends and the close pack — all in " + ccy,
-      `<span class="topbar__chip"><span>Entity</span> ${currentEntity().name}</span><span class="topbar__chip"><span>Period</span> Quarter to date</span>`,
-      `<button class="btn btn--ghost">Export close pack</button>`);
+      `<span class="topbar__chip"><span>Entity</span> ${currentEntity().name}</span><span class="topbar__chip"><span>Processed till</span> <b>${D.lastStatementDate}</b></span>`,
+      "");
 
     // derive 12-week trends from the entity seed so they tie to the KPIs
     const wk = (end, span) => Array.from({ length: 12 }, (_, i) => Math.round((end - span) + span * (i / 11)));
