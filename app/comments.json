@@ -8,11 +8,11 @@
     "yPct": 40,
     "author": "Verify Bot",
     "text": "round-trip verification — safe to ignore",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T09:33:25.558Z",
-    "updatedAt": "2026-06-09T09:33:25.564Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-09T09:33:27.588Z",
+    "resolvedAt": "2026-06-09T09:33:27.588Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "verified"
   }
 ]
