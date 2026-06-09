@@ -280,12 +280,12 @@
     "yPct": 8.974613906011799,
     "author": "SME",
     "text": "this should show the total list and not just 5 line items",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T10:46:58.738Z",
-    "updatedAt": "2026-06-09T10:46:58.741Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-09T11:08:30.472Z",
+    "resolvedAt": "2026-06-09T11:08:30.472Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Aged-unapplied queue now shows the full list (13 items) with a count in the header, not just 5."
   },
   {
     "id": "c_4zcsuqft7rq",
