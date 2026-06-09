@@ -414,5 +414,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_o0qiasc0hsw",
+    "route": "#/dashboard",
+    "anchor": "dash.queue",
+    "anchorLabel": "Dashboard · Aged unapplied work queue",
+    "xPct": 82.97872340425532,
+    "yPct": 4.943748447315186,
+    "author": "SME",
+    "text": "give sorting based on date and amount on this table",
+    "status": "open",
+    "createdAt": "2026-06-09T12:50:02.144Z",
+    "updatedAt": "2026-06-09T12:50:02.144Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
