@@ -510,5 +510,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_njjsloxdv7m",
+    "route": "#/workspace",
+    "anchor": "ws.allocation",
+    "anchorLabel": "Workspace · Open invoices & proposed allocation",
+    "xPct": 32.11009174311927,
+    "yPct": 84.37199782799382,
+    "author": "SME",
+    "text": "the yes confirm should also behave like a real flow",
+    "status": "open",
+    "createdAt": "2026-06-09T13:00:26.050Z",
+    "updatedAt": "2026-06-09T13:00:26.050Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
