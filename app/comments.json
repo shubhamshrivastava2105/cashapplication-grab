@@ -254,5 +254,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_7fecm87m019",
+    "route": "#/unapplied",
+    "anchor": "ua.table",
+    "anchorLabel": "Unapplied · On-account ledger",
+    "xPct": 24.604569420035148,
+    "yPct": 13.75437824932854,
+    "author": "SME",
+    "text": "the entire column needs to be improved from the ui and ux point of view",
+    "status": "open",
+    "createdAt": "2026-06-09T12:10:46.317Z",
+    "updatedAt": "2026-06-09T12:10:46.317Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
