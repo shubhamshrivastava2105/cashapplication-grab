@@ -232,12 +232,12 @@
     "yPct": 13.75437824932854,
     "author": "SME",
     "text": "the entire column needs to be improved from the ui and ux point of view",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T12:10:46.317Z",
-    "updatedAt": "2026-06-09T12:10:46.317Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-09T12:35:51.084Z",
+    "resolvedAt": "2026-06-09T12:35:51.084Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "On-account ledger columns reworked: fixed widths, customer-first description, cleaner layout."
   },
   {
     "id": "c_k4wr502q0j4",
