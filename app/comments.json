@@ -350,5 +350,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_30l5iui4ruk",
+    "route": "#/workspace",
+    "anchor": "ws.queue",
+    "anchorLabel": "Workspace · Credit queue",
+    "xPct": 31.028368794326237,
+    "yPct": 7.957932385250787,
+    "author": "SME",
+    "text": "The first half of the screen should show all the open and unapplied cash Received in the bank statement.",
+    "status": "open",
+    "createdAt": "2026-06-09T11:01:23.324Z",
+    "updatedAt": "2026-06-09T11:01:23.327Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
