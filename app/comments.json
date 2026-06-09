@@ -304,22 +304,6 @@
     "resolutionNote": "Removed the Export button from Reports."
   },
   {
-    "id": "c_yjgkhkpviut",
-    "route": "#/dashboard",
-    "anchor": "dash.kpis",
-    "anchorLabel": "Dashboard · KPI tiles",
-    "xPct": 65.26073619631902,
-    "yPct": 81.45072536268134,
-    "author": "SME",
-    "text": "can we keep the view breakdown button down. \n\nit looks visually noisy right now",
-    "status": "resolved",
-    "createdAt": "2026-06-09T12:18:10.614Z",
-    "updatedAt": "2026-06-09T12:35:57.021Z",
-    "resolvedAt": "2026-06-09T12:35:57.021Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "Moved \"View breakdown\" to its own line at the bottom of the KPI card (separated by a divider) — less visually noisy."
-  },
-  {
     "id": "c_q4giaajpt0l",
     "route": "#/dashboard",
     "anchor": "dash.kpis",
