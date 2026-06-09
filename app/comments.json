@@ -302,5 +302,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_rfhbyodrwq0",
+    "route": "#/reports",
+    "anchor": "page",
+    "anchorLabel": "Page / navigation",
+    "xPct": 86.75862068965517,
+    "yPct": 3.211517165005537,
+    "author": "SME",
+    "text": "is this period making sense? is it consistent with the other tabs?",
+    "status": "open",
+    "createdAt": "2026-06-09T12:15:21.960Z",
+    "updatedAt": "2026-06-09T12:15:21.960Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
