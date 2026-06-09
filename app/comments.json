@@ -430,5 +430,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_k6xypu71sxp",
+    "route": "#/dashboard",
+    "anchor": "dash.queue",
+    "anchorLabel": "Dashboard · Aged unapplied work queue",
+    "xPct": 29.343971631205672,
+    "yPct": 17.81476618045451,
+    "author": "SME",
+    "text": "make the description look real - as it comes on the bank statements. it should look exactly like it comes on statement. it doesn't come like this.",
+    "status": "open",
+    "createdAt": "2026-06-09T12:51:03.229Z",
+    "updatedAt": "2026-06-09T12:51:03.229Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
