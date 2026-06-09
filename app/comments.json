@@ -248,12 +248,12 @@
     "yPct": 4.4296788482834994,
     "author": "SME",
     "text": "the data should also be in the currency the entity is in.",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T11:15:18.390Z",
-    "updatedAt": "2026-06-09T11:15:18.390Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-09T11:36:18.294Z",
+    "resolvedAt": "2026-06-09T11:36:18.294Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "All amounts now render in the selected entity currency (SGD/MYR/IDR/THB/PHP)."
   },
   {
     "id": "c_jea9qpcncm4",
