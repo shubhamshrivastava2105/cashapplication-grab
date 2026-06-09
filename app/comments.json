@@ -192,22 +192,6 @@
     "resolutionNote": "Latest date is now 08 Jun 2026; statement dates rebased to it."
   },
   {
-    "id": "c_6j5uanmw4mg",
-    "route": "#/dashboard",
-    "anchor": "dash.kpis",
-    "anchorLabel": "Dashboard · KPI tiles",
-    "xPct": 63.652482269503544,
-    "yPct": 65.19489786816519,
-    "author": "SME",
-    "text": "show amount instead of count for aged",
-    "status": "resolved",
-    "createdAt": "2026-06-09T12:46:38.440Z",
-    "updatedAt": "2026-06-09T13:06:16.354Z",
-    "resolvedAt": "2026-06-09T13:06:16.354Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "Unapplied tile now shows the aged AMOUNT (> 30d) instead of a count."
-  },
-  {
     "id": "c_dtcwkr2y2e8",
     "route": "#/dashboard",
     "anchor": "dash.kpis",
