@@ -14,5 +14,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_uc8ztwxdvjp",
+    "route": "#/dashboard",
+    "anchor": "dash.queue",
+    "anchorLabel": "Dashboard · Aged unapplied work queue",
+    "xPct": 55.52147239263804,
+    "yPct": 19.66372815448178,
+    "author": "SME",
+    "text": "column spacing is not consistent",
+    "status": "open",
+    "createdAt": "2026-06-09T10:12:28.790Z",
+    "updatedAt": "2026-06-09T10:12:28.792Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
