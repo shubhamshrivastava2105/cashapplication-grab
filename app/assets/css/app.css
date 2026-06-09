@@ -376,6 +376,10 @@ body.cmt-placing #content, body.cmt-placing #content * { cursor: crosshair !impo
   box-shadow: var(--shadow-medium);
 }
 
+/* full-viewport layer for pins on page chrome (sidebar/topbar/outside content) */
+.cmt-page-layer { position: fixed; inset: 0; z-index: 41; pointer-events: none; }
+.cmt-page-layer .cmt-pin { pointer-events: auto; }
+
 /* pins (positioned within their anchor via %) */
 .cmt-pin {
   position: absolute; transform: translate(-50%, -50%); z-index: 40;

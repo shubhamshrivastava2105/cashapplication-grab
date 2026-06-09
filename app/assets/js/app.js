@@ -34,10 +34,9 @@
 
   function buildNav() {
     const nav = $("#sidebar-nav");
-    nav.innerHTML = routes.map((r) => {
-      const b = r.badge ? r.badge() : null;
-      return `<button class="navlink" data-route="${r.id}" title="${r.label}">${icon(r.id)}<span>${r.label}</span>${b ? `<span class="navlink__badge">${b}</span>` : ""}</button>`;
-    }).join("");
+    nav.innerHTML = routes.map((r) =>
+      `<button class="navlink" data-route="${r.id}" title="${r.label}">${icon(r.id)}<span>${r.label}</span></button>`
+    ).join("");
     nav.querySelectorAll(".navlink").forEach((a) => {
       a.onclick = () => { location.hash = "#/" + a.dataset.route; };
     });

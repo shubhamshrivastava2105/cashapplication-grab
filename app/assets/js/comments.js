@@ -99,17 +99,24 @@ window.COMMENTS = (function () {
     // ignore clicks on the toolbar / existing overlay UI
     if (e.target.closest(".cmt-tools, .cmt-pop, .cmt-list, .cmt-composer, .cmt-pin")) return;
     e.preventDefault(); e.stopPropagation();
-    const anchorEl = e.target.closest("#content [data-comment]") || document.getElementById("content");
-    const isSection = anchorEl.hasAttribute && anchorEl.hasAttribute("data-comment");
-    const rect = anchorEl.getBoundingClientRect();
-    const xPct = ((e.clientX - rect.left) / rect.width) * 100;
-    const yPct = ((e.clientY - rect.top) / rect.height) * 100;
-    openComposer(e.clientX, e.clientY, {
-      route: route(),
-      anchor: isSection ? anchorEl.getAttribute("data-comment") : "screen",
-      anchorLabel: isSection ? (anchorEl.getAttribute("data-comment-label") || "") : routeLabel(),
-      xPct, yPct,
-    });
+    const content = document.getElementById("content");
+    const section = e.target.closest("#content [data-comment]");
+    let ctx;
+    if (section) {
+      const rect = section.getBoundingClientRect();
+      ctx = { anchor: section.getAttribute("data-comment"), anchorLabel: section.getAttribute("data-comment-label") || "",
+              xPct: ((e.clientX - rect.left) / rect.width) * 100, yPct: ((e.clientY - rect.top) / rect.height) * 100 };
+    } else if (content.contains(e.target)) {
+      const rect = content.getBoundingClientRect();
+      ctx = { anchor: "screen", anchorLabel: routeLabel(),
+              xPct: ((e.clientX - rect.left) / rect.width) * 100, yPct: ((e.clientY - rect.top) / rect.height) * 100 };
+    } else {
+      // clicked outside the main content (sidebar / topbar / page chrome) →
+      // anchor to the viewport so the pin lands exactly where clicked
+      ctx = { anchor: "page", anchorLabel: "Page / navigation",
+              xPct: (e.clientX / window.innerWidth) * 100, yPct: (e.clientY / window.innerHeight) * 100 };
+    }
+    openComposer(e.clientX, e.clientY, { route: route(), ...ctx });
   }
 
   function routeLabel() {
@@ -171,14 +178,21 @@ window.COMMENTS = (function () {
   }
 
   // ── Pins ────────────────────────────────────────────────────────────────
+  function pageLayer() {
+    let l = document.getElementById("cmt-page-layer");
+    if (!l) { l = document.createElement("div"); l.id = "cmt-page-layer"; l.className = "cmt-page-layer"; document.body.appendChild(l); }
+    return l;
+  }
+
   function refresh() {
     document.querySelectorAll(".cmt-pin:not(.cmt-pin--draft)").forEach((p) => p.remove());
     visibleOnRoute().forEach((c) => {
-      const anchorEl = c.anchor === "screen"
-        ? document.getElementById("content")
-        : document.querySelector(`#content [data-comment="${cssEsc(c.anchor)}"]`);
+      let anchorEl;
+      if (c.anchor === "page") anchorEl = pageLayer();
+      else if (c.anchor === "screen") anchorEl = document.getElementById("content");
+      else anchorEl = document.querySelector(`#content [data-comment="${cssEsc(c.anchor)}"]`);
       if (!anchorEl) return;
-      if (getComputedStyle(anchorEl).position === "static") anchorEl.style.position = "relative";
+      if (anchorEl.id !== "cmt-page-layer" && getComputedStyle(anchorEl).position === "static") anchorEl.style.position = "relative";
       const pin = document.createElement("button");
       pin.className = "cmt-pin cmt-pin--" + c.status;
       pin.dataset.id = c.id;
