@@ -16,22 +16,6 @@
     "resolutionNote": "Replaced the dummy \"Acme Retail\" with a realistic SEA name (Sinar Jaya Retail Pte Ltd) across customers, receipts, unapplied, deductions and aliases. Other customers were already real SEA names (Lazada, Sea Group, Shopee, Tokopedia, Bukalapak)."
   },
   {
-    "id": "c_21giw591foj",
-    "route": "#/dashboard",
-    "anchor": "dash.kpis",
-    "anchorLabel": "Dashboard · KPI tiles",
-    "xPct": 45.39007092198582,
-    "yPct": 79.5997003103928,
-    "author": "SME",
-    "text": "when clicked on this - it should open details modal- line by line and the data should match to 1.24m\n\nit should show the bank account, date, descripation, and amount",
-    "status": "resolved",
-    "createdAt": "2026-06-09T10:30:47.971Z",
-    "updatedAt": "2026-06-09T11:36:27.778Z",
-    "resolvedAt": "2026-06-09T11:36:27.778Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "Unapplied tile opens a line-by-line modal (date, description, customer, amount) whose total ties exactly to the tile."
-  },
-  {
     "id": "c_igdw0sl8j3s",
     "route": "#/dashboard",
     "anchor": "dash.pipeline",
