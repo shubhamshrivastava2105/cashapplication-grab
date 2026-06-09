@@ -296,12 +296,12 @@
     "yPct": 4.651162790697675,
     "author": "SME",
     "text": "show latest date - 8th june",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T12:44:41.133Z",
-    "updatedAt": "2026-06-09T12:44:41.133Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-09T13:06:13.470Z",
+    "resolvedAt": "2026-06-09T13:06:13.470Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Latest date is now 08 Jun 2026; statement dates rebased to it."
   },
   {
     "id": "c_g1buyqsu63e",
