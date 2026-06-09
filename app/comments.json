@@ -144,22 +144,6 @@
     "resolutionNote": "Tables now fill the available height (scroll area = viewport-based), removing the blank space at the bottom."
   },
   {
-    "id": "c_wgd13mfqqg8",
-    "route": "#/workspace",
-    "anchor": "screen",
-    "anchorLabel": "Apply cash",
-    "xPct": 62.5,
-    "yPct": 91.72825686414929,
-    "author": "SME",
-    "text": "can we keep all the 3 boxes consistent and not of different sizes",
-    "status": "resolved",
-    "createdAt": "2026-06-09T12:14:27.176Z",
-    "updatedAt": "2026-06-09T12:35:53.569Z",
-    "resolvedAt": "2026-06-09T12:35:53.569Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "The three workspace panes are now equal height (stretch)."
-  },
-  {
     "id": "c_rfhbyodrwq0",
     "route": "#/reports",
     "anchor": "page",
