@@ -312,12 +312,12 @@
     "yPct": 9.82071180090982,
     "author": "SME",
     "text": "remove last run from each section",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T12:45:07.034Z",
-    "updatedAt": "2026-06-09T12:45:07.034Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-09T13:06:15.126Z",
+    "resolvedAt": "2026-06-09T13:06:15.126Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Removed the Last run indicator from the KPI cards."
   },
   {
     "id": "c_6j5uanmw4mg",
