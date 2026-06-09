@@ -96,22 +96,6 @@
     "resolutionNote": "Added the bank-account manager to the left nav: add multiple accounts per entity, each fed by MT940 direct feed or manual upload."
   },
   {
-    "id": "c_o6mei24m8qa",
-    "route": "#/dashboard",
-    "anchor": "dash.queue",
-    "anchorLabel": "Dashboard · Aged unapplied work queue",
-    "xPct": 37.5886524822695,
-    "yPct": 8.974613906011799,
-    "author": "SME",
-    "text": "this should show the total list and not just 5 line items",
-    "status": "resolved",
-    "createdAt": "2026-06-09T10:46:58.738Z",
-    "updatedAt": "2026-06-09T11:08:30.472Z",
-    "resolvedAt": "2026-06-09T11:08:30.472Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "Aged-unapplied queue now shows the full list (13 items) with a count in the header, not just 5."
-  },
-  {
     "id": "c_4zcsuqft7rq",
     "route": "#/workspace",
     "anchor": "ws.gap",
