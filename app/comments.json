@@ -590,5 +590,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_s6zept5iykn",
+    "route": "#/workspace",
+    "anchor": "ws.gap",
+    "anchorLabel": "Workspace · Gap classification & actions",
+    "xPct": 36.470588235294116,
+    "yPct": 58.97623324004845,
+    "author": "SME",
+    "text": "bank charge, discount/rebate will be on a total level",
+    "status": "open",
+    "createdAt": "2026-06-09T13:04:23.687Z",
+    "updatedAt": "2026-06-09T13:04:23.687Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
