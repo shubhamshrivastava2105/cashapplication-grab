@@ -414,5 +414,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_9ofaqi6iyjv",
+    "route": "#/dashboard",
+    "anchor": "dash.kpis",
+    "anchorLabel": "Dashboard · KPI tiles",
+    "xPct": 35.726950354609926,
+    "yPct": 16.25672119894749,
+    "author": "SME",
+    "text": "customer identification instead of just identification rate.",
+    "status": "open",
+    "createdAt": "2026-06-09T11:40:24.811Z",
+    "updatedAt": "2026-06-09T11:40:24.811Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
