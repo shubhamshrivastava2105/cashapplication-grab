@@ -96,22 +96,6 @@
     "resolutionNote": "Manual upload now opens the file system to choose a statement file; the filename is shown and stored with the account."
   },
   {
-    "id": "c_dypqh1zm4ed",
-    "route": "#/dashboard",
-    "anchor": "page",
-    "anchorLabel": "Page / navigation",
-    "xPct": 67.17241379310344,
-    "yPct": 4.097452934662237,
-    "author": "SME",
-    "text": "the data is not changing based on the entity and everything should match",
-    "status": "open",
-    "createdAt": "2026-06-09T11:14:52.741Z",
-    "updatedAt": "2026-06-09T11:40:46.763Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
-  },
-  {
     "id": "c_uw6p2wfmo6u",
     "route": "#/dashboard",
     "anchor": "page",
