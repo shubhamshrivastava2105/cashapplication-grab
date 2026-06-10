@@ -232,12 +232,12 @@
     "yPct": 35.50677701811203,
     "author": "SME",
     "text": "on account should be disabled when the amount received is lesser than invoice amount. the apply and post should also be disabled",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-10T09:58:43.271Z",
-    "updatedAt": "2026-06-10T09:58:43.273Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-10T10:33:41.950Z",
+    "resolvedAt": "2026-06-10T10:33:41.950Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "On-account is now disabled unless the receipt is an overpayment (cash received exceeds the invoices). When cash is short, on-account is greyed out and the gap must be explained via WHT/discount/bank charge/rebate; Apply & post stays disabled until the receipt balances."
   },
   {
     "id": "c_a2stnb4date",
