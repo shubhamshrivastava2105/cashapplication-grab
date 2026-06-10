@@ -145,13 +145,13 @@ window.DATA = (function () {
     const autoApplyDelta = 3 + (seed % 7), idDelta = 1 + (seed % 5);
     const kpis = [
       { key: "autoApply",  label: "Auto-apply rate",         value: autoApply + "%", exact: autoApply + "%", tone: "good", accent: "success", delta: "▲ " + autoApplyDelta + " pts QoQ", deltaTone: "up",
-        sub: "Quarter to date · " + lastStatementDate, info: "Share of cash applied with no human touch this quarter — the headline efficiency metric." },
+        sub: "Quarter to date · " + lastStatementDate, info: "The share of incoming cash Neoflo matched to invoices and posted automatically this quarter — with no analyst touch." },
       { key: "custId",     label: "Customer identification", value: custId + "%",   exact: custId + "%", tone: "good", accent: "primary", delta: "▲ " + idDelta + " pts QoQ", deltaTone: "up",
-        sub: "Quarter to date · " + lastStatementDate, info: "Share of incoming credits attributed to a customer (the O2C floor metric — identity is the minimum viable outcome)." },
+        sub: "Quarter to date · " + lastStatementDate, info: "The share of incoming payments Neoflo attributed to a customer. Identifying the payer is the first step before cash can be applied." },
       { key: "unapplied",  label: "Unapplied cash",          value: fmtCompact(totalUnapplied, ccy), exact: fmt(totalUnapplied, ccy), tone: "warn", accent: "brand", delta: "▼ 4% QoQ", deltaTone: "up", drill: "unapplied",
-        sub: `${N} on-account · ${fmtCompact(amtOver30, ccy)} aged > 30d`, info: "On-account cash identified but not yet matched to invoices. Click for the line-by-line breakdown." },
+        sub: `${N} on-account · ${fmtCompact(amtOver30, ccy)} aged > 30d`, info: "Cash received and identified to a customer but not yet matched to invoices — it sits on-account until applied. Click for the line-by-line breakdown." },
       { key: "exceptions", label: "Open exceptions",         value: String(N), exact: N + " exceptions", tone: "warn", accent: "error", delta: "▼ " + (4 + seed % 9) + " QoQ", deltaTone: "up", drill: "exceptions",
-        sub: "Open · needs analyst action", info: "Credits needing analyst attention, grouped by exception type. Click for the breakdown." },
+        sub: "Open · needs analyst action", info: "Payments Neoflo couldn't auto-apply — these need an analyst to review and classify. Click for the breakdown by exception type." },
     ];
     const res = { ent, ccy, count: N, list, byType, ageing, totalUnapplied, kpis };
     _cache[entityId] = res;
@@ -357,13 +357,13 @@ window.DATA = (function () {
   // breakdown; `info` powers the (i) tooltip.
   const kpis = [
     { key: "autoApply",  label: "Auto-apply rate",     value: "78%",       tone: "good", delta: "▲ 6 pts QoQ", deltaTone: "up",
-      info: "Share of cash applied with no human touch this quarter — the headline efficiency metric." },
+      info: "The share of incoming cash Neoflo matched to invoices and posted automatically this quarter — with no analyst touch." },
     { key: "idRate",     label: "Identification rate", value: "94%",       tone: "good", delta: "▲ 3 pts QoQ", deltaTone: "up",
-      info: "Share of incoming credits attributed to a customer. The floor metric — identity is the minimum viable outcome." },
+      info: "The share of incoming payments Neoflo attributed to a customer. Identifying the payer is the first step before cash can be applied." },
     { key: "unapplied",  label: "Unapplied cash",      value: "SGD 1.24M", tone: "warn", delta: "▼ 4% QoQ",   deltaTone: "up", drill: "unapplied",
-      info: "On-account / advance cash that is identified but not yet matched to invoices. Click for the line-by-line breakdown." },
+      info: "Cash received and identified to a customer but not yet matched to invoices — it sits on-account until applied. Click for the line-by-line breakdown." },
     { key: "exceptions", label: "Open exceptions",     value: "250",       tone: "warn", delta: "▼ 12 QoQ",   deltaTone: "up", drill: "exceptions",
-      info: "Credits needing analyst attention, grouped by exception type. Click for the breakdown." },
+      info: "Payments Neoflo couldn't auto-apply — these need an analyst to review and classify. Click for the breakdown by exception type." },
   ];
 
   // Line-by-line drill-downs behind clickable KPI tiles
