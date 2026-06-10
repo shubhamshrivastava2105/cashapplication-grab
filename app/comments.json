@@ -296,12 +296,12 @@
     "yPct": 78.62001943634597,
     "author": "SME",
     "text": "the remittance advice should be a pdf that comes from the SAP in the from of pdf that has lot of details like remittence party name, invoice number, date, swift code etc",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T13:29:12.862Z",
-    "updatedAt": "2026-06-09T13:29:12.862Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-10T07:34:14.609Z",
+    "resolvedAt": "2026-06-10T07:34:14.609Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Remittance is now a detailed SAP/PDF-style advice: remitting party + beneficiary, SWIFT/BIC, invoice no/date/due, gross/WHT/paid, bank narration."
   },
   {
     "id": "c_3na4tp2g3kk",
