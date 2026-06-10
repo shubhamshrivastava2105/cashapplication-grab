@@ -177,12 +177,12 @@ body.nav-collapsed .sidebar__user-meta { display: none; }
   position: sticky; top: 0; z-index: 30;
 }
 .topbar__titles { min-width: 0; }
-.topbar__title { font-size: 20px; font-weight: var(--font-weight-bold); color: var(--text-default-heading); letter-spacing: -.3px; }
-.topbar__subtitle { font-size: 13px; color: var(--text-default-caption); }
+.topbar__title { font-size: 20px; font-weight: var(--font-weight-bold); color: var(--text-default-heading); letter-spacing: -.3px; white-space: nowrap; }
+.topbar__subtitle { font-size: 13px; color: var(--text-default-caption); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .topbar__spacer { flex: 1; }
-.topbar__meta { display: flex; gap: var(--scale-300); align-items: center; }
+.topbar__meta { display: flex; gap: var(--scale-300); align-items: center; flex-wrap: nowrap; flex-shrink: 0; }
 .topbar__chip {
-  display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-default-body);
+  display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-default-body); white-space: nowrap;
   background: var(--grey-75); border: 1px solid var(--border-default-default);
   padding: 6px var(--scale-250); border-radius: var(--radius-full); font-weight: var(--font-weight-medium);
 }

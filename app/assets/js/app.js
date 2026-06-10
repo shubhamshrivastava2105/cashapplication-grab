@@ -129,14 +129,13 @@
     const totalUnapplied = openList.reduce((s, x) => s + x.amount, 0);
     const over30 = openList.filter((x) => x.ageDays > 30).reduce((s, x) => s + x.amount, 0);
     const count = openList.length;
-    setTopbar("Cash Application Dashboard", "Daily health — applied, identified, unapplied, exceptions",
+    setTopbar("Dashboard", "Daily health — applied, identified, unapplied, exceptions",
       `<label class="topbar__chip topbar__chip--select"><span>Entity</span>
          <select id="entity-select" aria-label="Select entity">
            ${D.entities.map((e) => `<option value="${e.id}" ${e.id === selectedEntityId ? "selected" : ""}>${e.name}</option>`).join("")}
          </select>
        </label>
        <span class="topbar__chip"><span>Processed till</span> <b id="period-chip">${D.lastStatementDate}</b></span>
-       <span class="topbar__chip"><span>Currency</span> <b id="currency-chip">${ccy}</b></span>
        ${bankSelectChip()}`,
       uploadStmtAction());
 
