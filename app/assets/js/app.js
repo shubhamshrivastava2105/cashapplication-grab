@@ -77,7 +77,6 @@
   // ── small render helpers ──────────────────────────────────────────────────
   const fmt = D.fmt;
   const pill = (text, tone) => `<span class="pill pill--${tone}">${text}</span>`;
-  function dc(id, label) { return `data-comment="${id}" data-comment-label="${label}"`; }
   function escapeAttr(s) { return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
   function initialsOf(name) { return String(name || "").split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join("").toUpperCase(); }
   function emptyState(title, hint) {
@@ -184,11 +183,11 @@
       MONTHS12.slice(12 - keep));
 
     content.innerHTML = `
-      <div class="section" ${dc("dash.kpis", "Dashboard · KPI tiles")}>
+      <div class="section">
         <div class="kpis">${kpis}</div>
       </div>
 
-      <div class="section" ${dc("dash.trend", "Dashboard · Auto-apply & identification trend")}>
+      <div class="section">
         <div class="card">
           <div class="card__head"><div class="card__title">Auto-apply rate &amp; customer identification — trend</div>
             <div class="seg" id="tf-seg">${[3, 6, 12].map((m) => `<button class="seg__btn ${dashTf === m ? "on" : ""}" data-tf="${m}">${m}m</button>`).join("")}</div>
@@ -204,17 +203,17 @@
       </div>
 
       <div class="grid" style="grid-template-columns: 1fr 1fr; align-items:start">
-        <div class="card" ${dc("dash.ageing", "Dashboard · Unapplied cash ageing")}>
+        <div class="card">
           <div class="card__head"><div class="card__title">Unapplied cash ageing — ${D.fmtCompact(db.totalUnapplied, ccy)}</div></div>
           <div class="card__body"><div class="hbars hbars--age">${ageBars}</div></div>
         </div>
-        <div class="card" ${dc("dash.exceptions", "Dashboard · Exceptions by type")}>
+        <div class="card">
           <div class="card__head"><div class="card__title">Exceptions by type</div><span class="muted" style="font-size:12px">${db.count} total · count · amount</span></div>
           <div class="card__body"><div class="hbars">${hbars}</div></div>
         </div>
       </div>
 
-      <div class="section" style="margin-top:var(--scale-300)" ${dc("dash.queue", "Dashboard · Aged unapplied work queue")}>
+      <div class="section" style="margin-top:var(--scale-300)">
         <div class="card">
           <div class="card__head"><div class="card__title">Bank statement — aged unapplied credits (oldest first)</div><span class="muted" style="font-size:12px">${db.list.length} line items</span></div>
           <div class="card__body card__body--flush"><div class="table-wrap table-scroll"><table class="tbl tbl--fixed">
@@ -231,7 +230,7 @@
       const first = banksForEntity()[0]; if (first) selectedBankId = first.id;
       syncSidebarContext();
       viewDashboard();                 // re-render so ALL data + currency follow the entity
-      if (window.COMMENTS) COMMENTS.refresh();
+
       toast(`Entity → ${currentEntity().name} · ${currentEntity().currency}`);
     };
     wireBankBar();
@@ -246,11 +245,11 @@
       th.onclick = () => {
         const k = th.dataset.sort;
         if (dashSort.key === k) dashSort.dir *= -1; else { dashSort.key = k; dashSort.dir = -1; }
-        viewDashboard(); if (window.COMMENTS) COMMENTS.refresh();
+        viewDashboard();
       };
     });
     content.querySelectorAll("#tf-seg .seg__btn").forEach((b) => {
-      b.onclick = () => { dashTf = +b.dataset.tf; viewDashboard(); if (window.COMMENTS) COMMENTS.refresh(); };
+      b.onclick = () => { dashTf = +b.dataset.tf; viewDashboard(); };
     });
   }
 
@@ -346,7 +345,7 @@
       </tr>`).join("");
 
     content.innerHTML = `
-      <div class="section" ${dc("ws.queue", "Workspace · Credit queue")}>
+      <div class="section">
         <div class="card">
           <div class="card__head"><div class="card__title">Bank statement — open &amp; unapplied credits</div><span class="muted" style="font-size:12px">${db.list.length} lines</span></div>
           <div class="card__body card__body--flush"><div class="table-wrap ws-queue-scroll" id="ws-queue-scroll"><table class="tbl tbl--fixed">
@@ -360,7 +359,7 @@
 
     wireBankBar();
     content.querySelectorAll(".queue-row").forEach((row) => {
-      row.onclick = () => { activeReceiptId = row.dataset.rid; viewWorkspace(); window.COMMENTS && COMMENTS.refresh(); };
+      row.onclick = () => { activeReceiptId = row.dataset.rid; viewWorkspace(); };
     });
     const arow = content.querySelector(".queue-row.is-active");
     if (arow) arow.scrollIntoView({ block: "nearest" });
@@ -403,7 +402,7 @@
       : `<div class="muted">No remittance advice matched to this credit yet.</div>`;
 
     const left = `
-      <div class="ws-pane ws-pane--credit" ${dc("ws.credit", "Workspace · The credit + identified customer")}>
+      <div class="ws-pane ws-pane--credit">
         <div class="credit-cols">
           <div class="credit-col">
             <div class="ws-pane__title" style="padding:0 0 var(--scale-200)">The credit</div>
@@ -496,7 +495,7 @@
       </tr>`; }).join("") : `<tr><td colspan="7">${emptyState("No open invoices to allocate", "Identify the customer first — the credit is in suspense.")}</td></tr>`;
 
     const mid = `
-      <div class="ws-pane" ${dc("ws.allocation", "Workspace · Open invoices & proposed allocation")}>
+      <div class="ws-pane">
         <div class="ws-pane__title">Open invoices — proposed allocation</div>
         <p class="gap-explain" style="padding:0 var(--scale-400)">Edit <b>Applied</b> to part-pay an invoice — the balance stays open. WHT / discount are deductions on the cleared portion.</p>
         <div class="table-wrap" style="padding:8px 8px 0"><table class="tbl tbl--fixed alloc-tbl">
@@ -527,7 +526,7 @@
     const rebateType = r.gap.rebateType || "Rebate";
     const rebTypes = ["Rebate", "Agreed deduction", "Claim", "GST/VAT"];
     const right = `
-      <div class="ws-pane" ${dc("ws.gap", "Workspace · Gap classification & actions")}>
+      <div class="ws-pane">
         <div class="ws-pane__title">Gap classification</div>
         <div class="ws-pane__body">
           <p class="gap-explain">WHT &amp; discount are taken <b>per invoice</b> (allocation table). Bank charge, rebate/deduction and on-account are <b>total-level</b>.</p>
@@ -905,7 +904,7 @@
       </tr>`).join("");
 
     content.innerHTML = `
-      <div class="section" ${dc("ua.summary", "Unapplied · Summary tiles")}>
+      <div class="section">
         <div class="kpis" style="grid-template-columns:repeat(4,1fr)">
           <div class="kpi kpi--warn"><div class="kpi__label">On-account total</div><div class="kpi__value">${D.fmtCompact(total, ccy)}</div></div>
           <div class="kpi kpi--neutral"><div class="kpi__label">Open items</div><div class="kpi__value">${list.length}</div></div>
@@ -913,7 +912,7 @@
           <div class="kpi kpi--good"><div class="kpi__label">Resolved this week</div><div class="kpi__value">38</div></div>
         </div>
       </div>
-      <div class="section" ${dc("ua.table", "Unapplied · On-account ledger")}>
+      <div class="section">
         <div class="card">
           <div class="card__head"><div class="card__title">On-account ledger — bank statement, oldest first</div><span class="muted" style="font-size:12px">${list.length} line items</span></div>
           <div class="card__body card__body--flush"><div class="table-wrap table-scroll"><table class="tbl tbl--fixed">
@@ -960,7 +959,7 @@
       </tr>`).join("");
 
     content.innerHTML = `
-      <div class="section" ${dc("dd.table", "Deductions · Claims table")}>
+      <div class="section">
         <div class="card">
           <div class="card__head"><div class="card__title">Open deductions &amp; claims</div><span class="muted" style="font-size:12px">from Partial / short &amp; deductions · ${ded.length} items</span></div>
           <div class="card__body card__body--flush"><div class="table-wrap table-scroll"><table class="tbl">
@@ -1023,7 +1022,7 @@
     content.innerHTML = `
       <div class="split">
         <div>
-          <div class="card" style="margin-bottom:var(--scale-300)" ${dc("cust.header", "Customer 360 · Header & metrics")}>
+          <div class="card" style="margin-bottom:var(--scale-300)">
             <div class="card__body">
               <div class="section__head"><div class="section__title" style="font-size:20px">${c.name}</div>${pill(c.country, "neutral")}</div>
               <div class="kpis" style="grid-template-columns:repeat(4,1fr);margin-top:var(--scale-200)">
@@ -1035,7 +1034,7 @@
             </div>
           </div>
 
-          <div class="card" style="margin-bottom:var(--scale-300)" ${dc("cust.items", "Customer 360 · SAP account view")}>
+          <div class="card" style="margin-bottom:var(--scale-300)">
             <div class="card__head"><div class="card__title">Account line items (SAP view)</div>
               <div class="seg" id="cust-tab-seg">
                 <button class="seg__btn ${custTab === "open" ? "on" : ""}" data-tab="open">Open items</button>
@@ -1054,7 +1053,7 @@
               <tbody>${itemRows}${items.length ? `<tr class="modal-total"><td colspan="3" class="num">${totLabel}</td><td class="num strong">${fmt(items.reduce((s, i) => s + i.amount, 0), ccy)}</td><td></td></tr>` : ""}</tbody></table></div></div>
           </div>
 
-          <div class="card" ${dc("cust.aliases", "Customer 360 · Payer aliases")}>
+          <div class="card">
             <div class="card__head"><div class="card__title">Payer aliases &amp; relationships</div></div>
             <div class="card__body card__body--flush"><div class="table-wrap"><table class="tbl">
               <thead><tr><th>Payer name / account</th><th>Bank a/c</th><th>Relationship</th></tr></thead>
@@ -1062,7 +1061,7 @@
           </div>
         </div>
 
-        <div class="card aside-card" ${dc("cust.list", "Customer 360 · Customer picker")}>
+        <div class="card aside-card">
           <div class="card__head"><div class="card__title">Customers</div></div>
           <div class="card__body">
             <input id="cust-search" placeholder="Search customers…" value="${escapeAttr(custSearch)}" style="width:100%;padding:9px;border:1px solid var(--border-default-default);border-radius:var(--radius-sm);margin-bottom:10px;font-family:var(--font-family-inter);font-size:13px" />
@@ -1072,10 +1071,10 @@
       </div>`;
 
     content.querySelectorAll("#cust-list .cmt-card").forEach((el) => {
-      el.onclick = () => { activeCustomerId = el.dataset.cid; viewCustomers(); window.COMMENTS && COMMENTS.refresh(); };
+      el.onclick = () => { activeCustomerId = el.dataset.cid; viewCustomers(); };
     });
     content.querySelectorAll("#cust-tab-seg .seg__btn").forEach((b) => {
-      b.onclick = () => { custTab = b.dataset.tab; viewCustomers(); window.COMMENTS && COMMENTS.refresh(); };
+      b.onclick = () => { custTab = b.dataset.tab; viewCustomers(); };
     });
     content.querySelectorAll(".info-btn").forEach((b) => {
       b.onclick = (e) => { e.stopPropagation(); showInfo(b, b.dataset.info); };
@@ -1134,7 +1133,7 @@
           <label class="filter-field"><span>To</span><input type="date" id="aa-to" class="filter-sel" value="${autoTo}" min="${minDate}" max="${maxDate}" /></label>` : "";
 
     content.innerHTML = `
-      <div class="section" ${dc("aa.filters", "Applied cash · filters")}>
+      <div class="section">
         <div class="filter-bar">
           <label class="filter-field"><span>Period</span><select id="aa-period" class="filter-sel">${periodOpts}</select></label>
           ${customFields}
@@ -1142,13 +1141,13 @@
           <input id="aa-search" placeholder="Search customer / invoice / doc…" value="${escapeAttr(autoSearch)}" class="filter-search" />
         </div>
       </div>
-      <div class="section" ${dc("aa.kpis", "Applied cash · summary")}>
+      <div class="section">
         <div class="kpis" style="grid-template-columns:repeat(2,minmax(0,1fr));max-width:760px">
           <div class="kpi kpi--accent-success"><div class="kpi__label">Collections posted (${periodLabel})</div><div class="kpi__value">${count.toLocaleString("en-SG")}</div><div class="kpi__sub">receipts matched &amp; posted</div></div>
           <div class="kpi kpi--accent-primary"><div class="kpi__label">Value posted</div><div class="kpi__value">${D.fmtCompact(value, ccy)}</div><div class="kpi__sub">cleared to open invoices</div></div>
         </div>
       </div>
-      <div class="section" ${dc("aa.table", "Posted Collections · ledger")}>
+      <div class="section">
         <div class="card">
           <div class="card__head">
             <div class="card__title">Posted collections ledger</div>
@@ -1163,15 +1162,15 @@
       </div>`;
 
     const s = $("#aa-search");
-    if (s) s.oninput = () => { autoSearch = s.value; viewAutoApplied(); window.COMMENTS && COMMENTS.refresh(); };
+    if (s) s.oninput = () => { autoSearch = s.value; viewAutoApplied(); };
     const ps = $("#aa-period");
-    if (ps) ps.onchange = () => { autoPeriod = ps.value; if (autoPeriod !== "custom") { autoFrom = ""; autoTo = ""; } viewAutoApplied(); window.COMMENTS && COMMENTS.refresh(); };
+    if (ps) ps.onchange = () => { autoPeriod = ps.value; if (autoPeriod !== "custom") { autoFrom = ""; autoTo = ""; } viewAutoApplied(); };
     const fromEl = $("#aa-from");
-    if (fromEl) fromEl.onchange = () => { autoFrom = fromEl.value; viewAutoApplied(); window.COMMENTS && COMMENTS.refresh(); };
+    if (fromEl) fromEl.onchange = () => { autoFrom = fromEl.value; viewAutoApplied(); };
     const toEl = $("#aa-to");
-    if (toEl) toEl.onchange = () => { autoTo = toEl.value; viewAutoApplied(); window.COMMENTS && COMMENTS.refresh(); };
+    if (toEl) toEl.onchange = () => { autoTo = toEl.value; viewAutoApplied(); };
     const bs = $("#aa-bank");
-    if (bs) bs.onchange = () => { autoBank = bs.value; viewAutoApplied(); window.COMMENTS && COMMENTS.refresh(); };
+    if (bs) bs.onchange = () => { autoBank = bs.value; viewAutoApplied(); };
     content.querySelectorAll("tr.clickable[data-aid]").forEach((tr) => {
       tr.onclick = () => appliedDetail(rows[+tr.dataset.aid], ccy);
     });
@@ -1254,43 +1253,43 @@
     const metricRows = metrics.map((m) => `<div class="metric-row"><div><div class="cell-main">${m[0]}</div><div class="cell-sub">${m[2]}</div></div><div class="m-val">${m[1]}</div></div>`).join("");
 
     content.innerHTML = `
-      <div class="section" ${dc("rep.kpis", "Reports · Headline metrics")}>
+      <div class="section">
         <div class="kpis">
           ${metrics.slice(0, 4).map((m, i) => `<div class="kpi kpi--accent-${["success", "primary", "brand", "error"][i]}"><div class="kpi__label">${m[0]}</div><div class="kpi__value">${m[1]}</div><div class="kpi__sub">${m[2]}</div></div>`).join("")}
         </div>
       </div>
 
       <div class="grid" style="grid-template-columns:1fr 1fr;align-items:start">
-        <div class="card" ${dc("rep.aatrend", "Reports · Auto-apply trend (line)")}>
+        <div class="card">
           <div class="card__head"><div class="card__title">Auto-apply rate — 12-week trend</div></div>
           <div class="card__body">${svgLine(aaTrend, "var(--surface-success-default)")}<p class="muted" style="margin-top:8px">Trending up as the model learns each analyst confirmation.</p></div>
         </div>
-        <div class="card" ${dc("rep.idtrend", "Reports · Customer identification trend (line)")}>
+        <div class="card">
           <div class="card__head"><div class="card__title">Customer identification — 12-week trend</div></div>
           <div class="card__body">${svgLine(idTrend, "var(--surface-primary-default)")}<p class="muted" style="margin-top:8px">The O2C floor metric — share of credits attributed to a customer.</p></div>
         </div>
       </div>
 
       <div class="grid" style="grid-template-columns:1fr 1fr;align-items:start;margin-top:var(--scale-300)">
-        <div class="card" ${dc("rep.exbar", "Reports · Exceptions by type (bar)")}>
+        <div class="card">
           <div class="card__head"><div class="card__title">Open exceptions by type</div><span class="muted" style="font-size:12px">${db.count} total</span></div>
           <div class="card__body"><div class="barchart">${exBars}</div></div>
         </div>
-        <div class="card" ${dc("rep.agebar", "Reports · Unapplied ageing (bars)")}>
+        <div class="card">
           <div class="card__head"><div class="card__title">Unapplied cash ageing — ${D.fmtCompact(db.totalUnapplied, ccy)}</div></div>
           <div class="card__body"><div class="hbars hbars--age">${ageBars}</div></div>
         </div>
       </div>
 
       <div class="grid" style="grid-template-columns:1.3fr 1fr;align-items:start;margin-top:var(--scale-300)">
-        <div class="card" ${dc("rep.topcust", "Reports · Top customers by open AR")}>
+        <div class="card">
           <div class="card__head"><div class="card__title">Top customers by open AR</div></div>
           <div class="card__body card__body--flush"><div class="table-wrap"><table class="tbl">
             <thead><tr><th>Customer</th><th class="num">Open AR</th><th class="num">Unapplied</th><th class="num">ID rate</th></tr></thead>
             <tbody>${topCust}</tbody>
           </table></div></div>
         </div>
-        <div class="card" ${dc("rep.metrics", "Reports · Success metrics")}>
+        <div class="card">
           <div class="card__head"><div class="card__title">Success metrics &amp; close pack</div></div>
           <div class="card__body">${metricRows}</div>
         </div>
@@ -1318,7 +1317,7 @@
     route.render();
     content.classList.remove("view-in"); void content.offsetWidth; content.classList.add("view-in"); // smooth view transition
     window.scrollTo(0, 0);
-    if (window.COMMENTS) COMMENTS.refresh();
+
   }
 
   // ── Sidebar org-context (entity label only — bank controls live in the topbar) ──
@@ -1445,7 +1444,7 @@
         const collapsed = document.body.classList.toggle("nav-collapsed");
         localStorage.setItem(KEY, collapsed ? "1" : "0");
         sync();
-        if (window.COMMENTS) COMMENTS.refresh();
+
       };
     }
     const mob = $("#mobile-nav-btn");
@@ -1462,5 +1461,5 @@
   window.addEventListener("hashchange", router);
   if (!location.hash) location.hash = "#/dashboard";
   router();
-  if (window.COMMENTS) COMMENTS.init();
+
 })();
