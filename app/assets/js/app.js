@@ -432,7 +432,8 @@
     const mid = `
       <div class="ws-pane" ${dc("ws.allocation", "Workspace · Open invoices & proposed allocation")}>
         <div class="ws-pane__title">Open invoices — proposed allocation</div>
-        <div class="table-wrap" style="padding:12px 8px 0"><table class="tbl">
+        <div class="table-wrap" style="padding:12px 8px 0"><table class="tbl tbl--fixed alloc-tbl">
+          <colgroup><col style="width:7%"><col style="width:22%"><col style="width:17%"><col style="width:16%"><col style="width:13%"><col style="width:13%"><col style="width:12%"></colgroup>
           <thead><tr><th>✓</th><th>Invoice</th><th>Due</th><th class="num">Open</th><th class="num">WHT</th><th class="num">Disc.</th><th class="num">Apply</th></tr></thead>
           <tbody>${rows}</tbody>
         </table></div>
