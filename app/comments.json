@@ -208,22 +208,6 @@
     "resolutionNote": "Remittance is now a detailed SAP/PDF-style advice: remitting party + beneficiary, SWIFT/BIC, invoice no/date/due, gross/WHT/paid, bank narration."
   },
   {
-    "id": "c_m2rmay1mf2z",
-    "route": "#/workspace",
-    "anchor": "ws.gap",
-    "anchorLabel": "Workspace · Gap classification & actions",
-    "xPct": 72.05882352941177,
-    "yPct": 23.77314099669669,
-    "author": "SME",
-    "text": "this should be editable",
-    "status": "resolved",
-    "createdAt": "2026-06-09T13:35:04.667Z",
-    "updatedAt": "2026-06-10T07:34:21.145Z",
-    "resolvedAt": "2026-06-10T07:34:21.145Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "Gap fields are editable — bank charge and on-account are inputs; WHT/discount edit per line."
-  },
-  {
     "id": "c_dz276xxnvmk",
     "route": "#/workspace",
     "anchor": "ws.gap",
