@@ -238,5 +238,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_wjb0z3d8ltx",
+    "route": "#/applied",
+    "anchor": "page",
+    "anchorLabel": "Page / navigation",
+    "xPct": 5.894736842105263,
+    "yPct": 22.135922330097088,
+    "author": "SME",
+    "text": "instead of auto applied, pls call it as applied cash",
+    "status": "open",
+    "createdAt": "2026-06-10T11:48:01.797Z",
+    "updatedAt": "2026-06-10T11:48:01.797Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
