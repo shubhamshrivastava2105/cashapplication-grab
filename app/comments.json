@@ -344,11 +344,11 @@
     "yPct": 1.31718304816743,
     "author": "SME",
     "text": "the line items should be clickable and then it should open all the details which is releveant",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-10T12:00:11.769Z",
-    "updatedAt": "2026-06-10T12:00:11.769Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-10T12:06:40.016Z",
+    "resolvedAt": "2026-06-10T12:06:40.016Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Line items are clickable and open a detail modal with all relevant details — allocation per invoice plus the posted journal entry."
   }
 ]
