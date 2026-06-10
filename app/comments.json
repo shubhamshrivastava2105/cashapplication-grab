@@ -248,11 +248,11 @@
     "yPct": 18.240692915888594,
     "author": "SME",
     "text": "the confidence score is not properly aligned and should look better",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-10T11:12:08.997Z",
-    "updatedAt": "2026-06-10T11:12:09.000Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-10T11:18:20.445Z",
+    "resolvedAt": "2026-06-10T11:18:20.445Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Fixed: the confidence pill was wrapping onto two lines (96% / confidence) and the header title wrapped too. The AI card header is now a single clean line — name on the left (truncates if needed) and a compact, vertically-centred, non-wrapping \"<n>% match\" pill on the right."
   }
 ]
