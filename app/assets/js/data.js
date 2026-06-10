@@ -169,6 +169,23 @@ window.DATA = (function () {
     return { customer: cust, invoices: invs, available, remittance: { listed: invs.length, parsed: 0.82 + ((Math.abs(it.amount) % 15) / 100) }, aiConf: cust.confidence, sla: (3 + (Math.abs(it.amount) % 9)) + ":" + ("0" + (Math.abs(it.amount) % 60)).slice(-2) + ":00", gap };
   }
 
+  // Once the analyst identifies the payer on a previously-unidentified credit, the
+  // engine pulls that customer's open AR and proposes an allocation against the
+  // receipt (subset-sum) — exactly as it would have done automatically had the
+  // customer been recognised. Returns a matching proposed set + a few extra open
+  // invoices the analyst can add. The proposal ties to the receipt so it balances.
+  function fetchOpenInvoices(amount, ccy) {
+    const sc = CCY_SCALE[ccy] || 1;
+    const cnt = 1 + (Math.abs(amount) % 3);                 // 1–3 invoices that match the credit
+    const invs = []; let rem = amount;
+    for (let j = 0; j < cnt; j++) {
+      const open = j === cnt - 1 ? rem : Math.round(amount / cnt); rem -= open;
+      invs.push({ inv: "INV-" + (6100 + (Math.abs(amount) % 800) + j), due: dateMinus(-(j * 8 + 4)), open, apply: open, wht: 0, discount: 0, sel: true });
+    }
+    const available = [0, 1, 2, 3].map((j) => ({ inv: "INV-" + (8600 + (Math.abs(amount) % 600) + j * 7), due: dateMinus(-(j * 9 + 6)), open: Math.round((800 + ((Math.abs(amount) / sc * (j + 2)) % 5000)) * sc), apply: 0, wht: 0, discount: 0, sel: false }));
+    return { invoices: invs, available };
+  }
+
   // All customers for an entity (country pool) — for the change-customer picker
   function customersPoolFor(entityId) {
     const ent = entities.find((e) => e.id === entityId) || entities[0];
@@ -421,5 +438,5 @@ window.DATA = (function () {
   // ── Pipeline (reference strip on dashboard) ─────────────────────────────
   const pipeline = ["① Identify customer", "② Identify obligations", "③ Reconcile amount", "④ Apply & post", "⑤ Resolve residual"];
 
-  return { fmt, fmtCompact, entities, banks, lastStatementDate, dashboardFor, buildCockpit, customersFor, deductionsFor, customersPoolFor, reports, pipeline };
+  return { fmt, fmtCompact, entities, banks, lastStatementDate, dashboardFor, buildCockpit, fetchOpenInvoices, customersFor, deductionsFor, customersPoolFor, reports, pipeline };
 })();

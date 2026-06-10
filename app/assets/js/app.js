@@ -460,7 +460,7 @@
         <div class="alloc-summary">
           <span>Applied: <span class="ok">${num(allocated)}</span></span>
           <span>WHT: ${num(whtTotal)}</span>
-          <span>Variance: <span style="${Math.abs(unexplained) >= 0.5 ? "color:var(--text-brand-default)" : "color:var(--text-success-hover)"}">${unexplained.toFixed(2)}</span></span>
+          <span>Variance: <span id="alloc-var" style="${Math.abs(unexplained) >= 0.5 ? "color:var(--text-brand-default)" : "color:var(--text-success-hover)"}">${unexplained.toFixed(2)}</span></span>
         </div>
         <div class="gap-note">${r.gap.note}</div>
         ${anyPartial && !r._partialOk ? `<div class="partial-banner">
@@ -487,7 +487,7 @@
             <span>WHT (per-invoice) <b>${whtTotal ? num(whtTotal) : "—"}</b>${whtTotal ? ` <button class="lnk-clear" id="clear-wht">clear</button>` : ""}</span>
             <span>Discount (per-invoice) <b>${discTotal ? num(discTotal) : "—"}</b></span>
           </div>
-          <div class="gap-unex ${exact ? "ok" : "warn"}"><span>Unexplained</span><b>${exact ? "0.00" : (unexplained < 0 ? "+ " : "− ") + Math.abs(unexplained).toFixed(2)}</b></div>
+          <div class="gap-unex ${exact ? "ok" : "warn"}" id="gap-unex"><span>Unexplained</span><b>${exact ? "0.00" : (unexplained < 0 ? "+ " : "− ") + Math.abs(unexplained).toFixed(2)}</b></div>
 
           <button class="btn btn--ghost btn--block" id="simulate-entry" style="margin-top:14px">Simulate accounting entry</button>
           <div class="ws-pane__title" style="padding-left:0;margin-top:18px">Action</div>
@@ -520,8 +520,25 @@
     });
     const clrWht = $("#clear-wht");
     if (clrWht) clrWht.onclick = () => { r.invoices.forEach((i) => { i.wht = 0; recomputeLine(i); }); renderCockpit(r); toast("Auto-applied WHT removed"); };
+    // Live variance feedback as the user types in any gap field — patches the numbers
+    // and the Apply button without a full re-render (so focus / caret are preserved).
+    // The authoritative full re-render happens on `change` (blur) below.
+    const liveGap = () => {
+      const bc = Math.max(0, parseFloat(($("#bankcharge-in") || {}).value) || 0);
+      const rb = Math.max(0, parseFloat(($("#rebate-in") || {}).value) || 0);
+      const oaV = Math.max(0, parseFloat(($("#onaccount-in") || {}).value) || 0);
+      const resid = allocated - r.amount - rb - bc;
+      const unex = resid - Math.sign(resid) * Math.min(oaV, Math.abs(resid));
+      const ok = Math.abs(unex) < 0.5;
+      const av = $("#alloc-var");
+      if (av) { av.textContent = unex.toFixed(2); av.style.color = ok ? "var(--text-success-hover)" : "var(--text-brand-default)"; }
+      const gu = $("#gap-unex");
+      if (gu) { gu.className = "gap-unex " + (ok ? "ok" : "warn"); gu.querySelector("b").textContent = ok ? "0.00" : (unex < 0 ? "+ " : "− ") + Math.abs(unex).toFixed(2); }
+      const ap = $('[data-act="apply"]');
+      if (ap) ap.disabled = !(ok && r.invoices.some((i) => i.sel));
+    };
     const bcIn = $("#bankcharge-in");
-    if (bcIn) bcIn.onchange = () => { r.gap.bankCharge = Math.max(0, parseFloat(bcIn.value) || 0); renderCockpit(r); };
+    if (bcIn) { bcIn.oninput = liveGap; bcIn.onchange = () => { r.gap.bankCharge = Math.max(0, parseFloat(bcIn.value) || 0); renderCockpit(r); }; }
 
     // add a relevant open invoice to the allocation
     const addBtn = $("#add-inv-btn"), addSel = $("#add-inv-sel");
@@ -537,7 +554,7 @@
     const clrOa = $("#clear-oa");
     if (clrOa) clrOa.onclick = () => { r.gap.onAccount = 0; renderCockpit(r); };
     const oaIn = $("#onaccount-in");
-    if (oaIn) oaIn.onchange = () => { r.gap.onAccount = Math.max(0, parseFloat(oaIn.value) || 0); renderCockpit(r); };
+    if (oaIn) { oaIn.oninput = liveGap; oaIn.onchange = () => { r.gap.onAccount = Math.max(0, parseFloat(oaIn.value) || 0); renderCockpit(r); }; }
 
     // real partial flow
     const py = $("#partial-yes");
@@ -547,7 +564,7 @@
 
     // total-level rebate / deduction (single field, grouped with bank charge & on-account)
     const rebIn = $("#rebate-in");
-    if (rebIn) rebIn.onchange = () => { r.gap.rebate = Math.max(0, parseFloat(rebIn.value) || 0); renderCockpit(r); };
+    if (rebIn) { rebIn.oninput = liveGap; rebIn.onchange = () => { r.gap.rebate = Math.max(0, parseFloat(rebIn.value) || 0); renderCockpit(r); }; }
     const rebType = $("#rebate-type");
     if (rebType) rebType.onchange = () => { r.gap.rebateType = rebType.value; renderCockpit(r); };
 
@@ -636,8 +653,19 @@
     };
     document.querySelectorAll(".picker-item").forEach((b) => {
       b.onclick = () => {
-        r.customer = { name: b.dataset.name, id: "manual", confidence: 1.0, how: "manually set by analyst" };
-        closeModal(); renderCockpit(r); toast(`Customer set to ${b.dataset.name}`);
+        const name = b.dataset.name;
+        r.customer = { name, id: "manual", confidence: 1.0, how: "manually set by analyst" };
+        if (!r.invoices.length) {
+          // Was an unidentified credit with no invoices — now that we know the payer,
+          // pull their open AR and propose a matching allocation against the receipt.
+          const f = D.fetchOpenInvoices(r.amount, r.ccy);
+          r.invoices = f.invoices; r.available = f.available; r._orig = null;
+          r.remittance = { listed: f.invoices.length, parsed: 0 };
+          r.gap.note = `Open invoices fetched for ${name} — proposed allocation matches the receipt. Review and post.`;
+          closeModal(); renderCockpit(r); toast(`${name} identified — ${f.invoices.length} open invoice${f.invoices.length > 1 ? "s" : ""} fetched & proposed`);
+        } else {
+          closeModal(); renderCockpit(r); toast(`Customer set to ${name}`);
+        }
       };
     });
   }
