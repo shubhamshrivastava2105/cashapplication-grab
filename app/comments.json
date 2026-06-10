@@ -128,22 +128,6 @@
     "resolutionNote": "Auto WHT is removable — edit the per-invoice WHT to 0, or use clear in the gap panel."
   },
   {
-    "id": "c_fuf1cvsk8ax",
-    "route": "#/workspace",
-    "anchor": "page",
-    "anchorLabel": "Page / navigation",
-    "xPct": 91.93103448275862,
-    "yPct": 3.6544850498338874,
-    "author": "SME",
-    "text": "remove the open credits button from here",
-    "status": "resolved",
-    "createdAt": "2026-06-09T13:05:22.953Z",
-    "updatedAt": "2026-06-10T07:34:08.098Z",
-    "resolvedAt": "2026-06-10T07:34:08.098Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "Open credits chip removed (live)."
-  },
-  {
     "id": "c_8qwhyv4r213",
     "route": "#/unapplied",
     "anchor": "page",
