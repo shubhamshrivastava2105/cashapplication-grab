@@ -127,8 +127,9 @@
          </select>
        </label>
        <span class="topbar__chip"><span>Processed till</span> <b id="period-chip">${D.lastStatementDate}</b></span>
-       <span class="topbar__chip"><span>Currency</span> <b id="currency-chip">${ccy}</b></span>`,
-      "");
+       <span class="topbar__chip"><span>Currency</span> <b id="currency-chip">${ccy}</b></span>
+       ${bankSelectChip()}`,
+      uploadStmtAction());
 
     const kpis = db.kpis.map((k) => `
       <div class="kpi kpi--${k.tone} kpi--accent-${k.accent || "primary"} ${k.drill ? "kpi--clickable" : ""}" ${k.drill ? `data-drill="${k.drill}"` : ""}>
@@ -233,6 +234,7 @@
       if (window.COMMENTS) COMMENTS.refresh();
       toast(`Entity → ${currentEntity().name} · ${currentEntity().currency}`);
     };
+    wireBankBar();
 
     content.querySelectorAll(".kpi--clickable").forEach((tile) => {
       tile.onclick = (e) => { if (e.target.closest(".info-btn")) return; openBreakdown(tile.dataset.drill); };
@@ -329,9 +331,9 @@
   function viewWorkspace() {
     const db = D.dashboardFor(selectedEntityId), ccy = db.ccy;
     const r = getCredit(activeReceiptId); activeReceiptId = r.id;
-    setTopbar("Apply cash", "Match each bank credit to open invoices, classify the gap, and post — under maker-checker",
-      `<span class="topbar__chip"><span>Entity</span> ${currentEntity().name}</span><span class="topbar__chip"><span>Open credits</span> ${db.list.length}</span>`,
-      "");
+    setTopbar("Apply cash", "Match each bank credit to open invoices, classify the gap, and post to the ERP",
+      `<span class="topbar__chip"><span>Entity</span> ${currentEntity().name}</span>${bankSelectChip()}`,
+      uploadStmtAction());
 
     // Same bank-statement credits as the dashboard (consistent data + amounts)
     const queueRows = db.list.map((x) => `
@@ -356,6 +358,7 @@
       </div>
       <div id="cockpit"></div>`;
 
+    wireBankBar();
     content.querySelectorAll(".queue-row").forEach((row) => {
       row.onclick = () => { activeReceiptId = row.dataset.rid; viewWorkspace(); window.COMMENTS && COMMENTS.refresh(); };
     });
@@ -478,23 +481,27 @@
     const balText = (u, ex) => ex ? "Balanced" : (u > 0 ? num(u) + " to explain" : num(-u) + " over");
     const anyPartial = r.invoices.some((i) => i.sel && cleared(i) > 0 && cleared(i) < i.open - 0.5);
     const rows = r.invoices.length ? r.invoices.map((i, idx) => {
-      const partial = i.sel && cleared(i) > 0 && cleared(i) < i.open - 0.5;
+      const cl = cleared(i);
+      const partial = i.sel && cl > 0 && cl < i.open - 0.5;
+      const balanceOpen = Math.max(0, Math.round((i.open - cl) * 100) / 100);
       return `
       <tr class="${partial ? "row-partial" : ""}">
         <td><span class="chk ${i.sel ? "on" : ""}" data-toggle="${idx}" role="checkbox" aria-checked="${i.sel}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></span></td>
-        <td class="cell-main">${i.inv}${partial ? ` <span class="pill pill--warn pill--plain" style="padding:1px 7px">Partial</span>` : ""}</td>
+        <td class="cell-main">${i.inv}${partial ? ` <span class="pill pill--warn pill--plain" style="padding:1px 7px">Partial</span><div class="cell-sub">${num(balanceOpen)} kept open</div>` : ""}</td>
         <td class="muted">${i.due}</td>
         <td class="num">${num(i.open)}</td>
+        <td class="num"><input class="line-in ${partial ? "is-set" : ""}" data-i="${idx}" data-f="apply" inputmode="decimal" value="${i.apply || ""}" placeholder="0" ${i.sel ? "" : "disabled"} /></td>
         <td class="num"><input class="line-in" data-i="${idx}" data-f="wht" inputmode="decimal" value="${i.wht || ""}" placeholder="0" ${i.sel ? "" : "disabled"} /></td>
         <td class="num"><input class="line-in" data-i="${idx}" data-f="discount" inputmode="decimal" value="${i.discount || ""}" placeholder="0" ${i.sel ? "" : "disabled"} /></td>
-      </tr>`; }).join("") : `<tr><td colspan="6">${emptyState("No open invoices to allocate", "Identify the customer first — the credit is in suspense.")}</td></tr>`;
+      </tr>`; }).join("") : `<tr><td colspan="7">${emptyState("No open invoices to allocate", "Identify the customer first — the credit is in suspense.")}</td></tr>`;
 
     const mid = `
       <div class="ws-pane" ${dc("ws.allocation", "Workspace · Open invoices & proposed allocation")}>
         <div class="ws-pane__title">Open invoices — proposed allocation</div>
-        <div class="table-wrap" style="padding:12px 8px 0"><table class="tbl tbl--fixed alloc-tbl">
-          <colgroup><col style="width:8%"><col style="width:28%"><col style="width:22%"><col style="width:20%"><col style="width:11%"><col style="width:11%"></colgroup>
-          <thead><tr><th>✓</th><th>Invoice</th><th>Due</th><th class="num">Open</th><th class="num">WHT</th><th class="num">Disc.</th></tr></thead>
+        <p class="gap-explain" style="padding:0 var(--scale-400)">Edit <b>Applied</b> to part-pay an invoice — the balance stays open. WHT / discount are deductions on the cleared portion.</p>
+        <div class="table-wrap" style="padding:8px 8px 0"><table class="tbl tbl--fixed alloc-tbl">
+          <colgroup><col style="width:7%"><col style="width:27%"><col style="width:17%"><col style="width:15%"><col style="width:14%"><col style="width:10%"><col style="width:10%"></colgroup>
+          <thead><tr><th>✓</th><th>Invoice</th><th>Due</th><th class="num">Open</th><th class="num">Applied</th><th class="num">WHT</th><th class="num">Disc.</th></tr></thead>
           <tbody>${rows}</tbody>
         </table></div>
         ${r.available && r.available.length ? `<div class="add-inv"><span>Add invoice</span>
@@ -561,16 +568,30 @@
     const sim = $("#simulate-entry");
     if (sim) sim.onclick = () => simulateEntry(r);
 
-    // per-invoice select toggle + WHT/discount editing (recompute apply)
-    const recomputeLine = (i) => { i.apply = Math.max(0, Math.round((i.open - (i.wht || 0) - (i.discount || 0)) * 100) / 100); };
+    // per-invoice select toggle + editable Applied / WHT / discount.
+    // maxApply = open − WHT − discount; full clearance applies that, a partial leaves a balance open.
+    const maxApplyOf = (i) => Math.max(0, Math.round((i.open - (i.wht || 0) - (i.discount || 0)) * 100) / 100);
+    const recomputeLine = (i) => { i.apply = maxApplyOf(i); i._partialSet = false; };
     cockpit.querySelectorAll(".chk[data-toggle]").forEach((el) => {
-      el.onclick = () => { const i = r.invoices[+el.dataset.toggle]; i.sel = !i.sel; if (i.sel && !i.apply) recomputeLine(i); if (!i.sel) i.apply = 0; r._partialOk = false; renderCockpit(r); };
+      el.onclick = () => { const i = r.invoices[+el.dataset.toggle]; i.sel = !i.sel; if (i.sel && !i.apply) recomputeLine(i); if (!i.sel) { i.apply = 0; i._partialSet = false; } r._partialOk = false; renderCockpit(r); };
     });
     cockpit.querySelectorAll(".line-in").forEach((inp) => {
-      inp.onchange = () => { const i = r.invoices[+inp.dataset.i]; i[inp.dataset.f] = Math.max(0, parseFloat(inp.value) || 0); recomputeLine(i); r._partialOk = false; renderCockpit(r); };
+      inp.onchange = () => {
+        const i = r.invoices[+inp.dataset.i], f = inp.dataset.f, val = Math.max(0, parseFloat(inp.value) || 0);
+        if (f === "apply") {
+          const cap = maxApplyOf(i);
+          i.apply = Math.min(val, cap);
+          i._partialSet = i.apply < cap - 0.5;        // user chose a partial application
+        } else {
+          i[f] = val;
+          const cap = maxApplyOf(i);
+          i.apply = i._partialSet ? Math.min(i.apply, cap) : cap;   // keep a chosen partial, else full
+        }
+        r._partialOk = false; renderCockpit(r);
+      };
     });
     const clrWht = $("#clear-wht");
-    if (clrWht) clrWht.onclick = () => { r.invoices.forEach((i) => { i.wht = 0; recomputeLine(i); }); renderCockpit(r); toast("Auto-applied WHT removed"); };
+    if (clrWht) clrWht.onclick = () => { r.invoices.forEach((i) => { i.wht = 0; if (!i._partialSet) i.apply = maxApplyOf(i); }); renderCockpit(r); toast("Auto-applied WHT removed"); };
     // Live variance feedback as the user types in any gap field — patches the numbers
     // and the Apply button without a full re-render (so focus / caret are preserved).
     // The authoritative full re-render happens on `change` (blur) below.
@@ -791,17 +812,30 @@
     if (oaCredit) lines.push(["Customer advances (on-account)", 0, oaCredit]);
     return { lines, ccy, cust, unexplained, totD: lines.reduce((s, l) => s + l[1], 0), totC: lines.reduce((s, l) => s + l[2], 0) };
   }
+  // GL account code per posting line (SAP-style chart of accounts).
+  function glOf(name) {
+    if (name.indexOf("AR —") === 0) return "120100";
+    return ({
+      "Bank (cash received)": "100200",
+      "WHT receivable (asset)": "142100",
+      "Cash discount allowed (expense)": "510300",
+      "Bank charges (expense)": "510200",
+      "Deductions / claims": "142500",
+      "Customer advances (on-account)": "210300",
+      "On-account / unapplied cash (suspense)": "199100",
+    })[name] || "—";
+  }
   function jeTable(je) {
-    const body = je.lines.map((l) => `<tr><td class="cell-main">${l[0]}</td><td class="num">${l[1] ? fmt(l[1], je.ccy) : ""}</td><td class="num">${l[2] ? fmt(l[2], je.ccy) : ""}</td></tr>`).join("");
+    const body = je.lines.map((l) => `<tr><td class="mono">${glOf(l[0])}</td><td class="cell-main">${l[0]}</td><td class="num">${l[1] ? fmt(l[1], je.ccy) : ""}</td><td class="num">${l[2] ? fmt(l[2], je.ccy) : ""}</td></tr>`).join("");
     return `<div class="table-wrap"><table class="tbl">
-        <thead><tr><th>Account</th><th class="num">Debit</th><th class="num">Credit</th></tr></thead>
-        <tbody>${body}<tr class="modal-total"><td>Total</td><td class="num">${fmt(je.totD, je.ccy)}</td><td class="num">${fmt(je.totC, je.ccy)}</td></tr></tbody>
+        <thead><tr><th>G/L</th><th>Account</th><th class="num">Debit</th><th class="num">Credit</th></tr></thead>
+        <tbody>${body}<tr class="modal-total"><td></td><td>Total</td><td class="num">${fmt(je.totD, je.ccy)}</td><td class="num">${fmt(je.totC, je.ccy)}</td></tr></tbody>
       </table></div>`;
   }
   function simulateEntry(r) {
     const je = journalLines(r);
     openModal("Simulated accounting entry", `
-      <div class="modal-sub">Preview of the journal entry this application would post to the ERP. Nothing posts until you Apply &amp; post (under maker-checker).</div>
+      <div class="modal-sub">Preview of the journal entry this application would post to the ERP. Nothing posts until you Apply &amp; post.</div>
       ${jeTable(je)}
       <div class="gap-note" style="padding:12px 0 0">${Math.abs(je.unexplained) < 0.5 ? "✓ Balanced — debits equal credits; ready to post." : (je.unexplained > 0 ? `Short by ${fmt(je.unexplained, je.ccy)} — code a deduction / rebate (or reduce the selection) so it balances.` : `Overpaid by ${fmt(-je.unexplained, je.ccy)} — park it on-account so it balances.`)}</div>`);
   }
@@ -813,7 +847,7 @@
     openModal("Posted to ERP", `
       <div class="post-ok">
         <div class="post-ok__badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></div>
-        <div><div class="post-ok__title">Cash applied &amp; posted</div><div class="post-ok__sub">${fmt(r.amount, je.ccy)} cleared for ${je.cust} · approved under maker-checker.</div></div>
+        <div><div class="post-ok__title">Cash applied &amp; posted</div><div class="post-ok__sub">${fmt(r.amount, je.ccy)} cleared for ${je.cust} · posted to the ERP general ledger.</div></div>
       </div>
       <div class="post-meta">
         <span>Clearing document <b>${doc}</b></span><span>Company code <b>${currentEntity().code || "1000"}</b></span><span>Fiscal year <b>${fy}</b></span><span>Posting date <b>${D.lastStatementDate}</b></span>
@@ -828,7 +862,7 @@
   function actionConfirm(act, r) {
     const cust = r.customer ? r.customer.name : "—";
     const map = {
-      apply:     { t: "Apply & post", danger: false, body: `Post <b>${fmt(r.amount, r.ccy)}</b> for <b>${cust}</b> to the ERP under maker-checker.<div class="modal-sub" style="margin-top:10px">ERP document <b>SAP-${r.bankRef}</b> · queued for checker approval (the proposer cannot self-approve).</div>` },
+      apply:     { t: "Apply & post", danger: false, body: `Post <b>${fmt(r.amount, r.ccy)}</b> for <b>${cust}</b> to the ERP general ledger. The clearing document and journal entry are generated on posting.` },
       split:     { t: "Split credit", danger: false, body: `Split <b>${fmt(r.amount, r.ccy)}</b> across multiple customers / invoices before applying.` },
       park:      { t: "Park on-account", danger: false, body: `Park <b>${fmt(r.amount, r.ccy)}</b> on-account under <b>${cust}</b>, aged for follow-up — the floor outcome.` },
       deduction: { t: "Open deduction", danger: false, body: `Open a coded deduction for the short amount and route it to the claims owner.` },
@@ -947,7 +981,7 @@
     activeCustomerId = c.id;
     const ccy = c.ccy;
     setTopbar("Customers 360", "Aliases, open AR and the full SAP-style account view",
-      `<span class="topbar__chip"><span>Entity</span> ${currentEntity().name}</span><span class="topbar__chip"><span>Customers</span> ${all.length}</span>`);
+      `<span class="topbar__chip"><span>Entity</span> ${currentEntity().name}</span>`);
 
     const q = custSearch.toLowerCase();
     const list = all.filter((x) => x.name.toLowerCase().includes(q)).map((x) => `
@@ -966,8 +1000,17 @@
     const openInvoiceRows = c.invoices.map((i) => ({ doc: i.inv, date: i.due, type: "Invoice", amount: i.open, status: "Open", tone: "warn" }));
     const unapCreditRows = (c.unapItems || []).map((u) => ({ doc: u.id, date: u.date, type: "Unapplied receipt · " + u.reason, amount: -u.amount, status: "Unapplied", tone: "info" }));
     const openItems = openInvoiceRows.concat(unapCreditRows);
+    // Cleared (settled) items come in pairs — an invoice (debit) and the incoming payment
+    // that cleared it (credit) — so the cleared balance always nets to zero.
     const clDates = ["2026-05-02", "2026-04-18", "2026-03-29", "2026-05-21", "2026-04-05", "2026-03-12"];
-    const cleared = clDates.map((d, j) => ({ doc: (j % 3 === 2 ? "CR-" : "INV-") + (6000 + j * 13 + c.id.length * 7), date: d, type: j % 3 === 2 ? "Credit memo" : "Invoice", amount: Math.round(c.openAr * 0.12 * (1 + (j % 4)) / 4) * (j % 3 === 2 ? -1 : 1), status: "Cleared", tone: "success" }));
+    const cleared = clDates.flatMap((d, j) => {
+      const amt = Math.round(c.openAr * 0.12 * (1 + (j % 4)) / 4);
+      const n = 6000 + j * 13 + c.id.length * 7;
+      return [
+        { doc: "INV-" + n, date: d, type: "Invoice", amount: amt, status: "Cleared", tone: "success" },
+        { doc: "PMT-" + n, date: d, type: "Incoming payment", amount: -amt, status: "Cleared", tone: "success" },
+      ];
+    });
     // Pure unapplied breakdown (received amounts, positive) for the Unapplied tab.
     const unapRows = (c.unapItems || []).map((u) => ({ doc: u.id, date: u.date, type: "Receipt · " + u.reason, amount: u.amount, status: u.ageDays + "d aged", tone: u.tone || "warn" }));
     const netAr = c.openAr - c.unapplied;
@@ -1049,7 +1092,7 @@
   function viewAutoApplied() {
     const aa = D.autoAppliedFor(selectedEntityId), ccy = aa.ccy;
     setTopbar("Posted Collections", "Every receipt matched and posted to open invoices — searchable by period and bank account",
-      `<span class="topbar__chip"><span>Entity</span> ${currentEntity().name}</span><span class="topbar__chip"><span>Auto-apply rate</span> <b>${aa.autoApply}%</b></span>`);
+      `<span class="topbar__chip"><span>Entity</span> ${currentEntity().name}</span>`);
 
     const allDates = aa.list.map((x) => x.date).sort();
     const minDate = allDates[0], maxDate = allDates[allDates.length - 1];
@@ -1075,9 +1118,9 @@
       <tr class="clickable" data-aid="${idx}">
         <td class="muted" style="white-space:nowrap">${x.date}</td>
         <td class="cell-sub" title="${escapeAttr(x.desc || "")}">${x.desc || "—"}</td>
+        <td class="num strong">${fmt(x.amount, ccy)}</td>
         <td class="cell-main">${x.customer}</td>
         <td>${x.nInv > 1 ? `<span class="multi-inv">${x.invLabel}</span>` : x.invLabel}</td>
-        <td class="num strong">${fmt(x.amount, ccy)}</td>
         <td class="muted">${x.bankName}</td>
         <td class="mono">${x.doc}</td>
         <td>${pill("Posted", "success")} <span class="row-chev">›</span></td>
@@ -1112,8 +1155,8 @@
             <span class="muted" style="margin-left:auto;font-size:12px">${count.toLocaleString("en-SG")} of ${aa.total.toLocaleString("en-SG")} this period</span>
           </div>
           <div class="card__body card__body--flush"><div class="table-wrap aa-scroll"><table class="tbl tbl--fixed">
-            <colgroup><col style="width:9%"><col style="width:21%"><col style="width:16%"><col style="width:11%"><col style="width:11%"><col style="width:14%"><col style="width:10%"><col style="width:8%"></colgroup>
-            <thead><tr><th>Value date</th><th>Description</th><th>Customer</th><th>Invoice</th><th class="num">Amount</th><th>Bank account</th><th>ERP doc</th><th>Status</th></tr></thead>
+            <colgroup><col style="width:9%"><col style="width:21%"><col style="width:11%"><col style="width:16%"><col style="width:11%"><col style="width:14%"><col style="width:10%"><col style="width:8%"></colgroup>
+            <thead><tr><th>Value date</th><th>Description</th><th class="num">Amount</th><th>Customer</th><th>Invoice</th><th>Bank account</th><th>ERP doc</th><th>Status</th></tr></thead>
             <tbody>${body}</tbody>
           </table></div></div>
         </div>
@@ -1154,7 +1197,7 @@
     if (x.discount) je.push(["Cash discount allowed (expense)", x.discount, 0]);
     if (x.bankCharge) je.push(["Bank charges (expense)", x.bankCharge, 0]);
     je.push([`AR — ${x.customer} (invoice${x.nInv > 1 ? "s" : ""} cleared)`, 0, x.gross]);
-    const jeBody = je.map((l) => `<tr><td class="cell-main">${l[0]}</td><td class="num">${l[1] ? fmt(l[1], ccy) : ""}</td><td class="num">${l[2] ? fmt(l[2], ccy) : ""}</td></tr>`).join("");
+    const jeBody = je.map((l) => `<tr><td class="mono">${glOf(l[0])}</td><td class="cell-main">${l[0]}</td><td class="num">${l[1] ? fmt(l[1], ccy) : ""}</td><td class="num">${l[2] ? fmt(l[2], ccy) : ""}</td></tr>`).join("");
     const totD = je.reduce((s, l) => s + l[1], 0), totC = je.reduce((s, l) => s + l[2], 0);
     openModal(`Posted collection — ${x.id}`, `
       <div class="post-ok">
@@ -1171,8 +1214,8 @@
       </table></div>
       <div class="modal-sub" style="margin-top:14px">Journal entry posted</div>
       <div class="table-wrap"><table class="tbl">
-        <thead><tr><th>Account</th><th class="num">Debit</th><th class="num">Credit</th></tr></thead>
-        <tbody>${jeBody}<tr class="modal-total"><td>Total</td><td class="num">${fmt(totD, ccy)}</td><td class="num">${fmt(totC, ccy)}</td></tr></tbody>
+        <thead><tr><th>G/L</th><th>Account</th><th class="num">Debit</th><th class="num">Credit</th></tr></thead>
+        <tbody>${jeBody}<tr class="modal-total"><td></td><td>Total</td><td class="num">${fmt(totD, ccy)}</td><td class="num">${fmt(totC, ccy)}</td></tr></tbody>
       </table></div>
       <div style="margin-top:18px;display:flex;justify-content:flex-end"><button class="btn btn--primary" id="ad-done">Done</button></div>`);
     const done = document.getElementById("ad-done"); if (done) done.onclick = closeModal;
@@ -1278,20 +1321,30 @@
     if (window.COMMENTS) COMMENTS.refresh();
   }
 
-  // ── Sidebar org-context controls (entity label + bank selector) ─────────────
+  // ── Sidebar org-context (entity label only — bank controls live in the topbar) ──
   function syncSidebarContext() {
     const sbEnt = $("#sb-entity"); if (sbEnt) sbEnt.textContent = currentEntity().name;
-    const bankSel = $("#bank-select");
-    if (bankSel) {
-      const list = banksForEntity();
-      if (!list.some((b) => b.id === selectedBankId)) selectedBankId = (list[0] || {}).id;
-      bankSel.innerHTML = list.map((b) => `<option value="${b.id}" ${b.id === selectedBankId ? "selected" : ""}>${b.name}</option>`).join("");
-      bankSel.onchange = () => { selectedBankId = bankSel.value; };
-    }
-    const addBtn = $("#add-bank-btn");
-    if (addBtn) addBtn.onclick = openBankManager;
-    const upBtn = $("#upload-stmt-btn");
-    if (upBtn) upBtn.onclick = uploadStatement;
+  }
+
+  // ── Topbar bank-account controls (account switcher + add/manage + upload) ───
+  function bankSelectChip() {
+    const list = banksForEntity();
+    if (!list.some((b) => b.id === selectedBankId)) selectedBankId = (list[0] || {}).id;
+    return `<label class="topbar__chip topbar__chip--select"><span>Bank a/c</span>
+      <select id="topbar-bank" aria-label="Bank account">
+        ${list.map((b) => `<option value="${b.id}" ${b.id === selectedBankId ? "selected" : ""}>${b.name}</option>`).join("")}
+        <option value="__manage">+ Add / manage accounts…</option>
+      </select></label>`;
+  }
+  const uploadStmtAction = () => `<button class="btn btn--primary" id="tb-upload">${uploadIcon} Upload statement</button>`;
+  function wireBankBar() {
+    const sel = $("#topbar-bank");
+    if (sel) sel.onchange = () => {
+      if (sel.value === "__manage") { sel.value = selectedBankId || ""; openBankManager(); return; }
+      selectedBankId = sel.value;
+    };
+    const up = $("#tb-upload");
+    if (up) up.onclick = uploadStatement;
   }
 
   // Bank account management — add accounts per entity. Statements are brought in by
