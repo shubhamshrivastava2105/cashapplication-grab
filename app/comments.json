@@ -208,22 +208,6 @@
     "resolutionNote": "Credit queue is now a compact 220px scroll so the cockpit (credit / allocation / gap) is visible on landing without scrolling."
   },
   {
-    "id": "c_sxd0a0m0ilu",
-    "route": "#/dashboard",
-    "anchor": "page",
-    "anchorLabel": "Page / navigation",
-    "xPct": 2.413793103448276,
-    "yPct": 3.10077519379845,
-    "author": "SME",
-    "text": "when collapsed it should show the \"N\" of neoflo logo.",
-    "status": "resolved",
-    "createdAt": "2026-06-10T07:57:47.442Z",
-    "updatedAt": "2026-06-10T08:04:05.386Z",
-    "resolvedAt": "2026-06-10T08:04:05.386Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "Collapsed sidebar now shows the Neoflo logo mark (its N glyph), cropped from the logo, instead of a plain letter."
-  },
-  {
     "id": "c_gi9jcerdpj2",
     "route": "#/workspace",
     "anchor": "ws.gap",
