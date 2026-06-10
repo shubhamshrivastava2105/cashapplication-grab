@@ -216,12 +216,12 @@
     "yPct": 1.8661336276981368,
     "author": "SME",
     "text": "give an option to select the period to see the transactions in that period\n\ngive an option to select bank when there are multiple bank accounts. like here it is 2 bank account, pls list down all the bank accounts associated with the legal entity",
-    "status": "resolved",
+    "status": "open",
     "createdAt": "2026-06-10T11:47:46.975Z",
-    "updatedAt": "2026-06-10T12:06:30.678Z",
-    "resolvedAt": "2026-06-10T12:06:30.678Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "Added a Period filter (7/30/90 days, All time) and a Bank-account filter that lists every account for the entity. KPIs recompute for the current selection."
+    "updatedAt": "2026-06-10T12:08:04.037Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   },
   {
     "id": "c_wjb0z3d8ltx",
