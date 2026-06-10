@@ -199,15 +199,29 @@ window.DATA = (function () {
     const db = dashboardFor(entityId), ccy = db.ccy, ent = db.ent, pool = poolFor(ent);
     const byCust = {};
     db.list.forEach((x) => { if (x.customer !== "— unidentified —") (byCust[x.customer] = byCust[x.customer] || []).push(x); });
+    const scale = CCY_SCALE[ccy] || 1;
     const out = pool.map((name, idx) => {
       const items = byCust[name] || [];
+      // Unapplied = this customer's own unapplied credits from the bank statement → ties to the dashboard.
       const unapplied = items.reduce((s, x) => s + x.amount, 0);
-      const openAr = Math.round(unapplied * (3 + (idx % 4)) + 5000 * (CCY_SCALE[ccy] || 1));
-      const idRate = 0.90 + ((idx * 7) % 9) / 100;
+      // Open invoices form an ageing ladder; Open AR is EXACTLY their sum → ties to the SAP table on the page.
+      // AR comfortably exceeds the unapplied credit sitting on the account (the realistic relationship).
+      const invCount = 3 + (idx % 4);                                       // 3–6 open invoices
+      const targetAr = Math.round(unapplied * (4 + (idx % 3)) + 45000 * scale);
+      const weights = Array.from({ length: invCount }, (_, j) => 0.6 + ((idx * 3 + j * 7) % 9) / 10);
+      const wsum = weights.reduce((a, b) => a + b, 0);
+      let acc = 0;
+      const invoices = weights.map((w, j) => {
+        const open = j === invCount - 1 ? targetAr - acc : Math.round(targetAr * w / wsum);
+        acc += open;
+        const ageOffset = (idx + j) % 2 ? -(j * 12 + 6) : (j * 14 + 9);     // mix of overdue & upcoming
+        return { inv: "INV-" + (7000 + idx * 10 + j), due: dateMinus(ageOffset), open };
+      });
+      const openAr = invoices.reduce((s, i) => s + i.open, 0);              // = targetAr, ties to the table
+      const idRate = 0.86 + ((idx * 7) % 13) / 100;                         // 86–98 %
       const terms = ["Net 30", "Net 45", "Net 60"][idx % 3];
       const aliases = idx % 3 === 0 ? [{ name: name.split(" ")[0] + " Treasury", acct: "OCBC …" + (200 + idx), rel: RELATIONSHIPS[idx % RELATIONSHIPS.length] }] : [];
       const fingerprints = [{ pattern: CHANNELS[idx % CHANNELS.length] + " " + name.toUpperCase().slice(0, 6) + "*", weight: 0.6 + ((idx * 5) % 35) / 100, lastSeen: dateMinus((idx * 9) % 60) }];
-      const invoices = (items.length ? items : db.list).slice(0, 4).map((x, j) => ({ inv: "INV-" + (7000 + idx * 10 + j), due: dateMinus(-(j * 7 + 3)), open: Math.round((x.amount || 4000) * 1.4) }));
       return { id: "C-" + (1000 + idx), name, country: ent.country, ccy, terms, openAr, unapplied, idRate, aliases, fingerprints, invoices };
     });
     _custCache[entityId] = out;

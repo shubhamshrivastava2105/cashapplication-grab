@@ -870,9 +870,9 @@
             <div class="card__body">
               <div class="section__head"><div class="section__title" style="font-size:20px">${c.name}</div>${pill(c.country, "neutral")}</div>
               <div class="kpis" style="grid-template-columns:repeat(3,1fr);margin-top:var(--scale-200)">
-                <div class="kpi kpi--accent-primary"><div class="kpi__label">Open AR</div><div class="kpi__value" style="font-size:22px">${D.fmtCompact(c.openAr, ccy)}</div></div>
-                <div class="kpi kpi--accent-brand"><div class="kpi__label">Unapplied</div><div class="kpi__value" style="font-size:22px">${D.fmtCompact(c.unapplied, ccy)}</div></div>
-                <div class="kpi kpi--accent-success"><div class="kpi__label">ID rate</div><div class="kpi__value" style="font-size:22px">${Math.round(c.idRate * 100)}%</div></div>
+                <div class="kpi kpi--accent-primary"><div class="kpi__top"><div class="kpi__label">Open AR</div><button class="info-btn" data-info="Total receivable owed by this customer — the sum of their open invoices in the SAP account view below." aria-label="What is Open AR?">i</button></div><div class="kpi__value" style="font-size:22px">${D.fmtCompact(c.openAr, ccy)}</div></div>
+                <div class="kpi kpi--accent-brand"><div class="kpi__top"><div class="kpi__label">Unapplied</div><button class="info-btn" data-info="Cash received from this customer that hasn't yet been matched to an invoice — it sits as a credit on the account until applied." aria-label="What is Unapplied?">i</button></div><div class="kpi__value" style="font-size:22px">${D.fmtCompact(c.unapplied, ccy)}</div></div>
+                <div class="kpi kpi--accent-success"><div class="kpi__top"><div class="kpi__label">ID rate</div><button class="info-btn" data-info="Identification rate — the share of this customer's incoming payments that were automatically attributed to them (matched to a payer), with no analyst touch." aria-label="What is ID rate?">i</button></div><div class="kpi__value" style="font-size:22px">${Math.round(c.idRate * 100)}%</div></div>
               </div>
             </div>
           </div>
@@ -886,9 +886,9 @@
               </div>
             </div>
             <div class="sap-totals">
-              <span>Open <b>${fmt(openTotal, ccy)}</b></span>
-              <span>Cleared <b>${fmt(clearedTotal, ccy)}</b></span>
-              <span>Balance (open) <b>${fmt(openTotal, ccy)}</b></span>
+              <span>Open AR <b>${fmt(openTotal, ccy)}</b></span>
+              <span>Unapplied credits <b>${fmt(c.unapplied, ccy)}</b></span>
+              <span>Net receivable <b>${fmt(openTotal - c.unapplied, ccy)}</b></span>
             </div>
             <div class="card__body card__body--flush"><div class="table-wrap"><table class="tbl">
               <thead><tr><th>Document</th><th>Posting date</th><th>Type</th><th class="num">Amount</th><th>Status</th></tr></thead>
@@ -917,6 +917,9 @@
     });
     content.querySelectorAll("#cust-tab-seg .seg__btn").forEach((b) => {
       b.onclick = () => { custTab = b.dataset.tab; viewCustomers(); window.COMMENTS && COMMENTS.refresh(); };
+    });
+    content.querySelectorAll(".info-btn").forEach((b) => {
+      b.onclick = (e) => { e.stopPropagation(); showInfo(b, b.dataset.info); };
     });
     const cs = $("#cust-search");
     if (cs) cs.oninput = () => { custSearch = cs.value; const list2 = content.querySelector("#cust-list"); const matches = all.filter((x) => x.name.toLowerCase().includes(custSearch.toLowerCase())); list2.innerHTML = matches.length ? matches.map((x) => `<div class="cmt-card" data-cid="${x.id}" style="${x.id === c.id ? "border-color:var(--border-primary-default);background:var(--surface-primary-subtle)" : ""}"><div class="cell-main">${x.name}</div><div class="cell-sub">${x.country} · ${x.ccy} · ${x.terms}</div><div class="cmt-card__foot"><span>Open AR ${D.fmtCompact(x.openAr, x.ccy)}</span></div></div>`).join("") : `<div class="muted" style="font-size:13px;padding:8px">No customers match.</div>`; list2.querySelectorAll(".cmt-card").forEach((el) => { el.onclick = () => { activeCustomerId = el.dataset.cid; viewCustomers(); }; }); };
