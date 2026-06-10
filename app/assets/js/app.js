@@ -105,7 +105,7 @@
     const xl = labels.map((l, i) => `<text x="${X(i).toFixed(1)}" y="${h - 8}" font-size="10" fill="#848076" text-anchor="middle">${l}</text>`).join("");
     return `<svg viewBox="0 0 ${w} ${h}" class="svgchart svgchart--tall" preserveAspectRatio="xMidYMid meet">${grid}${paths}${xl}</svg>`;
   }
-  const MONTHS12 = ["Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun"];
+  const MONTHS12 = ["Jul'25", "Aug'25", "Sep'25", "Oct'25", "Nov'25", "Dec'25", "Jan'26", "Feb'26", "Mar'26", "Apr'26", "May'26", "Jun'26"];
   let dashTf = 12; // trend timeframe in months
 
   // ════════════════════════════════════════════════════════════════════════
@@ -421,18 +421,22 @@
     const bankCharge = r.gap.bankCharge || 0;
     const onAccount = r.gap.onAccount || 0;
     const rebateTotal = r.gap.rebate || 0;
-    // O2C: cash received can fall short of the invoices for legitimate reasons —
-    // WHT and cash discount (taken per line, already inside `allocated`), bank charges
-    // deducted in transit, and agreed rebates / deductions / claims. Each EXPLAINS part
-    // of the shortfall, so each reduces the unexplained variance toward 0. An
-    // overpayment (cash > invoices) is parked on-account. Every total-level field is
-    // clamped so it can only ever *close* the gap — never open a new one on an
-    // already-balanced receipt. → 0 = fully explained, ready to post.
+    // O2C: cash received can fall SHORT of the invoices for legitimate reasons — WHT
+    // and cash discount (per line, already inside `allocated`), bank charges deducted in
+    // transit, and agreed rebates / deductions. Each explains part of the shortfall, so
+    // each reduces the variance toward 0. When cash EXCEEDS the invoices it's an
+    // overpayment, parked on-account. The two are mutually exclusive: a short is closed
+    // with deductions (never on-account); an overpayment is parked on-account (deductions
+    // don't apply). Clamped so a field can only ever close the gap, never open one.
     const grossGap = allocated - r.amount;                    // + short, − overpay (post per-line WHT/disc)
-    const explained = bankCharge + rebateTotal + onAccount;   // total-level explanations
-    const unexplained = grossGap > 0 ? Math.max(0, grossGap - explained) : Math.min(0, grossGap + explained);
+    const isOverpay = grossGap < -0.5;                        // cash received exceeds the invoices
+    const isShort = grossGap > 0.5;                           // cash received is less than the invoices
+    const unexplained = grossGap > 0
+      ? Math.max(0, grossGap - bankCharge - rebateTotal)      // short: explained by bank charge + rebate (+ per-line WHT/disc)
+      : Math.min(0, grossGap + onAccount);                    // overpay: parked on-account
     const exact = Math.abs(unexplained) < 0.5;
     const canPost = exact && r.invoices.some((i) => i.sel);
+    const aiWhtSuggest = isShort ? Math.round(Math.max(0, grossGap - bankCharge - rebateTotal) * 100) / 100 : 0;
     const balText = (u, ex) => ex ? "Balanced" : (u > 0 ? num(u) + " to explain" : num(-u) + " over");
     const anyPartial = r.invoices.some((i) => i.sel && cleared(i) > 0 && cleared(i) < i.open - 0.5);
     const rows = r.invoices.length ? r.invoices.map((i, idx) => {
@@ -481,10 +485,15 @@
         <div class="ws-pane__title">Gap classification</div>
         <div class="ws-pane__body">
           <p class="gap-explain">WHT &amp; discount are taken <b>per invoice</b> (allocation table). Bank charge, rebate/deduction and on-account are <b>total-level</b>.</p>
+          ${aiWhtSuggest > 0.5 && !r._aiDismissed ? `<div class="ai-suggest" id="ai-suggest">
+            <div class="ai-suggest__head"><span class="ai-suggest__spark">✦</span> Neoflo AI suggestion</div>
+            <div class="ai-suggest__body">This <b>${fmt(aiWhtSuggest, r.ccy)}</b> shortfall matches a <b>withholding-tax</b> pattern for ${r.customer ? r.customer.name : "this payer"} (5% WHT, certificate typically follows). Apply it as WHT across the selected invoices?</div>
+            <div class="ai-suggest__acts"><button class="btn btn--success btn--sm" id="ai-accept">Accept &amp; apply WHT</button><button class="lnk-clear" id="ai-dismiss">Dismiss</button></div>
+          </div>` : ""}
           <div class="gap-group">
             <div class="gap-irow"><span class="lbl">Bank charge</span><span class="gap-input"><span class="gap-ccy">${r.ccy}</span><input class="gap-in" id="bankcharge-in" inputmode="decimal" value="${bankCharge || ""}" placeholder="0.00" /></span></div>
             <div class="gap-irow"><span class="lbl">Rebate / deduction <select id="rebate-type" class="gap-sel">${rebTypes.map((t) => `<option ${t === rebateType ? "selected" : ""}>${t}</option>`).join("")}</select></span><span class="gap-input"><span class="gap-ccy">${r.ccy}</span><input class="gap-in" id="rebate-in" inputmode="decimal" value="${rebateTotal || ""}" placeholder="0.00" /></span></div>
-            <div class="gap-irow"><span class="lbl">On account ${Math.abs(unexplained) > 0.5 ? `<button class="lnk-clear" id="park-oa">park residual</button>` : (onAccount > 0 ? `<button class="lnk-clear" id="clear-oa">clear</button>` : "")}</span><span class="gap-input"><span class="gap-ccy">${r.ccy}</span><input class="gap-in ${onAccount ? "is-set" : ""}" id="onaccount-in" inputmode="decimal" value="${onAccount || ""}" placeholder="0.00" /></span></div>
+            <div class="gap-irow ${isOverpay ? "" : "gap-irow--off"}"><span class="lbl">On account ${isOverpay && Math.abs(unexplained) > 0.5 ? `<button class="lnk-clear" id="park-oa">park overpayment</button>` : (onAccount > 0 ? `<button class="lnk-clear" id="clear-oa">clear</button>` : "")}</span><span class="gap-input"><span class="gap-ccy">${r.ccy}</span><input class="gap-in ${onAccount ? "is-set" : ""}" id="onaccount-in" inputmode="decimal" value="${onAccount || ""}" placeholder="0.00" ${isOverpay ? "" : "disabled"} title="${isOverpay ? "" : "Only for overpayments — enabled when cash received exceeds the invoices."}" /></span></div>
           </div>
           <div class="gap-derived">
             <span>WHT (per-invoice) <b>${whtTotal ? num(whtTotal) : "—"}</b>${whtTotal ? ` <button class="lnk-clear" id="clear-wht">clear</button>` : ""}</span>
@@ -529,8 +538,7 @@
       const rb = Math.max(0, parseFloat(($("#rebate-in") || {}).value) || 0);
       const oaV = Math.max(0, parseFloat(($("#onaccount-in") || {}).value) || 0);
       const gg = allocated - r.amount;
-      const expl = bc + rb + oaV;
-      const unex = gg > 0 ? Math.max(0, gg - expl) : Math.min(0, gg + expl);
+      const unex = gg > 0 ? Math.max(0, gg - bc - rb) : Math.min(0, gg + oaV);
       const ok = Math.abs(unex) < 0.5;
       const av = $("#alloc-var");
       if (av) { av.className = "bal-chip " + (ok ? "ok" : "warn"); av.textContent = balText(unex, ok); }
@@ -554,9 +562,28 @@
       r.invoices.push(a); renderCockpit(r); toast(`Added ${a.inv} to the allocation`);
     };
 
-    // on-account (park residual / clear / edit)
+    // AI suggestion — auto-fill WHT to close a shortfall, analyst just acknowledges
+    const aiAccept = $("#ai-accept");
+    if (aiAccept) aiAccept.onclick = () => {
+      const sel = r.invoices.filter((i) => i.sel);
+      const target = Math.max(0, grossGap - bankCharge - rebateTotal);
+      if (target < 0.5 || !sel.length) return;
+      const totalOpen = sel.reduce((s, i) => s + i.open, 0) || 1;
+      let rem = Math.round(target * 100) / 100;
+      sel.forEach((i, k) => {
+        const add = k === sel.length - 1 ? rem : Math.round(target * i.open / totalOpen);
+        rem = Math.round((rem - add) * 100) / 100;
+        i.wht = Math.round(((i.wht || 0) + add) * 100) / 100;
+        i.apply = Math.max(0, Math.round((i.open - i.wht - (i.discount || 0)) * 100) / 100);
+      });
+      renderCockpit(r); toast(`AI applied ${fmt(target, r.ccy)} WHT across ${sel.length} invoice${sel.length > 1 ? "s" : ""} — please review`);
+    };
+    const aiDismiss = $("#ai-dismiss");
+    if (aiDismiss) aiDismiss.onclick = () => { r._aiDismissed = true; renderCockpit(r); };
+
+    // on-account (park overpayment / clear / edit) — only for overpayments
     const parkOa = $("#park-oa");
-    if (parkOa) parkOa.onclick = () => { const remaining = Math.max(0, Math.abs(grossGap) - bankCharge - rebateTotal); const amt = Math.round(remaining * 100) / 100; r.gap.onAccount = amt; renderCockpit(r); toast(`Parked ${fmt(amt, r.ccy)} on account`); };
+    if (parkOa) parkOa.onclick = () => { const amt = Math.round(Math.max(0, -grossGap) * 100) / 100; r.gap.onAccount = amt; renderCockpit(r); toast(`Parked ${fmt(amt, r.ccy)} on account`); };
     const clrOa = $("#clear-oa");
     if (clrOa) clrOa.onclick = () => { r.gap.onAccount = 0; renderCockpit(r); };
     const oaIn = $("#onaccount-in");
@@ -612,9 +639,18 @@
   function viewRemittance(r) {
     const ccy = r.ccy, cust = r.customer ? r.customer.name : "—";
     const inv = r.invoices.filter((i) => i.sel);
-    const total = inv.reduce((s, i) => s + i.open, 0);
-    const rows = inv.length ? inv.map((i) => `<tr><td class="cell-main">${i.inv}</td><td class="muted">${i.due}</td><td class="num">${fmt(i.open, ccy)}</td><td class="num">${i.wht ? "− " + fmt(i.wht, ccy) : "—"}</td><td class="num strong">${fmt(i.apply, ccy)}</td></tr>`).join("")
-      : `<tr><td colspan="5" class="muted">No lines parsed.</td></tr>`;
+    // Each line ties: Paid = Gross − WHT − discount. The column then sums to the cash
+    // actually received (r.amount); any residual short / overpayment is shown as its
+    // own reconciling line so the advice always balances to the remittance total.
+    const invDate = (d) => { const t = new Date(d + "T00:00:00"); t.setDate(t.getDate() - 30); return t.toISOString().slice(0, 10); };
+    const L = inv.map((i) => ({ i, gross: i.open, wht: i.wht || 0, disc: i.discount || 0, paid: Math.max(0, Math.round((i.open - (i.wht || 0) - (i.discount || 0)) * 100) / 100) }));
+    const grossTotal = L.reduce((s, x) => s + x.gross, 0);
+    const whtTotal = L.reduce((s, x) => s + x.wht, 0);
+    const netPaid = L.reduce((s, x) => s + x.paid, 0);
+    const shortAdj = Math.round((netPaid - r.amount) * 100) / 100;   // > 0 customer deducted more (short); < 0 overpaid
+    const lineRows = L.length ? L.map((x) => `<tr><td class="cell-main">${x.i.inv}</td><td class="muted">${invDate(x.i.due)}</td><td class="muted">${x.i.due}</td><td class="num">${fmt(x.gross, ccy)}</td><td class="num">${x.wht ? "− " + fmt(x.wht, ccy) : "—"}</td><td class="num strong">${fmt(x.paid, ccy)}</td></tr>`).join("") : `<tr><td colspan="6" class="muted">No lines.</td></tr>`;
+    const adjRow = shortAdj > 0.5 ? `<tr><td class="cell-main">Deduction / short payment</td><td class="muted">—</td><td class="muted">—</td><td class="num">—</td><td class="num">− ${fmt(shortAdj, ccy)}</td><td class="num strong">− ${fmt(shortAdj, ccy)}</td></tr>`
+      : shortAdj < -0.5 ? `<tr><td class="cell-main">Payment on account (advance)</td><td class="muted">—</td><td class="muted">—</td><td class="num">—</td><td class="num">—</td><td class="num strong">${fmt(-shortAdj, ccy)}</td></tr>` : "";
     const swift = { Singapore: "DBSSSGSG", Malaysia: "MBBEMYKL", Indonesia: "CENAIDJA", Thailand: "SICOTHBK", Philippines: "BNORPHMM" }[currentEntity().country] || "DBSSSGSG";
     openModal(`Remittance advice (PDF) — RA-${r.bankRef}`, `
       <div class="remit-doc">
@@ -634,8 +670,8 @@
         </div>
         <table class="tbl remit-doc__tbl">
           <thead><tr><th>Invoice no.</th><th>Invoice date</th><th>Due date</th><th class="num">Gross</th><th class="num">WHT</th><th class="num">Paid</th></tr></thead>
-          <tbody>${inv.length ? inv.map((i) => `<tr><td class="cell-main">${i.inv}</td><td class="muted">${D.dashboardFor(selectedEntityId).list.length && i.due}</td><td class="muted">${i.due}</td><td class="num">${fmt(i.open, ccy)}</td><td class="num">${i.wht ? "− " + fmt(i.wht, ccy) : "—"}</td><td class="num strong">${fmt(i.apply, ccy)}</td></tr>`).join("") : `<tr><td colspan="6" class="muted">No lines.</td></tr>`}
-            <tr class="modal-total"><td colspan="3" class="num">Total remitted</td><td class="num">${fmt(total, ccy)}</td><td class="num">${fmt(inv.reduce((s, i) => s + (i.wht || 0), 0), ccy)}</td><td class="num strong">${fmt(r.amount, ccy)}</td></tr>
+          <tbody>${lineRows}${adjRow}
+            <tr class="modal-total"><td colspan="3" class="num">Total remitted</td><td class="num">${fmt(grossTotal, ccy)}</td><td class="num">${whtTotal ? "− " + fmt(whtTotal, ccy) : "—"}</td><td class="num strong">${fmt(r.amount, ccy)}</td></tr>
           </tbody>
         </table>
         <div class="remit-doc__foot">Bank narration: <code>${r.narration}</code> · SWIFT/BIC ${swift}. ${r.remittance.file ? "Uploaded: " + escapeAttr(r.remittance.file) + "." : "Auto-matched from the connected AR mailbox."} Apply the lines via the allocation table.</div>
@@ -685,24 +721,20 @@
     const disc = sel.reduce((s, i) => s + (i.discount || 0), 0);
     const arCleared = applied + wht + disc;       // invoices cleared in full (Σ open of selected)
     const grossGap = applied - r.amount;          // > 0 short, < 0 overpay (post per-line WHT/disc)
-    const oaEntered = r.gap.onAccount || 0;
-    // Distribute the entered explanations against the gap, capped to it — excess is
-    // ignored (matching the clamped variance), so a fully-explained receipt balances.
+    // A short is explained by bank charge + rebate (capped to it); an overpayment is
+    // parked on-account (a customer advance). The two never mix.
     let shortNeed = Math.max(0, grossGap);
     const bc = Math.min(r.gap.bankCharge || 0, shortNeed); shortNeed -= bc;
     const rebate = Math.min(r.gap.rebate || 0, shortNeed); shortNeed -= rebate;
-    const oaDebit = Math.min(oaEntered, shortNeed); shortNeed -= oaDebit;   // residual short → suspense (Dr)
     const overpay = Math.max(0, -grossGap);
-    const oaCredit = Math.min(oaEntered, overpay);                          // overpayment → advance (Cr)
+    const oaCredit = Math.min(r.gap.onAccount || 0, overpay);               // overpayment → advance (Cr)
     const unexplained = grossGap > 0 ? shortNeed : -(overpay - oaCredit);
-    // Debits = cash + non-cash explanations (+ short parked to suspense);
-    // Credits = AR cleared (+ overpayment parked as a customer advance).
+    // Debits = cash + non-cash explanations; Credits = AR cleared (+ overpayment advance).
     const lines = [["Bank (cash received)", r.amount, 0]];
     if (wht) lines.push(["WHT receivable (asset)", wht, 0]);
     if (disc) lines.push(["Cash discount allowed (expense)", disc, 0]);
     if (bc) lines.push(["Bank charges (expense)", bc, 0]);
     if (rebate) lines.push(["Deductions / claims", rebate, 0]);
-    if (oaDebit) lines.push(["On-account / unapplied cash (suspense)", oaDebit, 0]);
     if (arCleared) lines.push([`AR — ${cust} (invoices cleared)`, 0, arCleared]);
     if (oaCredit) lines.push(["Customer advances (on-account)", 0, oaCredit]);
     const body = lines.map((l) => `<tr><td class="cell-main">${l[0]}</td><td class="num">${l[1] ? fmt(l[1], ccy) : ""}</td><td class="num">${l[2] ? fmt(l[2], ccy) : ""}</td></tr>`).join("");
