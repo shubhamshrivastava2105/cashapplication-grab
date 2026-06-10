@@ -206,5 +206,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_7x8iom13y19",
+    "route": "#/workspace",
+    "anchor": "ws.credit",
+    "anchorLabel": "Workspace · The credit + identified customer",
+    "xPct": 72.31638418079096,
+    "yPct": 41.363604013949185,
+    "author": "SME",
+    "text": "the amount in the remittence advice is not matching, the gross and the paid amount for BLIBLI Commerce. the amounts should match for each line item for each remmitance advice",
+    "status": "open",
+    "createdAt": "2026-06-10T09:52:25.869Z",
+    "updatedAt": "2026-06-10T09:52:25.872Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
