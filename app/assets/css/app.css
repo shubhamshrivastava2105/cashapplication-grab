@@ -388,6 +388,18 @@ th.sortable:hover { color: var(--text-default-heading); background: var(--grey-1
 .remit-doc__tbl { margin: 0; }
 .remit-doc__tbl thead th { background: var(--surface-pagecard-card-1); }
 .remit-doc__foot { font-size: 11px; color: var(--text-default-caption); padding: var(--scale-250) var(--scale-400); background: var(--grey-50); }
+.remit-doc__addr { font-size: 11px; color: var(--text-default-caption); margin-top: 2px; }
+.remit-doc__party { display: grid; grid-template-columns: 1fr 1fr; gap: var(--scale-400); padding: var(--scale-300) var(--scale-400); border-bottom: 1px solid var(--border-default-default); font-size: 13px; }
+.remit-doc__plabel { font-size: 10px; text-transform: uppercase; letter-spacing: .5px; color: var(--text-default-caption); margin-bottom: 3px; }
+/* workspace queue (smaller, so the cockpit is visible) + disabled post + add invoice */
+.ws-queue-scroll { max-height: 300px; overflow-y: auto; }
+.ws-queue-scroll thead th { position: sticky; top: 0; z-index: 1; }
+.add-inv { display: flex; align-items: center; gap: 8px; padding: 10px var(--scale-400) 0; font-size: 13px; }
+.add-inv > span { color: var(--text-default-caption); white-space: nowrap; }
+.add-inv select { flex: 1; min-width: 0; font-family: var(--font-family-inter); font-size: 12px; border: 1px solid var(--border-default-default); border-radius: var(--radius-sm); padding: 6px; }
+.post-hint { font-size: 12px; color: var(--text-brand-default); margin-top: 10px; line-height: 1.45; }
+.btn:disabled, .btn[disabled] { opacity: .55; cursor: not-allowed; }
+.kpi__drill { display: inline-block; }
 
 /* allocation table */
 .alloc-summary { display: flex; gap: var(--scale-400); font-size: 14px; font-weight: var(--font-weight-bold); padding: var(--scale-300) var(--scale-400); border-top: 1px solid var(--border-default-default); }
