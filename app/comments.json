@@ -192,22 +192,6 @@
     "resolutionNote": "Removed the Reports & close page after moving the trend chart to the dashboard."
   },
   {
-    "id": "c_gi9jcerdpj2",
-    "route": "#/workspace",
-    "anchor": "ws.gap",
-    "anchorLabel": "Workspace · Gap classification & actions",
-    "xPct": 45.588235294117645,
-    "yPct": 37.470118671561515,
-    "author": "SME",
-    "text": "when the amount is added under \"on account\" it should reduce the variance by the same amount and not increase it.",
-    "status": "resolved",
-    "createdAt": "2026-06-10T08:08:02.942Z",
-    "updatedAt": "2026-06-10T08:25:31.719Z",
-    "resolvedAt": "2026-06-10T08:25:31.719Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "Fixed: parking on-account now reduces the variance by that amount."
-  },
-  {
     "id": "c_qfv0ohyf6xw",
     "route": "#/workspace",
     "anchor": "ws.gap",
