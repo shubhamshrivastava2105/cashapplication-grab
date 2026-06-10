@@ -232,12 +232,12 @@
     "yPct": 55.50136600358576,
     "author": "SME",
     "text": "change \"gst\" in the dropdown to \"gst/vat\"",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-10T08:11:17.032Z",
-    "updatedAt": "2026-06-10T08:11:17.032Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-10T08:25:33.997Z",
+    "resolvedAt": "2026-06-10T08:25:33.997Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Changed GST to GST/VAT in the rebate/deduction type dropdown."
   },
   {
     "id": "c_n7uds23pv9d",
