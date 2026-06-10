@@ -424,12 +424,12 @@
     "yPct": 49.78136362556144,
     "author": "SME",
     "text": "+ amount can be posted.",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T13:36:39.502Z",
-    "updatedAt": "2026-06-09T13:36:39.502Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-10T07:34:26.157Z",
+    "resolvedAt": "2026-06-10T07:34:26.157Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Overpayment (+) can be posted — park the residual on-account, then Apply & post enables."
   },
   {
     "id": "c_hb4zvcct2eu",
