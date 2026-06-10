@@ -967,7 +967,7 @@
     const unapRows = (c.unapItems || []).map((u) => ({ doc: u.id, date: u.date, type: "Receipt · " + u.reason, amount: u.amount, status: u.ageDays + "d aged", tone: u.tone || "warn" }));
     const openTotal = openItems.reduce((s, i) => s + i.amount, 0);
     const clearedTotal = cleared.reduce((s, i) => s + i.amount, 0);
-    const items = custTab === "open" ? openItems : custTab === "cleared" ? cleared : custTab === "unapplied" ? unapRows : openItems.concat(cleared);
+    const items = custTab === "open" ? openItems : custTab === "cleared" ? cleared : custTab === "unapplied" ? unapRows : openItems.concat(unapRows, cleared);
     const itemRows = items.length ? items.map((i) => `
       <tr><td class="cell-main">${i.doc}</td><td class="muted">${i.date}</td><td>${i.type}</td><td class="num strong">${fmt(i.amount, ccy)}</td><td>${pill(i.status, i.tone)}</td></tr>`).join("")
       : `<tr><td colspan="5">${emptyState("No unapplied receipts", "All cash from this customer has been applied.")}</td></tr>`;
