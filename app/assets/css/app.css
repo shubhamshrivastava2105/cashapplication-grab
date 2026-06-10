@@ -453,6 +453,14 @@ th.sortable:hover { color: var(--text-default-heading); background: var(--grey-1
 .ai-chip svg { animation: ai-pulse 2.2s ease-in-out infinite; }
 /* AI-suggested customer (identified box) */
 .identified-box--ai { border-color: var(--border-primary-default); background: var(--surface-primary-subtle); }
+/* Apply & post success */
+.post-ok { display: flex; align-items: center; gap: var(--scale-300); padding: var(--scale-300); background: var(--surface-success-subtle); border: 1px solid var(--border-success-default); border-radius: var(--radius-md); }
+.post-ok__badge { flex: none; width: 38px; height: 38px; border-radius: 999px; background: var(--surface-success-default); color: #fff; display: flex; align-items: center; justify-content: center; }
+.post-ok__badge svg { width: 20px; height: 20px; }
+.post-ok__title { font-weight: var(--font-weight-bold); color: var(--text-default-heading); font-size: 15px; }
+.post-ok__sub { font-size: 12.5px; color: var(--text-default-caption); margin-top: 2px; }
+.post-meta { display: flex; flex-wrap: wrap; gap: 6px var(--scale-400); margin-top: var(--scale-300); font-size: 12px; color: var(--text-default-caption); }
+.post-meta b { color: var(--text-default-heading); font-family: var(--font-family-plus-jakarta-sans); margin-left: 4px; }
 /* remittance advice document */
 .remit-doc { border: 1px solid var(--border-default-default); border-radius: var(--radius-sm); overflow: hidden; }
 .remit-doc__head { display: flex; justify-content: space-between; gap: var(--scale-400); padding: var(--scale-400); background: var(--grey-75); border-bottom: 2px solid var(--grey-300); }

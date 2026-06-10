@@ -762,8 +762,9 @@
     });
   }
 
-  // Preview the journal entry this application would post (PRD §12 conventions)
-  function simulateEntry(r) {
+  // The journal entry this application would post (PRD §12 conventions) — shared by the
+  // Simulate preview and the post-success confirmation so they're guaranteed identical.
+  function journalLines(r) {
     const ccy = r.ccy, cust = r.customer ? r.customer.name : "Unidentified";
     const sel = r.invoices.filter((i) => i.sel);
     const applied = sel.reduce((s, i) => s + i.apply, 0);
@@ -771,15 +772,12 @@
     const disc = sel.reduce((s, i) => s + (i.discount || 0), 0);
     const arCleared = applied + wht + disc;       // invoices cleared in full (Σ open of selected)
     const grossGap = applied - r.amount;          // > 0 short, < 0 overpay (post per-line WHT/disc)
-    // A short is explained by bank charge + rebate (capped to it); an overpayment is
-    // parked on-account (a customer advance). The two never mix.
     let shortNeed = Math.max(0, grossGap);
     const bc = Math.min(r.gap.bankCharge || 0, shortNeed); shortNeed -= bc;
     const rebate = Math.min(r.gap.rebate || 0, shortNeed); shortNeed -= rebate;
     const overpay = Math.max(0, -grossGap);
     const oaCredit = Math.min(r.gap.onAccount || 0, overpay);               // overpayment → advance (Cr)
     const unexplained = grossGap > 0 ? shortNeed : -(overpay - oaCredit);
-    // Debits = cash + non-cash explanations; Credits = AR cleared (+ overpayment advance).
     const lines = [["Bank (cash received)", r.amount, 0]];
     if (wht) lines.push(["WHT receivable (asset)", wht, 0]);
     if (disc) lines.push(["Cash discount allowed (expense)", disc, 0]);
@@ -787,15 +785,39 @@
     if (rebate) lines.push(["Deductions / claims", rebate, 0]);
     if (arCleared) lines.push([`AR — ${cust} (invoices cleared)`, 0, arCleared]);
     if (oaCredit) lines.push(["Customer advances (on-account)", 0, oaCredit]);
-    const body = lines.map((l) => `<tr><td class="cell-main">${l[0]}</td><td class="num">${l[1] ? fmt(l[1], ccy) : ""}</td><td class="num">${l[2] ? fmt(l[2], ccy) : ""}</td></tr>`).join("");
-    const totD = lines.reduce((s, l) => s + l[1], 0), totC = lines.reduce((s, l) => s + l[2], 0);
+    return { lines, ccy, cust, unexplained, totD: lines.reduce((s, l) => s + l[1], 0), totC: lines.reduce((s, l) => s + l[2], 0) };
+  }
+  function jeTable(je) {
+    const body = je.lines.map((l) => `<tr><td class="cell-main">${l[0]}</td><td class="num">${l[1] ? fmt(l[1], je.ccy) : ""}</td><td class="num">${l[2] ? fmt(l[2], je.ccy) : ""}</td></tr>`).join("");
+    return `<div class="table-wrap"><table class="tbl">
+        <thead><tr><th>Account</th><th class="num">Debit</th><th class="num">Credit</th></tr></thead>
+        <tbody>${body}<tr class="modal-total"><td>Total</td><td class="num">${fmt(je.totD, je.ccy)}</td><td class="num">${fmt(je.totC, je.ccy)}</td></tr></tbody>
+      </table></div>`;
+  }
+  function simulateEntry(r) {
+    const je = journalLines(r);
     openModal("Simulated accounting entry", `
       <div class="modal-sub">Preview of the journal entry this application would post to the ERP. Nothing posts until you Apply &amp; post (under maker-checker).</div>
-      <div class="table-wrap"><table class="tbl">
-        <thead><tr><th>Account</th><th class="num">Debit</th><th class="num">Credit</th></tr></thead>
-        <tbody>${body}<tr class="modal-total"><td>Total</td><td class="num">${fmt(totD, ccy)}</td><td class="num">${fmt(totC, ccy)}</td></tr></tbody>
-      </table></div>
-      <div class="gap-note" style="padding:12px 0 0">${Math.abs(unexplained) < 0.5 ? "✓ Balanced — debits equal credits; ready to post." : (unexplained > 0 ? `Short by ${fmt(unexplained, ccy)} — code a deduction / rebate (or reduce the selection) so it balances.` : `Overpaid by ${fmt(-unexplained, ccy)} — park it on-account so it balances.`)}</div>`);
+      ${jeTable(je)}
+      <div class="gap-note" style="padding:12px 0 0">${Math.abs(je.unexplained) < 0.5 ? "✓ Balanced — debits equal credits; ready to post." : (je.unexplained > 0 ? `Short by ${fmt(je.unexplained, je.ccy)} — code a deduction / rebate (or reduce the selection) so it balances.` : `Overpaid by ${fmt(-je.unexplained, je.ccy)} — park it on-account so it balances.`)}</div>`);
+  }
+  // Success confirmation after Apply & post — shows the real posted journal entry.
+  function postSuccess(r) {
+    const je = journalLines(r);
+    const doc = "1900" + (4000 + (Math.abs(r.amount) % 5999));   // SAP-style clearing doc number
+    const fy = "2026";
+    openModal("Posted to ERP", `
+      <div class="post-ok">
+        <div class="post-ok__badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></div>
+        <div><div class="post-ok__title">Cash applied &amp; posted</div><div class="post-ok__sub">${fmt(r.amount, je.ccy)} cleared for ${je.cust} · approved under maker-checker.</div></div>
+      </div>
+      <div class="post-meta">
+        <span>Clearing document <b>${doc}</b></span><span>Company code <b>${currentEntity().code || "1000"}</b></span><span>Fiscal year <b>${fy}</b></span><span>Posting date <b>${D.lastStatementDate}</b></span>
+      </div>
+      <div class="modal-sub" style="margin-top:14px">Journal entry posted</div>
+      ${jeTable(je)}
+      <div style="margin-top:18px;display:flex;justify-content:flex-end"><button class="btn btn--primary" id="ps-done">Done</button></div>`);
+    const done = document.getElementById("ps-done"); if (done) done.onclick = closeModal;
   }
 
   // Action buttons open a confirmation dialog (clear, visible feedback)
@@ -818,7 +840,7 @@
         <button class="btn btn--${m.danger ? "danger" : "primary"}" id="ac-confirm">Confirm</button>
       </div>`);
     document.getElementById("ac-cancel").onclick = closeModal;
-    document.getElementById("ac-confirm").onclick = () => { closeModal(); toast(`${m.t} — done`); };
+    document.getElementById("ac-confirm").onclick = () => { closeModal(); if (act === "apply") { postSuccess(r); } else { toast(`${m.t} — done`); } };
   }
 
   // ════════════════════════════════════════════════════════════════════════
@@ -939,11 +961,14 @@
     const openItems = c.invoices.map((i) => ({ doc: i.inv, date: i.due, type: "Invoice", amount: i.open, status: "Open", tone: "warn" }));
     const clDates = ["2026-05-02", "2026-04-18", "2026-03-29", "2026-05-21", "2026-04-05", "2026-03-12"];
     const cleared = clDates.map((d, j) => ({ doc: (j % 3 === 2 ? "CR-" : "INV-") + (6000 + j * 13 + c.id.length * 7), date: d, type: j % 3 === 2 ? "Credit memo" : "Invoice", amount: Math.round(c.openAr * 0.12 * (1 + (j % 4)) / 4) * (j % 3 === 2 ? -1 : 1), status: "Cleared", tone: "success" }));
+    // Unapplied receipts that make up the Unapplied figure (ties to the dashboard line items)
+    const unapRows = (c.unapItems || []).map((u) => ({ doc: u.id, date: u.date, type: "Receipt · " + u.reason, amount: u.amount, status: u.ageDays + "d aged", tone: u.tone || "warn" }));
     const openTotal = openItems.reduce((s, i) => s + i.amount, 0);
     const clearedTotal = cleared.reduce((s, i) => s + i.amount, 0);
-    const items = custTab === "open" ? openItems : custTab === "cleared" ? cleared : openItems.concat(cleared);
-    const itemRows = items.map((i) => `
-      <tr><td class="cell-main">${i.doc}</td><td class="muted">${i.date}</td><td>${i.type}</td><td class="num strong">${fmt(i.amount, ccy)}</td><td>${pill(i.status, i.tone)}</td></tr>`).join("");
+    const items = custTab === "open" ? openItems : custTab === "cleared" ? cleared : custTab === "unapplied" ? unapRows : openItems.concat(cleared);
+    const itemRows = items.length ? items.map((i) => `
+      <tr><td class="cell-main">${i.doc}</td><td class="muted">${i.date}</td><td>${i.type}</td><td class="num strong">${fmt(i.amount, ccy)}</td><td>${pill(i.status, i.tone)}</td></tr>`).join("")
+      : `<tr><td colspan="5">${emptyState("No unapplied receipts", "All cash from this customer has been applied.")}</td></tr>`;
 
     content.innerHTML = `
       <div class="split">
@@ -963,6 +988,7 @@
             <div class="card__head"><div class="card__title">Account line items (SAP view)</div>
               <div class="seg" id="cust-tab-seg">
                 <button class="seg__btn ${custTab === "open" ? "on" : ""}" data-tab="open">Open items</button>
+                <button class="seg__btn ${custTab === "unapplied" ? "on" : ""}" data-tab="unapplied">Unapplied (${(c.unapItems || []).length})</button>
                 <button class="seg__btn ${custTab === "cleared" ? "on" : ""}" data-tab="cleared">Cleared</button>
                 <button class="seg__btn ${custTab === "all" ? "on" : ""}" data-tab="all">All items</button>
               </div>
@@ -974,7 +1000,7 @@
             </div>
             <div class="card__body card__body--flush"><div class="table-wrap"><table class="tbl">
               <thead><tr><th>Document</th><th>Posting date</th><th>Type</th><th class="num">Amount</th><th>Status</th></tr></thead>
-              <tbody>${itemRows}</tbody></table></div></div>
+              <tbody>${itemRows}${items.length ? `<tr class="modal-total"><td colspan="3" class="num">${custTab === "unapplied" ? "Total unapplied" : custTab === "cleared" ? "Total cleared" : custTab === "all" ? "Total" : "Total open AR"}</td><td class="num strong">${fmt(items.reduce((s, i) => s + i.amount, 0), ccy)}</td><td></td></tr>` : ""}</tbody></table></div></div>
           </div>
 
           <div class="card" ${dc("cust.aliases", "Customer 360 · Payer aliases")}>

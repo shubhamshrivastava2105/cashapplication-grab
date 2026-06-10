@@ -62,19 +62,30 @@ window.DATA = (function () {
   }
   const MON = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
   function stmtDate(iso) { const p = iso.split("-"); return p[2] + MON[(+p[1]) - 1] + p[0].slice(2); } // 08JUN26
-  // A realistic bank-statement narration, varied by channel (MT940 style)
+  // A stable payer reference that recurs on EVERY remittance from a given customer —
+  // their sender account/alias code. The identification reasoning cites this exact token.
+  function payerKey(name) {
+    const init = name.replace(/[^A-Za-z ]/g, "").split(/\s+/).filter(Boolean).map((w) => w[0]).join("").toUpperCase().slice(0, 4);
+    let h = 0; for (let k = 0; k < name.length; k++) h = (h * 31 + name.charCodeAt(k)) % 90000;
+    return init + (10000 + h);
+  }
+  // A realistic bank-statement narration, varied by channel (MT940 style). For an
+  // identified payer it carries the recurring sender-account token (/ACC <payerKey>).
   function narrate(channel, customer, ref, iso) {
     const d = stmtDate(iso);
-    const payer = customer === "— unidentified —" ? "OBO PAYMENT NO BNF REF" : customer.toUpperCase();
+    const unident = customer === "— unidentified —";
+    const payer = unident ? "OBO PAYMENT NO BNF REF" : customer.toUpperCase();
+    const pk = unident ? "" : payerKey(customer);
+    const acc = pk ? ` /ACC ${pk}` : "";
     switch (channel) {
-      case "INWARD TT": return `INWARD TT ${d} /ORG ${payer} /OUR ${ref}`;
-      case "INWARD TT FCY": return `INWARD TT FCY ${d} /CHG OUR /ORG ${payer} /${ref}`;
-      case "MEPS IBG TT": return `IBG GIRO ${d} ${payer} ${ref}`;
-      case "FAST GIRO COLLECTION": return `FAST ${d} ${payer} OTHR ${ref}`;
-      case "GIRO BULK CR": return `GIRO BULK CR ${d} ${payer} ${ref}`;
-      case "DUITNOW TRANSFER": return `DUITNOW ${d} ${payer} REF${ref}`;
-      case "PROMPTPAY QR": return `PROMPTPAY ${d} ${payer} ${ref}`;
-      default: return `CHQ DEP ${d} ${payer} ${ref}`;
+      case "INWARD TT": return `INWARD TT ${d} /ORG ${payer}${acc} /OUR ${ref}`;
+      case "INWARD TT FCY": return `INWARD TT FCY ${d} /CHG OUR /ORG ${payer}${acc} /${ref}`;
+      case "MEPS IBG TT": return `IBG GIRO ${d} ${payer}${pk ? " ACC " + pk : ""} ${ref}`;
+      case "FAST GIRO COLLECTION": return `FAST ${d} ${payer}${pk ? " ACC " + pk : ""} OTHR ${ref}`;
+      case "GIRO BULK CR": return `GIRO BULK CR ${d} ${payer}${pk ? " " + pk : ""} ${ref}`;
+      case "DUITNOW TRANSFER": return `DUITNOW ${d} ${payer}${pk ? " " + pk : ""} REF${ref}`;
+      case "PROMPTPAY QR": return `PROMPTPAY ${d} ${payer}${pk ? " " + pk : ""} ${ref}`;
+      default: return `CHQ DEP ${d} ${payer}${pk ? " " + pk : ""} ${ref}`;
     }
   }
   // Skewed-but-deterministic reason so the split looks real (not 4 equal buckets)
@@ -102,7 +113,10 @@ window.DATA = (function () {
     const list = [];
     for (let i = 0; i < N; i++) {
       const reason = reasonFor(i, seed);
-      const customer = reason === "Unidentified customer" ? "— unidentified —" : pool[(i * 3 + seed) % pool.length];
+      // Spread receipts across ALL customers (an LCG hash, not i*3 which only hit 4 of
+      // them) with natural variation, so every Customer-360 record ties to real dashboard
+      // line items instead of showing 0 unapplied.
+      const customer = reason === "Unidentified customer" ? "— unidentified —" : pool[((i * 1103515245 + seed * 12345) >>> 0) % pool.length];
       const channel = CHANNELS[(i + seed) % CHANNELS.length];
       const ageDays = (i * 13 + seed * 3) % 230;
       const baseUnits = 700 + ((i * 97 + seed * 53) % 9300);     // 700–10000 base
@@ -160,7 +174,8 @@ window.DATA = (function () {
       return { customer: null, aiCustomer, invoices: [], remittance: { listed: 0, parsed: 0 }, aiConf: aiCustomer.confidence, sla: "OVERDUE",
         gap: { wht: 0, discount: 0, bankCharge: 0, onAccount: 0, rebate: 0, aiKind: null, aiRate: 0, unexplained: it.amount, note: "No customer auto-resolved — verify Neoflo AI's suggested match below, or pick another.", allocRule: "—" } };
     }
-    const cust = { name: it.customer, id: "C-auto", confidence: 0.72 + ((it.amount % 26) / 100), how: "amount + timing fingerprint (ID-6)" };
+    const pk = payerKey(it.customer);
+    const cust = { name: it.customer, id: "C-auto", confidence: 0.72 + ((it.amount % 26) / 100), how: `recurring sender account ${pk} in the narration + payer-name match (ID-3 / ID-4) — ${pk} is seen on every ${it.customer} remittance` };
     const sc = CCY_SCALE[ccy] || 1;
     // Decide the realistic gap "story" so any AI-suggested value is exact and sensible:
     // WHT 5%, cash discount 2%, a flat cross-border bank charge, a ~6% volume rebate,
@@ -229,7 +244,8 @@ window.DATA = (function () {
       // Open invoices form an ageing ladder; Open AR is EXACTLY their sum → ties to the SAP table on the page.
       // AR comfortably exceeds the unapplied credit sitting on the account (the realistic relationship).
       const invCount = 3 + (idx % 4);                                       // 3–6 open invoices
-      const targetAr = Math.round(unapplied * (4 + (idx % 3)) + 45000 * scale);
+      const baseAr = 40000 + ((idx * 137 + 311) % 260000);                  // distinct per customer (40k–300k)
+      const targetAr = Math.round(unapplied * (3 + (idx % 4)) + baseAr * scale);
       const weights = Array.from({ length: invCount }, (_, j) => 0.6 + ((idx * 3 + j * 7) % 9) / 10);
       const wsum = weights.reduce((a, b) => a + b, 0);
       let acc = 0;
@@ -243,8 +259,11 @@ window.DATA = (function () {
       const idRate = 0.86 + ((idx * 7) % 13) / 100;                         // 86–98 %
       const terms = ["Net 30", "Net 45", "Net 60"][idx % 3];
       const aliases = idx % 3 === 0 ? [{ name: name.split(" ")[0] + " Treasury", acct: "OCBC …" + (200 + idx), rel: RELATIONSHIPS[idx % RELATIONSHIPS.length] }] : [];
-      const fingerprints = [{ pattern: CHANNELS[idx % CHANNELS.length] + " " + name.toUpperCase().slice(0, 6) + "*", weight: 0.6 + ((idx * 5) % 35) / 100, lastSeen: dateMinus((idx * 9) % 60) }];
-      return { id: "C-" + (1000 + idx), name, country: ent.country, ccy, terms, openAr, unapplied, idRate, aliases, fingerprints, invoices };
+      const fingerprints = [{ pattern: "/ACC " + payerKey(name) + " · " + name.toUpperCase().slice(0, 8) + "*", weight: 0.6 + ((idx * 5) % 35) / 100, lastSeen: dateMinus((idx * 9) % 60) }];
+      // The actual unapplied receipts that make up the Unapplied figure — same line
+      // items shown on the dashboard, so the customer's breakdown ties out.
+      const unapItems = items.slice().sort((a, b) => b.ageDays - a.ageDays).map((x) => ({ date: x.date, desc: x.desc, id: x.id, amount: x.amount, ageDays: x.ageDays, reason: x.reason, tone: x.tone }));
+      return { id: "C-" + (1000 + idx), name, country: ent.country, ccy, terms, openAr, unapplied, idRate, aliases, fingerprints, invoices, unapItems };
     });
     _custCache[entityId] = out;
     return out;
