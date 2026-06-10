@@ -190,21 +190,5 @@
     "resolvedAt": "2026-06-10T07:22:24.947Z",
     "resolvedBy": "Claude",
     "resolutionNote": "Removed the Reports & close page after moving the trend chart to the dashboard."
-  },
-  {
-    "id": "c_pemjake03jf",
-    "route": "#/workspace",
-    "anchor": "ws.allocation",
-    "anchorLabel": "Workspace · Open invoices & proposed allocation",
-    "xPct": 94.38325991189427,
-    "yPct": 23.69886459513536,
-    "author": "SME",
-    "text": "remove \"apply\" column from the \"open invoices - proposed allocation\" section",
-    "status": "resolved",
-    "createdAt": "2026-06-10T08:25:27.531Z",
-    "updatedAt": "2026-06-10T08:26:38.225Z",
-    "resolvedAt": "2026-06-10T08:26:38.225Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "Apply column already removed (live)."
   }
 ]
