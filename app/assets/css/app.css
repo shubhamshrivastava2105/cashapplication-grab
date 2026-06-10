@@ -353,7 +353,9 @@ th.sortable:hover { color: var(--text-default-heading); background: var(--grey-1
 .pipe-arrow { color: var(--text-default-placeholder); font-size: 16px; }
 
 /* ─── Workspace (3-pane analyst cockpit) ───────────────────────────────── */
-.workspace { display: grid; grid-template-columns: 320px minmax(0,1fr) 340px; gap: var(--scale-300); align-items: stretch; }
+/* Left rail (the credit + gap classification) beside a wide allocation column */
+.workspace { display: grid; grid-template-columns: 380px minmax(0,1fr); gap: var(--scale-300); align-items: start; }
+.workspace .ws-col { display: flex; flex-direction: column; gap: var(--scale-300); }
 .workspace .ws-pane { display: flex; flex-direction: column; }
 .ws-pane { background: var(--surface-pagecard-card-1); border: 1px solid var(--border-default-default); border-radius: var(--radius-md); box-shadow: var(--shadow-small); }
 .ws-pane__title { font-size: 12px; font-weight: var(--font-weight-bold); letter-spacing: 1px; text-transform: uppercase; color: var(--text-success-hover); padding: var(--scale-300) var(--scale-400) 0; }
@@ -439,6 +441,7 @@ th.sortable:hover { color: var(--text-default-heading); background: var(--grey-1
 .chk { width: 18px; height: 18px; border-radius: 5px; border: 1.5px solid var(--border-default-default-hover); display: inline-grid; place-items: center; cursor: pointer; background: var(--surface-pagecard-card-1); color: transparent; font-size: 11px; line-height: 1; transition: background .12s, border-color .12s; }
 .chk:hover { border-color: var(--border-primary-default); }
 .chk.on { background: var(--surface-primary-default); border-color: var(--surface-primary-default); color: #fff; }
+.chk svg { width: 12px; height: 12px; display: block; }
 .apply-amt { color: var(--text-success-hover); font-weight: var(--font-weight-semibold); }
 
 /* queue list */

@@ -420,7 +420,7 @@
       const partial = i.sel && cleared(i) > 0 && cleared(i) < i.open - 0.5;
       return `
       <tr class="${partial ? "row-partial" : ""}">
-        <td><span class="chk ${i.sel ? "on" : ""}" data-toggle="${idx}">${i.sel ? "✓" : ""}</span></td>
+        <td><span class="chk ${i.sel ? "on" : ""}" data-toggle="${idx}" role="checkbox" aria-checked="${i.sel}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></span></td>
         <td class="cell-main">${i.inv}${partial ? ` <span class="pill pill--warn pill--plain" style="padding:1px 7px">Partial</span>` : ""}</td>
         <td class="muted">${i.due}</td>
         <td class="num">${num(i.open)}</td>
@@ -488,7 +488,7 @@
         </div>
       </div>`;
 
-    cockpit.innerHTML = `<div class="workspace">${left}${mid}${right}</div>`;
+    cockpit.innerHTML = `<div class="workspace"><div class="ws-col">${left}${right}</div>${mid}</div>`;
 
     cockpit.querySelectorAll("[data-act]").forEach((b) => {
       b.onclick = () => actionConfirm(b.dataset.act, r);
