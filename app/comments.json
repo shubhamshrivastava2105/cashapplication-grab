@@ -286,5 +286,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_s0r69pmdlp0",
+    "route": "#/applied",
+    "anchor": "aa.table",
+    "anchorLabel": "Auto-applied · straight-through ledger",
+    "xPct": 47.175141242937855,
+    "yPct": 4.348344943836985,
+    "author": "SME",
+    "text": "the user should be able to check details when clicked on the line item. like the discount, wht etc",
+    "status": "open",
+    "createdAt": "2026-06-10T11:51:54.900Z",
+    "updatedAt": "2026-06-10T11:51:54.900Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
