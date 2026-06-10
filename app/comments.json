@@ -272,22 +272,6 @@
     "resolutionNote": "View breakdown is now a consistent link on its own line (divider) on both clickable tiles."
   },
   {
-    "id": "c_0vczmfqcn67",
-    "route": "#/workspace",
-    "anchor": "ws.queue",
-    "anchorLabel": "Workspace · Credit queue",
-    "xPct": 53.45744680851063,
-    "yPct": 93.15635683950266,
-    "author": "SME",
-    "text": "make this table vertically smaller so the metrics(table) at the bottom is also visible",
-    "status": "resolved",
-    "createdAt": "2026-06-09T13:27:28.591Z",
-    "updatedAt": "2026-06-10T07:34:13.467Z",
-    "resolvedAt": "2026-06-10T07:34:13.467Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "Credit queue is now a fixed-height scroll (≈300px) so the cockpit below is visible."
-  },
-  {
     "id": "c_qmfq90nevmm",
     "route": "#/workspace",
     "anchor": "ws.credit",
