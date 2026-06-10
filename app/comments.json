@@ -232,12 +232,12 @@
     "yPct": 22.135922330097088,
     "author": "SME",
     "text": "instead of auto applied, pls call it as applied cash",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-10T11:48:01.797Z",
-    "updatedAt": "2026-06-10T11:48:01.797Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-10T12:06:31.942Z",
+    "resolvedAt": "2026-06-10T12:06:31.942Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Renamed the tab and page title from Auto-applied to Applied cash."
   },
   {
     "id": "c_gaeykc29iiu",
