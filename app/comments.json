@@ -216,12 +216,12 @@
     "yPct": 41.363604013949185,
     "author": "SME",
     "text": "the amount in the remittence advice is not matching, the gross and the paid amount for BLIBLI Commerce. the amounts should match for each line item for each remmitance advice",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-10T09:52:25.869Z",
-    "updatedAt": "2026-06-10T09:52:25.872Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-10T10:33:40.729Z",
+    "resolvedAt": "2026-06-10T10:33:40.729Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Remittance advice now ties: per line Paid = Gross − WHT − discount, and the Paid column sums to the cash actually received, with a reconciling Deduction/short-payment or Payment-on-account(advance) line. (Previously Paid showed the full gross for short/overpay credits, so it didnt match.)"
   },
   {
     "id": "c_0fuwm4oc18n",
