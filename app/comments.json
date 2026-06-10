@@ -328,12 +328,12 @@
     "yPct": 4.987624568488243,
     "author": "SME",
     "text": "remove this",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T13:15:06.929Z",
-    "updatedAt": "2026-06-09T13:15:06.929Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-10T07:22:21.933Z",
+    "resolvedAt": "2026-06-10T07:22:21.933Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Removed (the Reports page including Top customers by open AR was removed)."
   },
   {
     "id": "c_hleh4xvy6wd",
