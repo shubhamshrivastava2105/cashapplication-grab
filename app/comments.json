@@ -184,12 +184,12 @@
     "yPct": 27.131782945736433,
     "author": "SME",
     "text": "remove decuctions/claims page entirely",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T13:11:35.256Z",
-    "updatedAt": "2026-06-10T07:23:25.170Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-10T07:34:10.673Z",
+    "resolvedAt": "2026-06-10T07:34:10.673Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Deductions page removed (live)."
   },
   {
     "id": "c_bv82gmautfc",
