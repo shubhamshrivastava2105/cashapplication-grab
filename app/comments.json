@@ -216,12 +216,12 @@
     "yPct": 54.27196277640228,
     "author": "SME",
     "text": "even for rebate, the variance should reduce and not increase",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-10T08:09:12.164Z",
-    "updatedAt": "2026-06-10T08:09:12.164Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-10T08:25:32.882Z",
+    "resolvedAt": "2026-06-10T08:25:32.882Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Fixed: rebate now reduces the variance (sign corrected)."
   },
   {
     "id": "c_kmyxhq3hvag",
