@@ -208,22 +208,6 @@
     "resolutionNote": "Remittance is now a detailed SAP/PDF-style advice: remitting party + beneficiary, SWIFT/BIC, invoice no/date/due, gross/WHT/paid, bank narration."
   },
   {
-    "id": "c_dz276xxnvmk",
-    "route": "#/workspace",
-    "anchor": "ws.gap",
-    "anchorLabel": "Workspace · Gap classification & actions",
-    "xPct": 38.529411764705884,
-    "yPct": 76.09377599277549,
-    "author": "SME",
-    "text": "if the match is not exact, the user should not be able to post",
-    "status": "resolved",
-    "createdAt": "2026-06-09T13:36:12.765Z",
-    "updatedAt": "2026-06-10T07:34:24.767Z",
-    "resolvedAt": "2026-06-10T07:34:24.767Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "Apply & post is disabled until the receipt is balanced (gap explained or residual parked on-account)."
-  },
-  {
     "id": "c_bdy8ik373ic",
     "route": "#/workspace",
     "anchor": "ws.allocation",
