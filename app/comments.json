@@ -264,12 +264,12 @@
     "yPct": 27.131782945736433,
     "author": "SME",
     "text": "remove decuctions/claims page entirely",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T13:11:35.256Z",
-    "updatedAt": "2026-06-09T13:11:35.256Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-10T07:22:16.540Z",
+    "resolvedAt": "2026-06-10T07:22:16.540Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Removed the Deductions / claims page."
   },
   {
     "id": "c_8swqjl5ugna",
