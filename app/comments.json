@@ -344,12 +344,12 @@
     "yPct": 9.121647583186045,
     "author": "SME",
     "text": "merge auto apply rate and customer identification 12 months trend on the dashboard. give the option to change time frame. make sure the data is matching and correct",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T13:16:14.317Z",
-    "updatedAt": "2026-06-09T13:16:14.317Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-10T07:22:23.691Z",
+    "resolvedAt": "2026-06-10T07:22:23.691Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Merged auto-apply and customer-identification into one 12-month trend chart on the dashboard, with a 3m/6m/12m timeframe selector; data ties to the KPIs."
   },
   {
     "id": "c_v2ogfl6yxfo",
