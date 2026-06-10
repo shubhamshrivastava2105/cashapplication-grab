@@ -360,12 +360,12 @@
     "yPct": 3.322259136212625,
     "author": "SME",
     "text": "remove this reports & close page after merging the auto apply and customer identification graph to the dashboard",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T13:16:48.708Z",
-    "updatedAt": "2026-06-09T13:16:48.708Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-10T07:22:24.947Z",
+    "resolvedAt": "2026-06-10T07:22:24.947Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Removed the Reports & close page after moving the trend chart to the dashboard."
   },
   {
     "id": "c_7hmhotk5n5a",
