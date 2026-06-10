@@ -320,22 +320,6 @@
     "resolutionNote": "Gap fields are editable — bank charge and on-account are inputs; WHT/discount edit per line."
   },
   {
-    "id": "c_jx39eivmxf8",
-    "route": "#/workspace",
-    "anchor": "ws.allocation",
-    "anchorLabel": "Workspace · Open invoices & proposed allocation",
-    "xPct": 7.568807339449542,
-    "yPct": 18.906105183107965,
-    "author": "SME",
-    "text": "user should be able to deselect the invoices",
-    "status": "resolved",
-    "createdAt": "2026-06-09T13:35:28.437Z",
-    "updatedAt": "2026-06-10T07:34:23.048Z",
-    "resolvedAt": "2026-06-10T07:34:23.048Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "Invoices can be deselected (click the checkbox)."
-  },
-  {
     "id": "c_dz276xxnvmk",
     "route": "#/workspace",
     "anchor": "ws.gap",
