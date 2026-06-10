@@ -328,12 +328,12 @@
     "yPct": 3.9187314468129544,
     "author": "SME",
     "text": "what if there are multiple invoices",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-10T11:59:44.850Z",
-    "updatedAt": "2026-06-10T11:59:44.850Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-10T12:06:38.772Z",
+    "resolvedAt": "2026-06-10T12:06:38.772Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Multiple invoices are supported: a receipt can clear several invoices, shown as a 2/3 invoices badge in the table; the detail modal lists every invoice with its own gross/WHT/discount/bank-charge/cash split and a total."
   },
   {
     "id": "c_66v7pfmo92x",
