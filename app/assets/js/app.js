@@ -1302,31 +1302,22 @@
       <div class="bankform">
         <div class="bankform__title">Add a bank account</div>
         <input id="bank-name" placeholder="e.g. UOB · …321 (SGD)" />
-        <div style="display:flex;align-items:center;gap:8px;margin-top:8px">
-          <input type="file" id="bank-file" accept=".mt940,.940,.txt,.csv,.xml,.sta,.camt,.xlsx,.xls" style="display:none">
-          <button class="btn btn--ghost btn--sm" id="bank-browse">Attach a statement (optional)…</button>
-          <span id="bank-filename" class="muted" style="font-size:12px">No file selected</span>
-        </div>
+        <div class="modal-sub" style="margin:8px 0 0">Once added, use <b>Upload statement</b> to bring in this account's statements.</div>
         <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px">
           <button class="btn btn--ghost" id="bank-close">Close</button>
           <button class="btn btn--primary" id="bank-add">Add account</button>
         </div>
       </div>`);
-    const fileInput = document.getElementById("bank-file");
-    const fileLabel = document.getElementById("bank-filename");
-    document.getElementById("bank-browse").onclick = () => fileInput.click();
-    fileInput.onchange = () => { fileLabel.textContent = fileInput.files[0] ? fileInput.files[0].name : "No file selected"; };
     document.getElementById("bank-close").onclick = closeModal;
     document.getElementById("bank-add").onclick = () => {
       const name = document.getElementById("bank-name").value.trim();
       if (!name) { document.getElementById("bank-name").focus(); return; }
-      const fileName = fileInput.files[0] ? fileInput.files[0].name : null;
       const id = "bk-" + Date.now();
       D.banks.push({ id, entity: selectedEntityId, name, feed: "Manual upload" });
       selectedBankId = id;
       syncSidebarContext();
       openBankManager();
-      toast(`Added ${name}${fileName ? " · statement " + fileName + " uploaded" : ""}`);
+      toast(`Added ${name}`);
     };
   }
 
