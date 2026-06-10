@@ -208,22 +208,6 @@
     "resolutionNote": "Dashboard trend x-axis now shows the year with each month — Jul'25 … Jun'26."
   },
   {
-    "id": "c_0fuwm4oc18n",
-    "route": "#/workspace",
-    "anchor": "ws.gap",
-    "anchorLabel": "Workspace · Gap classification & actions",
-    "xPct": 40,
-    "yPct": 35.50677701811203,
-    "author": "SME",
-    "text": "on account should be disabled when the amount received is lesser than invoice amount. the apply and post should also be disabled",
-    "status": "resolved",
-    "createdAt": "2026-06-10T09:58:43.271Z",
-    "updatedAt": "2026-06-10T10:33:41.950Z",
-    "resolvedAt": "2026-06-10T10:33:41.950Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "On-account is now disabled unless the receipt is an overpayment (cash received exceeds the invoices). When cash is short, on-account is greyed out and the gap must be explained via WHT/discount/bank charge/rebate; Apply & post stays disabled until the receipt balances."
-  },
-  {
     "id": "c_4apgjgqffh0",
     "route": "#/customers",
     "anchor": "cust.header",
