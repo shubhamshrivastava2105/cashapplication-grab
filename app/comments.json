@@ -240,22 +240,6 @@
     "resolutionNote": null
   },
   {
-    "id": "c_600c5f1mb33",
-    "route": "#/workspace",
-    "anchor": "ws.allocation",
-    "anchorLabel": "Workspace · Open invoices & proposed allocation",
-    "xPct": 90.84967320261438,
-    "yPct": 9.671945701357467,
-    "author": "SME",
-    "text": "remove applied column",
-    "status": "open",
-    "createdAt": "2026-06-10T08:14:44.127Z",
-    "updatedAt": "2026-06-10T08:14:44.127Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
-  },
-  {
     "id": "c_n7uds23pv9d",
     "route": "#/workspace",
     "anchor": "ws.gap",
