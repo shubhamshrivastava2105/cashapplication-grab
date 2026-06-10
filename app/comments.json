@@ -200,11 +200,11 @@
     "yPct": 91.45549687484859,
     "author": "SME",
     "text": "is this message factually correct, please review. if not correct please review and make changes",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-10T09:00:37.928Z",
-    "updatedAt": "2026-06-10T09:00:37.931Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-10T09:24:03.792Z",
+    "resolvedAt": "2026-06-10T09:24:03.792Z",
+    "resolvedBy": "Claude (review)",
+    "resolutionNote": "Reviewed every message on the Apply-cash screen for factual/accounting correctness — all correct, no change needed. WHT note (invoice short ~5% WHT, cleared in full = cash + WHT receivable, certificate pending), overpayment/short gap notes, and remittance/identification lines are all accurate. (Comment had no anchor, so reviewed them all.)"
   }
 ]
