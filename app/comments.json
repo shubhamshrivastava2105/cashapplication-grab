@@ -296,12 +296,12 @@
     "yPct": 19.67696111958752,
     "author": "SME",
     "text": "remove this section",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T13:13:36.888Z",
-    "updatedAt": "2026-06-09T13:13:36.888Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-10T07:22:19.642Z",
+    "resolvedAt": "2026-06-10T07:22:19.642Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Removed the learned-fingerprints section from Customer 360."
   },
   {
     "id": "c_mdo7gsev4qb",
