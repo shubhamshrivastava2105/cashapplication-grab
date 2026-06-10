@@ -440,12 +440,12 @@
     "yPct": 56.017253261722,
     "author": "SME",
     "text": "there is something called \"on account\", which is missing.",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T13:40:14.838Z",
-    "updatedAt": "2026-06-09T13:40:14.838Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-10T07:34:27.598Z",
+    "resolvedAt": "2026-06-10T07:34:27.598Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Added an On-account line in the gap panel with a park-residual action and editable amount."
   },
   {
     "id": "c_azk9vqdqoop",
