@@ -254,5 +254,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_zfpryjnxgxs",
+    "route": "#/dashboard",
+    "anchor": "dash.kpis",
+    "anchorLabel": "Dashboard · KPI tiles",
+    "xPct": 59.840425531914896,
+    "yPct": 82.86878718321076,
+    "author": "SME",
+    "text": "the ui for the \"view breakdown\" is looking very basic. please improve it",
+    "status": "open",
+    "createdAt": "2026-06-10T07:55:25.313Z",
+    "updatedAt": "2026-06-10T07:55:25.315Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
