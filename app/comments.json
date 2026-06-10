@@ -208,22 +208,6 @@
     "resolutionNote": "Dashboard trend x-axis now shows the year with each month — Jul'25 … Jun'26."
   },
   {
-    "id": "c_7x8iom13y19",
-    "route": "#/workspace",
-    "anchor": "ws.credit",
-    "anchorLabel": "Workspace · The credit + identified customer",
-    "xPct": 72.31638418079096,
-    "yPct": 41.363604013949185,
-    "author": "SME",
-    "text": "the amount in the remittence advice is not matching, the gross and the paid amount for BLIBLI Commerce. the amounts should match for each line item for each remmitance advice",
-    "status": "resolved",
-    "createdAt": "2026-06-10T09:52:25.869Z",
-    "updatedAt": "2026-06-10T10:33:40.729Z",
-    "resolvedAt": "2026-06-10T10:33:40.729Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "Remittance advice now ties: per line Paid = Gross − WHT − discount, and the Paid column sums to the cash actually received, with a reconciling Deduction/short-payment or Payment-on-account(advance) line. (Previously Paid showed the full gross for short/overpay credits, so it didnt match.)"
-  },
-  {
     "id": "c_0fuwm4oc18n",
     "route": "#/workspace",
     "anchor": "ws.gap",
