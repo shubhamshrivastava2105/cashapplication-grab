@@ -1294,26 +1294,42 @@
   function openBankManager() {
     const list = banksForEntity();
     const rows = list.length
-      ? list.map((b) => `<tr><td class="cell-main">${b.name}</td><td>${pill("Manual upload", "primary")}</td></tr>`).join("")
-      : `<tr><td colspan="2" class="muted">No bank accounts yet for this entity.</td></tr>`;
+      ? list.map((b) => `<tr><td class="cell-main">${b.name}</td><td>${b.type || "Current"}</td><td>${b.swift || "—"}</td><td>${pill("Manual upload", "primary")}</td></tr>`).join("")
+      : `<tr><td colspan="4" class="muted">No bank accounts yet for this entity.</td></tr>`;
+    const entCcy = currentEntity().currency;
+    const ccyOpts = [entCcy, ...["SGD", "MYR", "IDR", "THB", "PHP", "USD", "EUR"].filter((c) => c !== entCcy)].map((c) => `<option value="${c}">${c}</option>`).join("");
     openModal(`Bank accounts — ${currentEntity().name}`, `
       <div class="modal-sub">Register the bank accounts for this entity. Statements are brought in by <b>manual upload</b> (MT940 / CSV / camt.053 / Excel) — no bank integration required.</div>
-      <div class="table-wrap"><table class="tbl"><thead><tr><th>Account</th><th>Source</th></tr></thead><tbody>${rows}</tbody></table></div>
+      <div class="table-wrap"><table class="tbl"><thead><tr><th>Account</th><th>Type</th><th>SWIFT/BIC</th><th>Source</th></tr></thead><tbody>${rows}</tbody></table></div>
       <div class="bankform">
         <div class="bankform__title">Add a bank account</div>
-        <input id="bank-name" placeholder="e.g. UOB · …321 (SGD)" />
-        <div class="modal-sub" style="margin:8px 0 0">Once added, use <b>Upload statement</b> to bring in this account's statements.</div>
-        <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px">
+        <div class="bankform__grid">
+          <label class="bankfield"><span>Bank <i>*</i></span><input id="bk-bank" placeholder="e.g. UOB" /></label>
+          <label class="bankfield"><span>Account nickname</span><input id="bk-nick" placeholder="e.g. Collections account" /></label>
+          <label class="bankfield"><span>Account number <i>*</i></span><input id="bk-acct" placeholder="e.g. 451-002-3210" /></label>
+          <label class="bankfield"><span>Currency <i>*</i></span><select id="bk-ccy">${ccyOpts}</select></label>
+          <label class="bankfield"><span>SWIFT / BIC</span><input id="bk-swift" placeholder="e.g. UOVBSGSG" /></label>
+          <label class="bankfield"><span>Account type</span><select id="bk-type"><option>Current</option><option>Collections</option><option>Escrow</option></select></label>
+        </div>
+        <div class="modal-sub" style="margin:10px 0 0">Once added, use <b>Upload statement</b> to bring in this account's statements (MT940 / CSV / camt.053 / Excel).</div>
+        <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:14px">
           <button class="btn btn--ghost" id="bank-close">Close</button>
           <button class="btn btn--primary" id="bank-add">Add account</button>
         </div>
       </div>`);
     document.getElementById("bank-close").onclick = closeModal;
     document.getElementById("bank-add").onclick = () => {
-      const name = document.getElementById("bank-name").value.trim();
-      if (!name) { document.getElementById("bank-name").focus(); return; }
+      const $f = (id) => document.getElementById(id);
+      const bank = $f("bk-bank").value.trim();
+      const acct = $f("bk-acct").value.trim();
+      const ccy = $f("bk-ccy").value;
+      if (!bank) { $f("bk-bank").focus(); return; }
+      if (!acct) { $f("bk-acct").focus(); return; }
+      const last4 = (acct.replace(/\D/g, "").slice(-4) || acct.slice(-4));
+      const nick = $f("bk-nick").value.trim();
+      const name = `${bank} · …${last4} (${ccy})`;
       const id = "bk-" + Date.now();
-      D.banks.push({ id, entity: selectedEntityId, name, feed: "Manual upload" });
+      D.banks.push({ id, entity: selectedEntityId, name, nickname: nick, acctNo: acct, ccy, swift: $f("bk-swift").value.trim(), type: $f("bk-type").value, feed: "Manual upload" });
       selectedBankId = id;
       syncSidebarContext();
       openBankManager();
