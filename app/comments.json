@@ -296,12 +296,12 @@
     "yPct": 2.7253606217462,
     "author": "SME",
     "text": "remove these columns from this table - conf., time",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-10T11:59:10.963Z",
-    "updatedAt": "2026-06-10T11:59:10.963Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-10T12:06:36.639Z",
+    "resolvedAt": "2026-06-10T12:06:36.639Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Removed the Conf. and Time columns from the ledger table (still shown inside the detail modal)."
   },
   {
     "id": "c_o0vw1ljncwo",
