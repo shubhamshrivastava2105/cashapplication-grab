@@ -312,12 +312,12 @@
     "yPct": 2.6822865510652356,
     "author": "SME",
     "text": "as a user I should be able to search customers",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T13:13:51.539Z",
-    "updatedAt": "2026-06-09T13:13:51.539Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-10T07:22:20.778Z",
+    "resolvedAt": "2026-06-10T07:22:20.778Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Added a customer search box to the Customer 360 picker."
   },
   {
     "id": "c_idu2hblwqwh",
