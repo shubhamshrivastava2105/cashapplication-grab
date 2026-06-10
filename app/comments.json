@@ -392,12 +392,12 @@
     "yPct": 18.906105183107965,
     "author": "SME",
     "text": "user should be able to deselect the invoices",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T13:35:28.437Z",
-    "updatedAt": "2026-06-09T13:35:28.439Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-10T07:34:23.048Z",
+    "resolvedAt": "2026-06-10T07:34:23.048Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Invoices can be deselected (click the checkbox)."
   },
   {
     "id": "c_dz276xxnvmk",
