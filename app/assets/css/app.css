@@ -229,7 +229,7 @@ body.nav-collapsed .sidebar__user-meta { display: none; }
 .filter-sel { font-family: var(--font-family-inter); font-size: 13px; padding: 8px 10px; border: 1px solid var(--border-default-default); border-radius: var(--radius-sm); background: var(--surface-default-default); color: var(--text-default-heading); min-width: 190px; }
 .filter-search { margin-left: auto; align-self: flex-end; width: 280px; max-width: 40vw; padding: 9px 11px; border: 1px solid var(--border-default-default); border-radius: var(--radius-sm); font-family: var(--font-family-inter); font-size: 13px; }
 .aa-scroll { max-height: 560px; overflow-y: auto; }
-.aa-scroll thead th { position: sticky; top: 0; z-index: 1; background: var(--surface-pagecard-card-1); }
+.aa-scroll thead th { position: sticky; top: 0; z-index: 1; background: var(--surface-pagecard-card-1); white-space: nowrap; }
 .multi-inv { display: inline-block; font-size: 12px; font-weight: var(--font-weight-semibold); color: var(--text-primary-default); background: var(--surface-primary-subtle); border: 1px solid var(--border-primary-default); border-radius: 999px; padding: 1px 9px; }
 .row-chev { float: right; color: var(--text-default-placeholder); font-weight: var(--font-weight-bold); }
 .tbl tbody tr.clickable:hover .row-chev { color: var(--text-primary-default); }
@@ -387,7 +387,10 @@ table.tbl--fixed { table-layout: fixed; }
 .row-actions { display: inline-flex; gap: 6px; justify-content: flex-end; }
 th.sortable { cursor: pointer; user-select: none; }
 th.sortable:hover { color: var(--text-default-heading); background: var(--grey-100); }
-.sort-ind { color: var(--text-primary-default); font-weight: var(--font-weight-bold); margin-left: 2px; }
+.sort-ind { color: var(--text-default-placeholder); font-weight: var(--font-weight-bold); margin-left: 3px; font-size: 11px; }
+.sort-ind.on { color: var(--text-primary-default); }
+th.sortable:hover .sort-ind { color: var(--text-default-caption); }
+th.sortable:hover .sort-ind.on { color: var(--text-primary-default); }
 .tbl--fixed .cell-sub { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .table-scroll thead th { position: sticky; top: 0; z-index: 1; }
 .hbar__val { text-align: right; font-variant-numeric: tabular-nums; color: var(--text-default-caption); font-weight: var(--font-weight-semibold); }

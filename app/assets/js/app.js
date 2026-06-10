@@ -1130,7 +1130,7 @@
     // column sort
     const sortVal = (x) => { const k = autoSort.key; return k === "amount" ? x.amount : k === "customer" ? x.customer : k === "bank" ? x.bankName : k === "doc" ? x.doc : x.date; };
     rows.sort((a, b) => { const av = sortVal(a), bv = sortVal(b); return (av < bv ? -1 : av > bv ? 1 : 0) * autoSort.dir; });
-    const sortInd = (k) => autoSort.key === k ? `<span class="sort-ind">${autoSort.dir < 0 ? "↓" : "↑"}</span>` : "";
+    const sortInd = (k) => `<span class="sort-ind ${autoSort.key === k ? "on" : ""}">${autoSort.key === k ? (autoSort.dir < 0 ? "↓" : "↑") : "↕"}</span>`;
     // filter-aware KPIs
     const count = rows.length;
     const value = rows.reduce((s, x) => s + x.amount, 0);
@@ -1148,9 +1148,8 @@
         <td class="cell-main">${x.customer}</td>
         <td>${x.nInv > 1 ? `<span class="multi-inv">${x.invLabel}</span>` : x.invLabel}</td>
         <td class="muted">${x.bankName}</td>
-        <td class="mono">${x.doc}</td>
-        <td>${pill("Posted", "success")} <span class="row-chev">›</span></td>
-      </tr>`).join("") : `<tr><td colspan="8">${emptyState("No posted collections in this view", "Try a wider period, another bank account, or clear the search.")}</td></tr>`;
+        <td class="mono">${x.doc} <span class="row-chev">›</span></td>
+      </tr>`).join("") : `<tr><td colspan="7">${emptyState("No posted collections in this view", "Try a wider period, another bank account, or clear the search.")}</td></tr>`;
 
     const bankOpts = `<option value="all" ${autoBank === "all" ? "selected" : ""}>All bank accounts (${aa.banks.length})</option>` +
       aa.banks.map((b) => `<option value="${b.id}" ${autoBank === b.id ? "selected" : ""}>${b.name}</option>`).join("");
@@ -1181,8 +1180,8 @@
             <span class="muted" style="margin-left:auto;font-size:12px">${count.toLocaleString("en-SG")} of ${aa.total.toLocaleString("en-SG")} this period</span>
           </div>
           <div class="card__body card__body--flush"><div class="table-wrap aa-scroll"><table class="tbl tbl--fixed">
-            <colgroup><col style="width:9%"><col style="width:21%"><col style="width:11%"><col style="width:16%"><col style="width:11%"><col style="width:14%"><col style="width:10%"><col style="width:8%"></colgroup>
-            <thead><tr><th class="sortable" data-asort="date">Value date ${sortInd("date")}</th><th>Description</th><th class="num sortable" data-asort="amount">Amount ${sortInd("amount")}</th><th class="sortable" data-asort="customer">Customer ${sortInd("customer")}</th><th>Invoice</th><th class="sortable" data-asort="bank">Bank account ${sortInd("bank")}</th><th class="sortable" data-asort="doc">ERP doc ${sortInd("doc")}</th><th>Status</th></tr></thead>
+            <colgroup><col style="width:11%"><col style="width:22%"><col style="width:12%"><col style="width:18%"><col style="width:11%"><col style="width:15%"><col style="width:11%"></colgroup>
+            <thead><tr><th class="sortable" data-asort="date">Value date ${sortInd("date")}</th><th>Description</th><th class="num sortable" data-asort="amount">Amount ${sortInd("amount")}</th><th class="sortable" data-asort="customer">Customer ${sortInd("customer")}</th><th>Invoice</th><th class="sortable" data-asort="bank">Bank account ${sortInd("bank")}</th><th class="sortable" data-asort="doc">ERP doc ${sortInd("doc")}</th></tr></thead>
             <tbody>${body}</tbody>
           </table></div></div>
         </div>
