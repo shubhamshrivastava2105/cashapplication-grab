@@ -222,5 +222,21 @@
     "resolvedAt": "2026-06-10T11:33:54.139Z",
     "resolvedBy": "Claude",
     "resolutionNote": "Fixed — the All items tab now includes the Unapplied receipts as well (Open invoices + Unapplied + Cleared). Previously it only concatenated open + cleared."
+  },
+  {
+    "id": "c_gzc76ah8ae7",
+    "route": "#/applied",
+    "anchor": "aa.table",
+    "anchorLabel": "Auto-applied · straight-through ledger",
+    "xPct": 16.17231638418079,
+    "yPct": 1.8661336276981368,
+    "author": "SME",
+    "text": "give an option to select the period to see the transactions in that period\n\ngive an option to select bank when there are multiple bank accounts. like here it is 2 bank account, pls list down all the bank accounts associated with the legal entity",
+    "status": "open",
+    "createdAt": "2026-06-10T11:47:46.975Z",
+    "updatedAt": "2026-06-10T11:47:46.975Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
