@@ -374,7 +374,7 @@
         <button class="btn btn--ghost btn--sm" id="change-customer" style="margin-top:10px">Change customer</button>
       </div>` : (r.aiCustomer ? `
       <div class="identified-box identified-box--ai">
-        <div class="ai-suggest__head"><span class="ai-suggest__spark">${aiSparkSvg}</span> Neoflo AI suggested match <span class="ai-suggest__conf">${Math.round(r.aiCustomer.confidence * 100)}% confidence</span></div>
+        <div class="ai-suggest__head"><span class="ai-suggest__spark">${aiSparkSvg}</span><span class="ai-suggest__name">Neoflo AI · suggested match</span><span class="ai-suggest__conf">${Math.round(r.aiCustomer.confidence * 100)}% match</span></div>
         <div class="name" style="margin-top:7px">${r.aiCustomer.name}</div>
         <div class="howline">how: ${r.aiCustomer.how}</div>
         <div class="ai-suggest__acts" style="margin-top:10px"><button class="btn btn--success btn--sm" id="ai-accept-cust">Accept match</button><button class="btn btn--ghost btn--sm" id="change-customer">Not a match — pick</button></div>
@@ -518,7 +518,7 @@
         <div class="ws-pane__body">
           <p class="gap-explain">WHT &amp; discount are taken <b>per invoice</b> (allocation table). Bank charge, rebate/deduction and on-account are <b>total-level</b>.</p>
           ${aiSug ? `<div class="ai-suggest" id="ai-suggest">
-            <div class="ai-suggest__head"><span class="ai-suggest__spark">${aiSparkSvg}</span> Neoflo AI · gap classifier <span class="ai-suggest__conf">${Math.round(aiSug.conf * 100)}% confidence</span></div>
+            <div class="ai-suggest__head"><span class="ai-suggest__spark">${aiSparkSvg}</span><span class="ai-suggest__name">Neoflo AI · gap classifier</span><span class="ai-suggest__conf">${Math.round(aiSug.conf * 100)}% match</span></div>
             <div class="ai-suggest__body">The <b>${fmt(aiSug.amount, r.ccy)}</b> ${isOverpay ? "surplus" : "shortfall"} looks like <b>${aiSug.label}</b> — ${aiSug.why}</div>
             <div class="ai-suggest__acts"><button class="btn btn--success btn--sm" id="ai-accept">Accept &amp; apply</button><button class="lnk-clear" id="ai-dismiss">Dismiss</button></div>
           </div>` : ""}

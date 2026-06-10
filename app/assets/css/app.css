@@ -440,9 +440,10 @@ th.sortable:hover { color: var(--text-default-heading); background: var(--grey-1
 /* AI suggestion card */
 .ai-suggest { position: relative; margin: var(--scale-200) 0; padding: var(--scale-250) var(--scale-300); border: 1px solid var(--border-primary-default); background: var(--surface-primary-subtle); border-radius: var(--radius-sm); overflow: hidden; }
 .ai-suggest::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--surface-primary-default); }
-.ai-suggest__head { display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: var(--font-weight-bold); text-transform: uppercase; letter-spacing: .6px; color: var(--text-primary-default); }
-.ai-suggest__spark { display: inline-flex; color: var(--text-primary-default); animation: ai-pulse 2.2s ease-in-out infinite; }
-.ai-suggest__conf { margin-left: auto; font-size: 10px; font-weight: var(--font-weight-semibold); letter-spacing: .2px; text-transform: none; color: var(--text-primary-default); background: var(--surface-default-default); border: 1px solid var(--border-primary-default); border-radius: 999px; padding: 2px 8px; }
+.ai-suggest__head { display: flex; align-items: center; gap: 6px; flex-wrap: nowrap; color: var(--text-primary-default); }
+.ai-suggest__spark { display: inline-flex; flex: none; color: var(--text-primary-default); animation: ai-pulse 2.2s ease-in-out infinite; }
+.ai-suggest__name { flex: 1; min-width: 0; font-size: 11px; font-weight: var(--font-weight-bold); text-transform: uppercase; letter-spacing: .5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ai-suggest__conf { flex: none; font-size: 10px; line-height: 1.4; font-weight: var(--font-weight-bold); letter-spacing: .2px; white-space: nowrap; color: var(--text-primary-default); background: var(--surface-default-default); border: 1px solid var(--border-primary-default); border-radius: 999px; padding: 2px 9px; }
 .ai-suggest__body { font-size: 12.5px; color: var(--text-default-body); line-height: 1.5; margin: 6px 0 10px; }
 .ai-suggest__acts { display: flex; align-items: center; gap: var(--scale-200); }
 @keyframes ai-pulse { 0%, 100% { opacity: .55; transform: scale(.9); } 50% { opacity: 1; transform: scale(1.12); } }
