@@ -270,5 +270,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_1owgqofb7ay",
+    "route": "#/applied",
+    "anchor": "aa.kpis",
+    "anchorLabel": "Auto-applied · summary",
+    "xPct": 86.7231638418079,
+    "yPct": 43.299412354880324,
+    "author": "SME",
+    "text": "remove this metric - median time",
+    "status": "open",
+    "createdAt": "2026-06-10T11:50:02.938Z",
+    "updatedAt": "2026-06-10T11:50:02.938Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
