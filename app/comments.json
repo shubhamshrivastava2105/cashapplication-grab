@@ -304,22 +304,6 @@
     "resolutionNote": "Yes-confirm and No-rework now act directly and dismiss the banner (no lingering dialog)."
   },
   {
-    "id": "c_3brhvdmjh9d",
-    "route": "#/workspace",
-    "anchor": "ws.allocation",
-    "anchorLabel": "Workspace · Open invoices & proposed allocation",
-    "xPct": 44.4954128440367,
-    "yPct": 56.32144300007129,
-    "author": "SME",
-    "text": "the decision cant be made, the user should be able to change this if something is wrong",
-    "status": "resolved",
-    "createdAt": "2026-06-09T13:32:47.521Z",
-    "updatedAt": "2026-06-10T07:34:18.424Z",
-    "resolvedAt": "2026-06-10T07:34:18.424Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "The analyst can override: deselect invoices, edit WHT/discount, add invoices, change customer, park on-account."
-  },
-  {
     "id": "c_bmrnzc8lxb9",
     "route": "#/workspace",
     "anchor": "ws.gap",
