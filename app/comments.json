@@ -224,22 +224,6 @@
     "resolutionNote": "Restyled View breakdown as a polished pill button (subtle blue background, rounded, hover state), bottom-aligned and consistent across tiles."
   },
   {
-    "id": "c_fmrria6z60v",
-    "route": "#/workspace",
-    "anchor": "ws.allocation",
-    "anchorLabel": "Workspace · Open invoices & proposed allocation",
-    "xPct": 8.486238532110093,
-    "yPct": 17.116665243746265,
-    "author": "SME",
-    "text": "the checkboxes look very bad and is not going with the UI.",
-    "status": "resolved",
-    "createdAt": "2026-06-10T07:56:44.480Z",
-    "updatedAt": "2026-06-10T08:04:04.335Z",
-    "resolvedAt": "2026-06-10T08:04:04.335Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "Restyled the allocation checkboxes — cleaner rounded box, hover state, fills primary blue with a white check when selected."
-  },
-  {
     "id": "c_sxd0a0m0ilu",
     "route": "#/dashboard",
     "anchor": "page",
