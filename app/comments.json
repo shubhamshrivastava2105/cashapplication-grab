@@ -318,5 +318,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_64pb7w8nob6",
+    "route": "#/applied",
+    "anchor": "aa.table",
+    "anchorLabel": "Auto-applied · straight-through ledger",
+    "xPct": 31.56779661016949,
+    "yPct": 3.9187314468129544,
+    "author": "SME",
+    "text": "what if there are multiple invoices",
+    "status": "open",
+    "createdAt": "2026-06-10T11:59:44.850Z",
+    "updatedAt": "2026-06-10T11:59:44.850Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
