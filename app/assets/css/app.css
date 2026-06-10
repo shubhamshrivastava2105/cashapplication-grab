@@ -395,8 +395,15 @@ th.sortable:hover { color: var(--text-default-heading); background: var(--grey-1
 .kv dt { color: var(--text-default-caption); }
 .kv dd { margin: 0; color: var(--text-default-heading); font-weight: var(--font-weight-medium); }
 .identified-box { border: 1px solid var(--border-success-default); background: var(--surface-success-subtle); border-radius: var(--radius-sm); padding: var(--scale-250) var(--scale-300); margin: var(--scale-200) 0; }
-.identified-box .name { font-weight: var(--font-weight-bold); color: var(--text-default-heading); }
-.howline { font-size: 12px; color: var(--text-default-caption); margin-top: 4px; }
+.id-name-row { display: flex; align-items: center; gap: 8px; }
+.identified-box .name { font-weight: var(--font-weight-bold); color: var(--text-default-heading); flex: 1; min-width: 0; }
+.howline { font-size: 12px; color: var(--text-default-caption); margin-top: 4px; line-height: 1.45; }
+/* confidence badge — colour-coded by score */
+.conf-pill { flex: none; font-size: 10px; font-weight: var(--font-weight-bold); white-space: nowrap; border-radius: 999px; padding: 2px 8px; border: 1px solid; }
+.conf-pill.hi { color: var(--text-success-hover); background: var(--surface-success-subtle); border-color: var(--border-success-default); }
+.conf-pill.mid { color: var(--text-primary-default); background: var(--surface-primary-subtle); border-color: var(--border-primary-default); }
+.conf-pill.lo { color: var(--text-brand-default); background: var(--surface-brand-subtle); border-color: var(--border-brand-default); }
+.as-sep { color: var(--text-default-placeholder); font-size: 12px; }
 .remit-box { background: var(--grey-75); border: 1px dashed var(--border-default-default-hover); border-radius: var(--radius-sm); padding: var(--scale-250) var(--scale-300); font-size: 13px; }
 .remit-linked { color: var(--text-default-heading); }
 .remit-link { display: inline-block; margin-top: 6px; font-size: 13px; font-weight: var(--font-weight-semibold); color: var(--text-primary-default); cursor: pointer; }
@@ -496,7 +503,7 @@ th.sortable:hover { color: var(--text-default-heading); background: var(--grey-1
 .bal-chip { font-size: 12px; font-weight: var(--font-weight-bold); padding: 4px 12px; border-radius: 999px; white-space: nowrap; }
 .bal-chip.ok { background: var(--surface-success-subtle); color: var(--text-success-hover); }
 .bal-chip.warn { background: var(--surface-brand-subtle); color: var(--text-brand-default); }
-.gap-note { padding: 0 var(--scale-400) var(--scale-300); font-size: 13px; color: var(--text-brand-default); font-weight: var(--font-weight-medium); line-height: 1.45; }
+.gap-note { padding: 0 var(--scale-400) var(--scale-300); font-size: 12.5px; color: var(--text-default-caption); font-weight: var(--font-weight-regular); line-height: 1.45; }
 .gap-note.is-ok { color: var(--text-default-caption); font-weight: var(--font-weight-regular); }
 .alloc-rule { padding: var(--scale-250) var(--scale-400) var(--scale-400); font-size: 13px; color: var(--text-default-caption); display: flex; gap: 8px; align-items: center; }
 .alloc-rule select { font-family: var(--font-family-inter); font-size: 13px; padding: 4px 8px; border-radius: var(--radius-sm); border: 1px solid var(--border-default-default); background: var(--surface-pagecard-card-1); color: var(--text-default-body); }
@@ -537,7 +544,9 @@ th.sortable:hover { color: var(--text-default-heading); background: var(--grey-1
 
 /* queue list */
 .queue-row td { cursor: pointer; }
-.queue-row.is-active { background: var(--surface-primary-subtle); }
+.queue-row:hover { background: var(--surface-primary-subtle); }
+.queue-row.is-active { background: var(--surface-primary-subtle); box-shadow: inset 3px 0 0 var(--surface-primary-default); }
+.queue-row.is-active td:first-child { font-weight: var(--font-weight-semibold); }
 .dot-conf { font-variant-numeric: tabular-nums; font-weight: var(--font-weight-semibold); }
 
 /* ─── Empty / detail helpers ────────────────────────────────────────────── */

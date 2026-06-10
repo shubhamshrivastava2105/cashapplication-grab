@@ -326,8 +326,8 @@
   function viewWorkspace() {
     const db = D.dashboardFor(selectedEntityId), ccy = db.ccy;
     const r = getCredit(activeReceiptId); activeReceiptId = r.id;
-    setTopbar("Apply cash", `Credit ${fmt(r.amount, ccy)} · ${r.valueDate} · ref ${r.bankRef}`,
-      `<span class="topbar__chip"><span>Statement</span> ${currentEntity().name}</span>`,
+    setTopbar("Apply cash", "Match each bank credit to open invoices, classify the gap, and post — under maker-checker",
+      `<span class="topbar__chip"><span>Entity</span> ${currentEntity().name}</span><span class="topbar__chip"><span>Open credits</span> ${db.list.length}</span>`,
       "");
 
     // Same bank-statement credits as the dashboard (consistent data + amounts)
@@ -367,9 +367,10 @@
     if (!r._orig) r._orig = JSON.parse(JSON.stringify(r.invoices));   // snapshot for "Remittance" rule
     r.adjustments = r.adjustments || [];
     // left pane
+    const confPill = (c) => `<span class="conf-pill ${c >= 0.85 ? "hi" : c >= 0.7 ? "mid" : "lo"}">${Math.round(c * 100)}% match</span>`;
     const identified = r.customer ? `
       <div class="identified-box">
-        <div class="name">${r.customer.name} &nbsp;·&nbsp; conf ${r.customer.confidence.toFixed(2)}</div>
+        <div class="id-name-row"><span class="name">${r.customer.name}</span>${confPill(r.customer.confidence)}</div>
         <div class="howline">how: ${r.customer.how}</div>
         <button class="btn btn--ghost btn--sm" id="change-customer" style="margin-top:10px">Change customer</button>
       </div>` : (r.aiCustomer ? `
@@ -496,8 +497,9 @@
           <button class="btn btn--ghost btn--sm" id="add-inv-btn">Add</button></div>` : ""}
         <div class="alloc-summary">
           <span class="as-item">Receipt <b>${num(r.amount)}</b></span>
-          <span class="as-item">Applied <b class="ok">${num(allocated)}</b></span>
-          ${whtTotal ? `<span class="as-item">WHT <b>${num(whtTotal)}</b></span>` : ""}
+          <span class="as-sep">vs</span>
+          <span class="as-item">Invoices <b>${num(grossOpenSel)}</b></span>
+          ${(whtTotal + discTotal) ? `<span class="as-item">WHT / disc <b>${num(whtTotal + discTotal)}</b></span>` : ""}
           <span class="as-grow"></span>
           <span class="bal-chip ${exact ? "ok" : "warn"}" id="alloc-var">${balText(unexplained, exact)}</span>
         </div>
