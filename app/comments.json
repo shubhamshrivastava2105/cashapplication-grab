@@ -304,22 +304,6 @@
     "resolutionNote": "Removed the Reports & close page after moving the trend chart to the dashboard."
   },
   {
-    "id": "c_7hmhotk5n5a",
-    "route": "#/workspace",
-    "anchor": "ws.allocation",
-    "anchorLabel": "Workspace · Open invoices & proposed allocation",
-    "xPct": 38.99082568807339,
-    "yPct": 75.47083933030717,
-    "author": "SME",
-    "text": "once a dropdown option is selected, the value changes, but for the second time the value stops changing",
-    "status": "resolved",
-    "createdAt": "2026-06-09T13:22:01.966Z",
-    "updatedAt": "2026-06-10T07:22:26.784Z",
-    "resolvedAt": "2026-06-10T07:22:26.784Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "The allocation-rule dropdown (which had the second-change issue) was removed; the remaining controls rebind on each render and update reliably."
-  },
-  {
     "id": "c_uopucnz99nf",
     "route": "#/dashboard",
     "anchor": "dash.kpis",
