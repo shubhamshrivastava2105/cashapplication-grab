@@ -216,11 +216,11 @@
     "yPct": 4.546752319771592,
     "author": "SME",
     "text": "why does \"All items\" doesn't include \"Unapplied\" items",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-10T11:30:02.772Z",
-    "updatedAt": "2026-06-10T11:30:02.772Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-10T11:33:54.139Z",
+    "resolvedAt": "2026-06-10T11:33:54.139Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Fixed — the All items tab now includes the Unapplied receipts as well (Open invoices + Unapplied + Cleared). Previously it only concatenated open + cleared."
   }
 ]
