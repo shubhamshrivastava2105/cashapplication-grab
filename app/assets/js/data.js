@@ -316,8 +316,11 @@ window.DATA = (function () {
       const discount = invoices.reduce((s, v) => s + v.discount, 0);
       const bankCharge = invoices.reduce((s, v) => s + v.bankCharge, 0);
       const gross = invoices.reduce((s, v) => s + v.gross, 0);
+      const channel = CHANNELS[(i + seed) % CHANNELS.length];
+      const ref = (10000 + ((i * 7 + seed) % 89999));
       list.push({
         id: "AA-" + (10000 + i), date, ageDays, customer, amount,
+        desc: narrate(channel, customer, ref, date),
         invoices, nInv, invLabel: nInv === 1 ? invoices[0].inv : nInv + " invoices",
         rule: r.rule, tone: r.tone, conf, doc: "1900" + (4000 + ((i * 31 + seed) % 5999)),
         ttaMin, tta: ttaMin < 60 ? ttaMin + " min" : (ttaMin / 60).toFixed(1) + " hr",

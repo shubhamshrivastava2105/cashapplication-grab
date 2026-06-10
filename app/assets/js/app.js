@@ -40,7 +40,7 @@
   const routes = [
     { id: "dashboard",  label: "Dashboard",   render: viewDashboard },
     { id: "workspace",  label: "Apply cash",  render: viewWorkspace },
-    { id: "applied",    label: "Applied cash", render: viewAutoApplied },
+    { id: "applied",    label: "Posted Collections", render: viewAutoApplied },
     { id: "customers",  label: "Customers 360", render: viewCustomers },
   ];
   function buildNav() {
@@ -1048,7 +1048,7 @@
   const PERIODS = [{ v: "7", label: "Last 7 days" }, { v: "30", label: "Last 30 days" }, { v: "90", label: "Last 90 days" }, { v: "all", label: "All time" }, { v: "custom", label: "Custom range…" }];
   function viewAutoApplied() {
     const aa = D.autoAppliedFor(selectedEntityId), ccy = aa.ccy;
-    setTopbar("Applied cash", "Every receipt matched and posted to open invoices — searchable by period and bank account",
+    setTopbar("Posted Collections", "Every receipt matched and posted to open invoices — searchable by period and bank account",
       `<span class="topbar__chip"><span>Entity</span> ${currentEntity().name}</span><span class="topbar__chip"><span>Auto-apply rate</span> <b>${aa.autoApply}%</b></span>`);
 
     const allDates = aa.list.map((x) => x.date).sort();
@@ -1074,13 +1074,14 @@
     const body = rows.length ? rows.map((x, idx) => `
       <tr class="clickable" data-aid="${idx}">
         <td class="muted" style="white-space:nowrap">${x.date}</td>
+        <td class="cell-sub" title="${escapeAttr(x.desc || "")}">${x.desc || "—"}</td>
         <td class="cell-main">${x.customer}</td>
         <td>${x.nInv > 1 ? `<span class="multi-inv">${x.invLabel}</span>` : x.invLabel}</td>
         <td class="num strong">${fmt(x.amount, ccy)}</td>
         <td class="muted">${x.bankName}</td>
         <td class="mono">${x.doc}</td>
         <td>${pill("Posted", "success")} <span class="row-chev">›</span></td>
-      </tr>`).join("") : `<tr><td colspan="7">${emptyState("No applied cash in this view", "Try a wider period, another bank account, or clear the search.")}</td></tr>`;
+      </tr>`).join("") : `<tr><td colspan="8">${emptyState("No posted collections in this view", "Try a wider period, another bank account, or clear the search.")}</td></tr>`;
 
     const bankOpts = `<option value="all" ${autoBank === "all" ? "selected" : ""}>All bank accounts (${aa.banks.length})</option>` +
       aa.banks.map((b) => `<option value="${b.id}" ${autoBank === b.id ? "selected" : ""}>${b.name}</option>`).join("");
@@ -1100,19 +1101,19 @@
       </div>
       <div class="section" ${dc("aa.kpis", "Applied cash · summary")}>
         <div class="kpis" style="grid-template-columns:repeat(2,minmax(0,1fr));max-width:760px">
-          <div class="kpi kpi--accent-success"><div class="kpi__label">Applied (${periodLabel})</div><div class="kpi__value">${count.toLocaleString("en-SG")}</div><div class="kpi__sub">receipts matched &amp; posted</div></div>
-          <div class="kpi kpi--accent-primary"><div class="kpi__label">Value applied</div><div class="kpi__value">${D.fmtCompact(value, ccy)}</div><div class="kpi__sub">cleared to open invoices</div></div>
+          <div class="kpi kpi--accent-success"><div class="kpi__label">Collections posted (${periodLabel})</div><div class="kpi__value">${count.toLocaleString("en-SG")}</div><div class="kpi__sub">receipts matched &amp; posted</div></div>
+          <div class="kpi kpi--accent-primary"><div class="kpi__label">Value posted</div><div class="kpi__value">${D.fmtCompact(value, ccy)}</div><div class="kpi__sub">cleared to open invoices</div></div>
         </div>
       </div>
-      <div class="section" ${dc("aa.table", "Applied cash · ledger")}>
+      <div class="section" ${dc("aa.table", "Posted Collections · ledger")}>
         <div class="card">
           <div class="card__head">
-            <div class="card__title">Applied-cash ledger</div>
+            <div class="card__title">Posted collections ledger</div>
             <span class="muted" style="margin-left:auto;font-size:12px">${count.toLocaleString("en-SG")} of ${aa.total.toLocaleString("en-SG")} this period</span>
           </div>
           <div class="card__body card__body--flush"><div class="table-wrap aa-scroll"><table class="tbl tbl--fixed">
-            <colgroup><col style="width:12%"><col style="width:22%"><col style="width:15%"><col style="width:14%"><col style="width:17%"><col style="width:11%"><col style="width:9%"></colgroup>
-            <thead><tr><th>Value date</th><th>Customer</th><th>Invoice</th><th class="num">Amount</th><th>Bank account</th><th>ERP doc</th><th>Status</th></tr></thead>
+            <colgroup><col style="width:9%"><col style="width:21%"><col style="width:16%"><col style="width:11%"><col style="width:11%"><col style="width:14%"><col style="width:10%"><col style="width:8%"></colgroup>
+            <thead><tr><th>Value date</th><th>Description</th><th>Customer</th><th>Invoice</th><th class="num">Amount</th><th>Bank account</th><th>ERP doc</th><th>Status</th></tr></thead>
             <tbody>${body}</tbody>
           </table></div></div>
         </div>
@@ -1155,7 +1156,7 @@
     je.push([`AR — ${x.customer} (invoice${x.nInv > 1 ? "s" : ""} cleared)`, 0, x.gross]);
     const jeBody = je.map((l) => `<tr><td class="cell-main">${l[0]}</td><td class="num">${l[1] ? fmt(l[1], ccy) : ""}</td><td class="num">${l[2] ? fmt(l[2], ccy) : ""}</td></tr>`).join("");
     const totD = je.reduce((s, l) => s + l[1], 0), totC = je.reduce((s, l) => s + l[2], 0);
-    openModal(`Applied receipt — ${x.id}`, `
+    openModal(`Posted collection — ${x.id}`, `
       <div class="post-ok">
         <div class="post-ok__badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></div>
         <div><div class="post-ok__title">${x.customer} · ${fmt(x.amount, ccy)}</div><div class="post-ok__sub">${pill(x.rule, x.tone)} <span class="conf-pill ${x.conf >= 0.85 ? "hi" : "mid"}" style="margin-left:6px">${Math.round(x.conf * 100)}% match</span> · cleared ${x.nInv} invoice${x.nInv > 1 ? "s" : ""}</div></div>
