@@ -446,5 +446,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_609skuc953e",
+    "route": "#/workspace",
+    "anchor": "ws.queue",
+    "anchorLabel": "Workspace · Credit queue",
+    "xPct": 35.90425531914894,
+    "yPct": 5.482012516118347,
+    "author": "SME",
+    "text": "can we make the tables in such a way that the below columns also is visible when I land on the screen, without the need to scroll",
+    "status": "open",
+    "createdAt": "2026-06-10T07:36:30.218Z",
+    "updatedAt": "2026-06-10T07:36:30.220Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
