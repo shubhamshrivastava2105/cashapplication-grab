@@ -190,5 +190,21 @@
     "resolvedAt": "2026-06-10T07:22:24.947Z",
     "resolvedBy": "Claude",
     "resolutionNote": "Removed the Reports & close page after moving the trend chart to the dashboard."
+  },
+  {
+    "id": "c_erqj19uwnjk",
+    "route": "#/dashboard",
+    "anchor": "dash.trend",
+    "anchorLabel": "Dashboard · Auto-apply & identification trend",
+    "xPct": 21.610169491525426,
+    "yPct": 89.6106048053024,
+    "author": "SME",
+    "text": "add year along with the month. eg: jul'25",
+    "status": "open",
+    "createdAt": "2026-06-10T09:46:45.680Z",
+    "updatedAt": "2026-06-10T09:46:45.682Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
