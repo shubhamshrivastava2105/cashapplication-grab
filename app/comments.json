@@ -224,22 +224,6 @@
     "resolutionNote": "Changed GST to GST/VAT in the rebate/deduction type dropdown."
   },
   {
-    "id": "c_n7uds23pv9d",
-    "route": "#/workspace",
-    "anchor": "ws.gap",
-    "anchorLabel": "Workspace · Gap classification & actions",
-    "xPct": 31.176470588235293,
-    "yPct": 44.368436779646544,
-    "author": "SME",
-    "text": "the rebate should also come with discount, bank charge, on account and not at the bottom seperately. it is also on a total level like others. Wht and discount is on a invoice level which can be covered in \"open invoices - proposed allocation column\"",
-    "status": "resolved",
-    "createdAt": "2026-06-10T08:17:30.241Z",
-    "updatedAt": "2026-06-10T08:25:35.567Z",
-    "resolvedAt": "2026-06-10T08:25:35.567Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "Rebate/deduction is now a total-level field grouped with bank charge and on-account; WHT & discount remain per-invoice in the allocation table."
-  },
-  {
     "id": "c_pemjake03jf",
     "route": "#/workspace",
     "anchor": "ws.allocation",
