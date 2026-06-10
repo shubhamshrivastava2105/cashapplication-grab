@@ -232,12 +232,12 @@
     "yPct": 14.93591554722215,
     "author": "SME",
     "text": "the break for the unapplied is not shown in this table. please add that too",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-10T11:01:36.908Z",
-    "updatedAt": "2026-06-10T11:01:36.908Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-10T11:12:17.510Z",
+    "resolvedAt": "2026-06-10T11:12:17.510Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Customer 360 SAP account view now has an Unapplied tab listing the actual unapplied receipts (document, posting date, type/reason, amount, age) that sum to the Unapplied KPI — and these are the same line items shown on the dashboard, so it ties out. Also fixed the broader consistency: receipts now spread across all customers so every Customer-360 record reflects real dashboard data."
   },
   {
     "id": "c_8ieiqylygpx",
