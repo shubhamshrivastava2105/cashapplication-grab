@@ -442,9 +442,10 @@ th.sortable:hover { color: var(--text-default-heading); background: var(--grey-1
 /* workspace queue (smaller, so the cockpit is visible) + disabled post + add invoice */
 .ws-queue-scroll { max-height: 220px; overflow-y: auto; }
 .ws-queue-scroll thead th { position: sticky; top: 0; z-index: 1; }
-.add-inv { display: flex; align-items: center; gap: 8px; padding: 10px var(--scale-400) 0; font-size: 13px; }
-.add-inv > span { color: var(--text-default-caption); white-space: nowrap; }
-.add-inv select { flex: 1; min-width: 0; font-family: var(--font-family-inter); font-size: 12px; border: 1px solid var(--border-default-default); border-radius: var(--radius-sm); padding: 6px; }
+.add-inv { display: flex; align-items: center; gap: var(--scale-300); padding: var(--scale-300) var(--scale-400); margin-top: var(--scale-200); border-top: 1px solid var(--border-default-default); font-size: 13px; }
+.add-inv > span { color: var(--text-default-caption); white-space: nowrap; font-weight: var(--font-weight-medium); }
+.add-inv select { flex: 1; min-width: 0; font-family: var(--font-family-inter); font-size: 13px; border: 1px solid var(--border-default-default); border-radius: var(--radius-sm); padding: 9px 12px; background: var(--surface-default-default); }
+.add-inv .btn { flex: none; }
 .post-hint { font-size: 12px; color: var(--text-brand-default); margin-top: 10px; line-height: 1.45; }
 .btn:disabled, .btn[disabled] { opacity: .55; cursor: not-allowed; }
 

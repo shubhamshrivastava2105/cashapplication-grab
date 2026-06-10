@@ -421,12 +421,20 @@
     const bankCharge = r.gap.bankCharge || 0;
     const onAccount = r.gap.onAccount || 0;
     const rebateTotal = r.gap.rebate || 0;
-    // unexplained = invoices cleared − cash, reduced by every explanation. WHT &
-    // discount (per line) are already inside `allocated`; rebate/deduction + bank
-    // charge reduce a short; on-account parks an overpayment. → 0 = balanced.
-    const unexplained = allocated - r.amount - rebateTotal - bankCharge + onAccount;
+    // residual = invoices cleared − cash, after every explanation. WHT & discount
+    // (per line) are already inside `allocated`; rebate/deduction + bank charge
+    // reduce a short. On-account then *absorbs* whatever residual is left — it
+    // always moves the variance toward 0 (parks an overpayment, or holds a short
+    // as unapplied cash), capped so it never overshoots into the opposite sign.
+    const residual = allocated - r.amount - rebateTotal - bankCharge;
+    // On-account is a customer advance (credit) — it only absorbs an *overpayment*
+    // (residual < 0: cash exceeds invoices). It is capped at the overpaid amount so
+    // it always moves the variance toward 0 and can never push it negative — adding
+    // on-account never *increases* the gap. A short must be explained by a deduction.
+    const oaApplied = Math.min(onAccount, Math.max(0, -residual));
+    const unexplained = residual + oaApplied;
     const exact = Math.abs(unexplained) < 0.5;
-    const canPost = exact && r.invoices.some((i) => i.sel || onAccount > 0);
+    const canPost = exact && r.invoices.some((i) => i.sel);
     const anyPartial = r.invoices.some((i) => i.sel && cleared(i) > 0 && cleared(i) < i.open - 0.5);
     const rows = r.invoices.length ? r.invoices.map((i, idx) => {
       const partial = i.sel && cleared(i) > 0 && cleared(i) < i.open - 0.5;
@@ -475,7 +483,7 @@
           <div class="gap-group">
             <div class="gap-irow"><span class="lbl">Bank charge</span><input class="gap-in" id="bankcharge-in" value="${bankCharge}" /></div>
             <div class="gap-irow"><span class="lbl">Rebate / deduction <select id="rebate-type" class="gap-sel">${rebTypes.map((t) => `<option ${t === rebateType ? "selected" : ""}>${t}</option>`).join("")}</select></span><input class="gap-in" id="rebate-in" value="${rebateTotal}" /></div>
-            <div class="gap-irow"><span class="lbl">On account ${unexplained < -0.5 ? `<button class="lnk-clear" id="park-oa">park overpayment</button>` : (onAccount > 0 ? `<button class="lnk-clear" id="clear-oa">clear</button>` : "")}</span><input class="gap-in ${onAccount ? "is-set" : ""}" id="onaccount-in" value="${onAccount}" /></div>
+            <div class="gap-irow"><span class="lbl">On account ${residual < -0.5 && oaApplied < -residual - 0.5 ? `<button class="lnk-clear" id="park-oa">park overpayment</button>` : (onAccount > 0 ? `<button class="lnk-clear" id="clear-oa">clear</button>` : "")}</span><input class="gap-in ${onAccount ? "is-set" : ""}" id="onaccount-in" value="${onAccount}" /></div>
           </div>
           <div class="gap-derived">
             <span>WHT (per-invoice) <b>${whtTotal ? num(whtTotal) : "—"}</b>${whtTotal ? ` <button class="lnk-clear" id="clear-wht">clear</button>` : ""}</span>
@@ -527,7 +535,7 @@
 
     // on-account (park residual / clear / edit)
     const parkOa = $("#park-oa");
-    if (parkOa) parkOa.onclick = () => { const excess = Math.max(0, -unexplained); r.gap.onAccount = Math.round(((r.gap.onAccount || 0) + excess) * 100) / 100; renderCockpit(r); toast(`Parked ${fmt(excess, r.ccy)} on account`); };
+    if (parkOa) parkOa.onclick = () => { const amt = Math.round(Math.max(0, -residual) * 100) / 100; r.gap.onAccount = amt; renderCockpit(r); toast(`Parked ${fmt(amt, r.ccy)} on account`); };
     const clrOa = $("#clear-oa");
     if (clrOa) clrOa.onclick = () => { r.gap.onAccount = 0; renderCockpit(r); };
     const oaIn = $("#onaccount-in");
@@ -643,10 +651,12 @@
     const applied = sel.reduce((s, i) => s + i.apply, 0);
     const wht = sel.reduce((s, i) => s + (i.wht || 0), 0);
     const disc = sel.reduce((s, i) => s + (i.discount || 0), 0);
-    const bc = r.gap.bankCharge || 0, oa = r.gap.onAccount || 0;
+    const bc = r.gap.bankCharge || 0;
     const rebate = r.gap.rebate || 0;
     const arCleared = applied + wht + disc;       // invoices cleared in full (Σ open of selected)
-    const unexplained = applied - r.amount - rebate - bc + oa;
+    const residual = applied - r.amount - rebate - bc;        // > 0 short, < 0 overpay
+    const oa = Math.min(r.gap.onAccount || 0, Math.max(0, -residual)); // advance absorbs overpay only
+    const unexplained = residual + oa;
     // Debits = cash + non-cash explanations; Credits = AR cleared + on-account.
     const lines = [["Bank (cash received)", r.amount, 0]];
     if (wht) lines.push(["WHT receivable (asset)", wht, 0]);
