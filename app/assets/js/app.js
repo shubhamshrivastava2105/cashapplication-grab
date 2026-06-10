@@ -107,6 +107,8 @@
   }
   const MONTHS12 = ["Jul'25", "Aug'25", "Sep'25", "Oct'25", "Nov'25", "Dec'25", "Jan'26", "Feb'26", "Mar'26", "Apr'26", "May'26", "Jun'26"];
   let dashTf = 12; // trend timeframe in months
+  // Neoflo AI mark — a four-point sparkle used wherever the model makes a suggestion.
+  const aiSparkSvg = `<svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden="true"><path d="M12 2l1.9 5.6a4 4 0 0 0 2.5 2.5L22 12l-5.6 1.9a4 4 0 0 0-2.5 2.5L12 22l-1.9-5.6a4 4 0 0 0-2.5-2.5L2 12l5.6-1.9a4 4 0 0 0 2.5-2.5L12 2z"/></svg>`;
 
   // ════════════════════════════════════════════════════════════════════════
   //  DASHBOARD
@@ -313,9 +315,9 @@
     const it = (id && db.list.find((x) => x.id === id)) || db.list[0];
     const key = selectedEntityId + ":" + it.id;
     if (!_cockpit[key]) {
-      const cp = D.buildCockpit(it, db.ccy);
+      const cp = D.buildCockpit(it, db.ccy, selectedEntityId);
       _cockpit[key] = { id: it.id, bankRef: it.id, amount: it.amount, ccy: db.ccy, valueDate: it.date,
-        narration: it.desc, bankAcct: bankName(), customer: cp.customer, invoices: cp.invoices, available: cp.available || [],
+        narration: it.desc, bankAcct: bankName(), customer: cp.customer, aiCustomer: cp.aiCustomer, invoices: cp.invoices, available: cp.available || [],
         gap: cp.gap, remittance: cp.remittance, aiConf: cp.aiConf, sla: cp.sla, reason: it.reason };
     } else { _cockpit[key].bankAcct = bankName(); }
     return _cockpit[key];
@@ -370,12 +372,18 @@
         <div class="name">${r.customer.name} &nbsp;·&nbsp; conf ${r.customer.confidence.toFixed(2)}</div>
         <div class="howline">how: ${r.customer.how}</div>
         <button class="btn btn--ghost btn--sm" id="change-customer" style="margin-top:10px">Change customer</button>
+      </div>` : (r.aiCustomer ? `
+      <div class="identified-box identified-box--ai">
+        <div class="ai-suggest__head"><span class="ai-suggest__spark">${aiSparkSvg}</span> Neoflo AI suggested match <span class="ai-suggest__conf">${Math.round(r.aiCustomer.confidence * 100)}% confidence</span></div>
+        <div class="name" style="margin-top:7px">${r.aiCustomer.name}</div>
+        <div class="howline">how: ${r.aiCustomer.how}</div>
+        <div class="ai-suggest__acts" style="margin-top:10px"><button class="btn btn--success btn--sm" id="ai-accept-cust">Accept match</button><button class="btn btn--ghost btn--sm" id="change-customer">Not a match — pick</button></div>
       </div>` : `
       <div class="identified-box" style="border-color:var(--border-error-default);background:var(--surface-error-subtle)">
         <div class="name" style="color:var(--text-error-hover)">No customer resolved</div>
         <div class="howline">Routed to suspense — pick the right customer.</div>
         <button class="btn btn--ghost btn--sm" id="change-customer" style="margin-top:10px">Pick customer</button>
-      </div>`;
+      </div>`);
 
     const remit = r.remittance.listed ? `
       <div class="remit-linked"><b>RA-${r.bankRef}</b> linked · ${r.remittance.listed} invoices · parse confidence ${Math.round(r.remittance.parsed * 100)}%</div>
@@ -436,7 +444,31 @@
       : Math.min(0, grossGap + onAccount);                    // overpay: parked on-account
     const exact = Math.abs(unexplained) < 0.5;
     const canPost = exact && r.invoices.some((i) => i.sel);
-    const aiWhtSuggest = isShort ? Math.round(Math.max(0, grossGap - bankCharge - rebateTotal) * 100) / 100 : 0;
+    // ── Neoflo AI gap classifier ──────────────────────────────────────────────
+    // Suggest how to classify the remaining gap, with an exact value the analyst
+    // validates. The "kind" is the pattern Neoflo detected for this receipt; the
+    // amount is the live unexplained residual (so it always closes the gap to 0).
+    const grossOpenSel = r.invoices.filter((i) => i.sel).reduce((s, i) => s + i.open, 0);
+    let aiSug = null;
+    if (!r._aiDismissed && exact === false) {
+      const gap = Math.abs(unexplained);
+      const pct = grossOpenSel ? Math.round((gap / grossOpenSel) * 1000) / 10 : 0;
+      const cust = r.customer ? r.customer.name : "this payer";
+      if (isShort) {
+        const kind = r.gap.aiKind || "wht";
+        const rate = r.gap.aiRate ? Math.round(r.gap.aiRate * 1000) / 10 : pct;
+        const DEF = {
+          wht:        { field: "wht",        label: "Withholding tax (WHT)", conf: 0.96, why: `≈ ${rate}% of the invoice value — a textbook ${rate}% WHT deduction. Certificate typically follows; book it as WHT receivable.` },
+          discount:   { field: "discount",   label: "Cash discount",         conf: 0.93, why: `≈ ${rate}% — matches an early-payment cash discount on ${cust}'s terms.` },
+          bankcharge: { field: "bankcharge", label: "Bank charge",           conf: 0.9,  why: `a small flat amount typical of a cross-border transfer fee deducted in transit.` },
+          rebate:     { field: "rebate",     label: "Rebate / deduction",    conf: 0.88, why: `≈ ${rate}% — consistent with the agreed volume rebate for ${cust}.` },
+        };
+        const d = DEF[kind] || DEF.wht;
+        aiSug = { kind, field: d.field, label: d.label, amount: Math.round(gap * 100) / 100, conf: d.conf, why: d.why };
+      } else if (isOverpay) {
+        aiSug = { kind: "onaccount", field: "onaccount", label: "Park on-account", amount: Math.round(gap * 100) / 100, conf: 0.95, why: `cash received exceeds the matched invoices — hold the ${fmt(gap, ccy)} surplus as a customer advance (on-account).` };
+      }
+    }
     const balText = (u, ex) => ex ? "Balanced" : (u > 0 ? num(u) + " to explain" : num(-u) + " over");
     const anyPartial = r.invoices.some((i) => i.sel && cleared(i) > 0 && cleared(i) < i.open - 0.5);
     const rows = r.invoices.length ? r.invoices.map((i, idx) => {
@@ -485,14 +517,14 @@
         <div class="ws-pane__title">Gap classification</div>
         <div class="ws-pane__body">
           <p class="gap-explain">WHT &amp; discount are taken <b>per invoice</b> (allocation table). Bank charge, rebate/deduction and on-account are <b>total-level</b>.</p>
-          ${aiWhtSuggest > 0.5 && !r._aiDismissed ? `<div class="ai-suggest" id="ai-suggest">
-            <div class="ai-suggest__head"><span class="ai-suggest__spark">✦</span> Neoflo AI suggestion</div>
-            <div class="ai-suggest__body">This <b>${fmt(aiWhtSuggest, r.ccy)}</b> shortfall matches a <b>withholding-tax</b> pattern for ${r.customer ? r.customer.name : "this payer"} (5% WHT, certificate typically follows). Apply it as WHT across the selected invoices?</div>
-            <div class="ai-suggest__acts"><button class="btn btn--success btn--sm" id="ai-accept">Accept &amp; apply WHT</button><button class="lnk-clear" id="ai-dismiss">Dismiss</button></div>
+          ${aiSug ? `<div class="ai-suggest" id="ai-suggest">
+            <div class="ai-suggest__head"><span class="ai-suggest__spark">${aiSparkSvg}</span> Neoflo AI · gap classifier <span class="ai-suggest__conf">${Math.round(aiSug.conf * 100)}% confidence</span></div>
+            <div class="ai-suggest__body">The <b>${fmt(aiSug.amount, r.ccy)}</b> ${isOverpay ? "surplus" : "shortfall"} looks like <b>${aiSug.label}</b> — ${aiSug.why}</div>
+            <div class="ai-suggest__acts"><button class="btn btn--success btn--sm" id="ai-accept">Accept &amp; apply</button><button class="lnk-clear" id="ai-dismiss">Dismiss</button></div>
           </div>` : ""}
           <div class="gap-group">
-            <div class="gap-irow"><span class="lbl">Bank charge</span><span class="gap-input"><span class="gap-ccy">${r.ccy}</span><input class="gap-in" id="bankcharge-in" inputmode="decimal" value="${bankCharge || ""}" placeholder="0.00" /></span></div>
-            <div class="gap-irow"><span class="lbl">Rebate / deduction <select id="rebate-type" class="gap-sel">${rebTypes.map((t) => `<option ${t === rebateType ? "selected" : ""}>${t}</option>`).join("")}</select></span><span class="gap-input"><span class="gap-ccy">${r.ccy}</span><input class="gap-in" id="rebate-in" inputmode="decimal" value="${rebateTotal || ""}" placeholder="0.00" /></span></div>
+            <div class="gap-irow ${aiSug && aiSug.field === "bankcharge" ? "gap-irow--ai" : ""}"><span class="lbl">Bank charge${aiSug && aiSug.field === "bankcharge" ? ` <span class="ai-chip">${aiSparkSvg} AI ${num(aiSug.amount)}</span>` : ""}</span><span class="gap-input"><span class="gap-ccy">${r.ccy}</span><input class="gap-in" id="bankcharge-in" inputmode="decimal" value="${bankCharge || ""}" placeholder="0.00" /></span></div>
+            <div class="gap-irow ${aiSug && aiSug.field === "rebate" ? "gap-irow--ai" : ""}"><span class="lbl">Rebate / deduction${aiSug && aiSug.field === "rebate" ? ` <span class="ai-chip">${aiSparkSvg} AI ${num(aiSug.amount)}</span>` : ""} <select id="rebate-type" class="gap-sel">${rebTypes.map((t) => `<option ${t === rebateType ? "selected" : ""}>${t}</option>`).join("")}</select></span><span class="gap-input"><span class="gap-ccy">${r.ccy}</span><input class="gap-in" id="rebate-in" inputmode="decimal" value="${rebateTotal || ""}" placeholder="0.00" /></span></div>
             <div class="gap-irow ${isOverpay ? "" : "gap-irow--off"}"><span class="lbl">On account ${isOverpay && Math.abs(unexplained) > 0.5 ? `<button class="lnk-clear" id="park-oa">park overpayment</button>` : (onAccount > 0 ? `<button class="lnk-clear" id="clear-oa">clear</button>` : "")}</span><span class="gap-input"><span class="gap-ccy">${r.ccy}</span><input class="gap-in ${onAccount ? "is-set" : ""}" id="onaccount-in" inputmode="decimal" value="${onAccount || ""}" placeholder="0.00" ${isOverpay ? "" : "disabled"} title="${isOverpay ? "" : "Only for overpayments — enabled when cash received exceeds the invoices."}" /></span></div>
           </div>
           <div class="gap-derived">
@@ -517,6 +549,8 @@
     });
     const cc = $("#change-customer");
     if (cc) cc.onclick = () => openCustomerPicker(r);
+    const acAi = $("#ai-accept-cust");
+    if (acAi && r.aiCustomer) acAi.onclick = () => { setCustomer(r, r.aiCustomer.name, "Neoflo AI match, verified by analyst", r.aiCustomer.confidence); toast(`${r.aiCustomer.name} confirmed — open invoices fetched`); };
     const sim = $("#simulate-entry");
     if (sim) sim.onclick = () => simulateEntry(r);
 
@@ -562,21 +596,30 @@
       r.invoices.push(a); renderCockpit(r); toast(`Added ${a.inv} to the allocation`);
     };
 
-    // AI suggestion — auto-fill WHT to close a shortfall, analyst just acknowledges
+    // AI suggestion — apply the proposed classification; the analyst just validates it.
     const aiAccept = $("#ai-accept");
-    if (aiAccept) aiAccept.onclick = () => {
-      const sel = r.invoices.filter((i) => i.sel);
-      const target = Math.max(0, grossGap - bankCharge - rebateTotal);
-      if (target < 0.5 || !sel.length) return;
-      const totalOpen = sel.reduce((s, i) => s + i.open, 0) || 1;
-      let rem = Math.round(target * 100) / 100;
-      sel.forEach((i, k) => {
-        const add = k === sel.length - 1 ? rem : Math.round(target * i.open / totalOpen);
-        rem = Math.round((rem - add) * 100) / 100;
-        i.wht = Math.round(((i.wht || 0) + add) * 100) / 100;
-        i.apply = Math.max(0, Math.round((i.open - i.wht - (i.discount || 0)) * 100) / 100);
-      });
-      renderCockpit(r); toast(`AI applied ${fmt(target, r.ccy)} WHT across ${sel.length} invoice${sel.length > 1 ? "s" : ""} — please review`);
+    if (aiAccept && aiSug) aiAccept.onclick = () => {
+      const amt = aiSug.amount;
+      if (aiSug.field === "wht" || aiSug.field === "discount") {
+        // distribute across the selected invoices, proportional to open value
+        const sel = r.invoices.filter((i) => i.sel);
+        if (!sel.length) return;
+        const totalOpen = sel.reduce((s, i) => s + i.open, 0) || 1;
+        let rem = Math.round(amt * 100) / 100;
+        sel.forEach((i, k) => {
+          const add = k === sel.length - 1 ? rem : Math.round(amt * i.open / totalOpen);
+          rem = Math.round((rem - add) * 100) / 100;
+          i[aiSug.field] = Math.round((((i[aiSug.field]) || 0) + add) * 100) / 100;
+          i.apply = Math.max(0, Math.round((i.open - (i.wht || 0) - (i.discount || 0)) * 100) / 100);
+        });
+      } else if (aiSug.field === "bankcharge") {
+        r.gap.bankCharge = Math.round(((r.gap.bankCharge || 0) + amt) * 100) / 100;
+      } else if (aiSug.field === "rebate") {
+        r.gap.rebate = Math.round(((r.gap.rebate || 0) + amt) * 100) / 100;
+      } else if (aiSug.field === "onaccount") {
+        r.gap.onAccount = Math.round(((r.gap.onAccount || 0) + amt) * 100) / 100;
+      }
+      renderCockpit(r); toast(`AI applied ${fmt(amt, r.ccy)} as ${aiSug.label.toLowerCase()} — please review`);
     };
     const aiDismiss = $("#ai-dismiss");
     if (aiDismiss) aiDismiss.onclick = () => { r._aiDismissed = true; renderCockpit(r); };
@@ -678,6 +721,22 @@
       </div>`);
   }
 
+  // Attribute a credit to a customer and pull THAT customer's open invoices, proposing
+  // an allocation against the receipt. Re-fetches every time the customer changes, so
+  // the invoice set always reflects the selected payer (never a stale/shared set).
+  function setCustomer(r, name, how, conf) {
+    const all = D.customersFor(selectedEntityId);
+    const c = all.find((x) => x.name === name);
+    r.customer = { name, id: c ? c.id : "manual", confidence: conf || 1.0, how: how || "manually set by analyst" };
+    const f = D.fetchOpenInvoices(r.amount, r.ccy, name);
+    r.invoices = f.invoices; r.available = f.available; r._orig = null;
+    r.remittance = { listed: f.invoices.length, parsed: 0 };
+    delete r._aiDismissed;
+    r.gap.bankCharge = 0; r.gap.rebate = 0; r.gap.onAccount = 0;
+    r.gap.note = `${f.invoices.length} open invoice${f.invoices.length > 1 ? "s" : ""} fetched for ${name} — proposed allocation matches the receipt. Review and post.`;
+    renderCockpit(r);
+  }
+
   // Reassign the credit to a different customer (lists all customers + search)
   function openCustomerPicker(r) {
     const names = D.customersPoolFor(selectedEntityId).slice().sort();
@@ -696,18 +755,9 @@
     document.querySelectorAll(".picker-item").forEach((b) => {
       b.onclick = () => {
         const name = b.dataset.name;
-        r.customer = { name, id: "manual", confidence: 1.0, how: "manually set by analyst" };
-        if (!r.invoices.length) {
-          // Was an unidentified credit with no invoices — now that we know the payer,
-          // pull their open AR and propose a matching allocation against the receipt.
-          const f = D.fetchOpenInvoices(r.amount, r.ccy);
-          r.invoices = f.invoices; r.available = f.available; r._orig = null;
-          r.remittance = { listed: f.invoices.length, parsed: 0 };
-          r.gap.note = `Open invoices fetched for ${name} — proposed allocation matches the receipt. Review and post.`;
-          closeModal(); renderCockpit(r); toast(`${name} identified — ${f.invoices.length} open invoice${f.invoices.length > 1 ? "s" : ""} fetched & proposed`);
-        } else {
-          closeModal(); renderCockpit(r); toast(`Customer set to ${name}`);
-        }
+        closeModal();
+        setCustomer(r, name, "manually set by analyst", 1.0);
+        toast(`Customer set to ${name} — open invoices refreshed`);
       };
     });
   }

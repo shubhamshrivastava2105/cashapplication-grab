@@ -146,25 +146,44 @@ window.DATA = (function () {
 
   // Build a workspace cockpit (invoices + gap + remittance) for a credit line so
   // the Apply-cash screen uses the SAME data as the dashboard — amounts tie out.
-  function buildCockpit(it, ccy) {
+  function buildCockpit(it, ccy, entityId) {
     if (it.reason === "Unidentified customer") {
-      return { customer: null, invoices: [], remittance: { listed: 0, parsed: 0 }, aiConf: 0, sla: "OVERDUE",
-        gap: { wht: 0, discount: 0, bankCharge: 0, unexplained: it.amount, note: "No customer resolved at any tier → suspense queue; pick the right customer.", allocRule: "—" } };
+      // No deterministic match — but Neoflo AI proposes a likely payer (fuzzy name +
+      // amount/timing fingerprint) at sub-threshold confidence for the analyst to verify.
+      const ent = entities.find((e) => e.id === entityId) || entities[0];
+      const pool = poolFor(ent);
+      const aiCustomer = {
+        name: pool[Math.abs(it.amount * 7 + 13) % pool.length],
+        confidence: Math.round((0.55 + (Math.abs(it.amount) % 24) / 100) * 100) / 100,   // 0.55–0.78
+        how: "fuzzy match on payer name in the bank narration + amount / timing fingerprint (ID-5 / ID-6)",
+      };
+      return { customer: null, aiCustomer, invoices: [], remittance: { listed: 0, parsed: 0 }, aiConf: aiCustomer.confidence, sla: "OVERDUE",
+        gap: { wht: 0, discount: 0, bankCharge: 0, onAccount: 0, rebate: 0, aiKind: null, aiRate: 0, unexplained: it.amount, note: "No customer auto-resolved — verify Neoflo AI's suggested match below, or pick another.", allocRule: "—" } };
     }
     const cust = { name: it.customer, id: "C-auto", confidence: 0.72 + ((it.amount % 26) / 100), how: "amount + timing fingerprint (ID-6)" };
-    let invTotal;
-    if (it.reason === "WHT certificate pending") invTotal = Math.round(it.amount / 0.95);
-    else if (it.reason === "Partial / short & deductions") invTotal = Math.round(it.amount * 1.25);
-    else invTotal = Math.round(it.amount * 0.8); // Overpayment
+    const sc = CCY_SCALE[ccy] || 1;
+    // Decide the realistic gap "story" so any AI-suggested value is exact and sensible:
+    // WHT 5%, cash discount 2%, a flat cross-border bank charge, a ~6% volume rebate,
+    // or an overpayment to park on-account. The gap is left UNEXPLAINED so Neoflo AI can
+    // propose the classification and the analyst validates it.
+    let invTotal, aiKind, aiRate = 0, aiFlat = 0;
+    if (it.reason === "WHT certificate pending") { invTotal = Math.round(it.amount / 0.95); aiKind = "wht"; aiRate = 0.05; }
+    else if (it.reason === "Overpayment") { invTotal = Math.round(it.amount * 0.85); aiKind = "onaccount"; }
+    else { // Partial / short & deductions — rotate through realistic causes
+      const subg = Math.abs(it.amount) % 3;
+      if (subg === 0) { aiFlat = Math.round((15 + (Math.abs(it.amount) % 40)) * sc); invTotal = it.amount + aiFlat; aiKind = "bankcharge"; }
+      else if (subg === 1) { invTotal = Math.round(it.amount / 0.98); aiKind = "discount"; aiRate = 0.02; }
+      else { invTotal = Math.round(it.amount / 0.94); aiKind = "rebate"; aiRate = 0.06; }
+    }
     const cnt = 1 + (Math.abs(it.amount) % 3);
     const invs = []; let rem = invTotal;
-    for (let j = 0; j < cnt; j++) { const open = j === cnt - 1 ? rem : Math.round(invTotal / cnt); rem -= open; invs.push({ inv: "INV-" + (7000 + (Math.abs(it.amount) % 900) + j), due: dateMinus(-(j * 7 + 3)), open, apply: 0, wht: 0, discount: 0, sel: false }); }
-    const gap = { bankCharge: 0, onAccount: 0, note: "" };
-    if (it.reason === "WHT certificate pending") { let r2 = it.amount; invs.forEach((i, j) => { const ap = j === invs.length - 1 ? r2 : Math.round(it.amount / invs.length); r2 -= ap; i.apply = ap; i.wht = Math.round(ap * 5 / 95); i.open = ap + i.wht; i.sel = true; }); gap.note = "Each invoice is short by ~5% WHT — cleared in full (cash + WHT receivable). Certificate pending."; }
-    else if (it.reason === "Overpayment") { invs.forEach((i) => { i.apply = i.open; i.sel = true; }); gap.note = `Over by ${fmt(it.amount - invTotal, ccy)} → clear invoices, park the residual On account (it can still be posted).`; }
-    else { invs.forEach((i) => { i.apply = i.open; i.sel = true; }); gap.note = `Short by ${fmt(invTotal - it.amount, ccy)} → code a deduction / rebate to clear the invoices, or reduce the selection.`; }
+    for (let j = 0; j < cnt; j++) { const open = j === cnt - 1 ? rem : Math.round(invTotal / cnt); rem -= open; invs.push({ inv: "INV-" + (7000 + (Math.abs(it.amount) % 900) + j), due: dateMinus(-(j * 7 + 3)), open, apply: open, wht: 0, discount: 0, sel: true }); }
+    const gap = { bankCharge: 0, onAccount: 0, rebate: 0, aiKind, aiRate, note: "" };
+    const diff = invTotal - it.amount;   // > 0 short, < 0 overpay
+    gap.note = aiKind === "onaccount"
+      ? `Cash exceeds the open invoices by ${fmt(-diff, ccy)} — an overpayment to park on-account.`
+      : `Cash received is ${fmt(diff, ccy)} short of the invoices — classify the gap (Neoflo AI has a suggestion).`;
     // a few more of the customer's open invoices the analyst can add to the allocation
-    const sc = CCY_SCALE[ccy] || 1;
     const available = [0, 1, 2, 3].map((j) => ({ inv: "INV-" + (8200 + (Math.abs(it.amount) % 700) + j * 11), due: dateMinus(-(j * 9 + 6)), open: Math.round((900 + ((Math.abs(it.amount) / sc * (j + 2)) % 6000)) * sc), apply: 0, wht: 0, discount: 0, sel: false }));
     return { customer: cust, invoices: invs, available, remittance: { listed: invs.length, parsed: 0.82 + ((Math.abs(it.amount) % 15) / 100) }, aiConf: cust.confidence, sla: (3 + (Math.abs(it.amount) % 9)) + ":" + ("0" + (Math.abs(it.amount) % 60)).slice(-2) + ":00", gap };
   }
@@ -174,15 +193,18 @@ window.DATA = (function () {
   // receipt (subset-sum) — exactly as it would have done automatically had the
   // customer been recognised. Returns a matching proposed set + a few extra open
   // invoices the analyst can add. The proposal ties to the receipt so it balances.
-  function fetchOpenInvoices(amount, ccy) {
+  function fetchOpenInvoices(amount, ccy, custName) {
     const sc = CCY_SCALE[ccy] || 1;
-    const cnt = 1 + (Math.abs(amount) % 3);                 // 1–3 invoices that match the credit
+    // Seed everything on the customer so a different payer returns genuinely different
+    // invoices (numbers, dates, split) — not the same set for every customer.
+    const cs = custName ? [].reduce.call(custName, (a, ch) => a + ch.charCodeAt(0), 0) : 0;
+    const cnt = 1 + ((Math.abs(amount) + cs) % 3);          // 1–3 invoices that match the credit
     const invs = []; let rem = amount;
     for (let j = 0; j < cnt; j++) {
       const open = j === cnt - 1 ? rem : Math.round(amount / cnt); rem -= open;
-      invs.push({ inv: "INV-" + (6100 + (Math.abs(amount) % 800) + j), due: dateMinus(-(j * 8 + 4)), open, apply: open, wht: 0, discount: 0, sel: true });
+      invs.push({ inv: "INV-" + (6100 + (cs % 800) + j), due: dateMinus(-(((cs + j * 5) % 22) + 4)), open, apply: open, wht: 0, discount: 0, sel: true });
     }
-    const available = [0, 1, 2, 3].map((j) => ({ inv: "INV-" + (8600 + (Math.abs(amount) % 600) + j * 7), due: dateMinus(-(j * 9 + 6)), open: Math.round((800 + ((Math.abs(amount) / sc * (j + 2)) % 5000)) * sc), apply: 0, wht: 0, discount: 0, sel: false }));
+    const available = [0, 1, 2, 3].map((j) => ({ inv: "INV-" + (8600 + (cs % 600) + j * 7), due: dateMinus(-(((cs * 3 + j * 9) % 40) + 6)), open: Math.round((800 + (((cs + Math.abs(amount)) / sc * (j + 2)) % 5000)) * sc), apply: 0, wht: 0, discount: 0, sel: false }));
     return { invoices: invs, available };
   }
 

@@ -438,11 +438,21 @@ th.sortable:hover { color: var(--text-default-heading); background: var(--grey-1
 .gap-irow--off .gap-input { background: var(--grey-75); }
 .lnk-clear { background: none; border: none; color: var(--text-primary-default); font-size: 11px; font-weight: var(--font-weight-semibold); cursor: pointer; padding: 0 0 0 6px; text-decoration: underline; }
 /* AI suggestion card */
-.ai-suggest { margin: var(--scale-200) 0; padding: var(--scale-250) var(--scale-300); border: 1px solid var(--border-primary-default); background: var(--surface-primary-subtle); border-radius: var(--radius-sm); }
+.ai-suggest { position: relative; margin: var(--scale-200) 0; padding: var(--scale-250) var(--scale-300); border: 1px solid var(--border-primary-default); background: var(--surface-primary-subtle); border-radius: var(--radius-sm); overflow: hidden; }
+.ai-suggest::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--surface-primary-default); }
 .ai-suggest__head { display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: var(--font-weight-bold); text-transform: uppercase; letter-spacing: .6px; color: var(--text-primary-default); }
-.ai-suggest__spark { font-size: 13px; line-height: 1; }
+.ai-suggest__spark { display: inline-flex; color: var(--text-primary-default); animation: ai-pulse 2.2s ease-in-out infinite; }
+.ai-suggest__conf { margin-left: auto; font-size: 10px; font-weight: var(--font-weight-semibold); letter-spacing: .2px; text-transform: none; color: var(--text-primary-default); background: var(--surface-default-default); border: 1px solid var(--border-primary-default); border-radius: 999px; padding: 2px 8px; }
 .ai-suggest__body { font-size: 12.5px; color: var(--text-default-body); line-height: 1.5; margin: 6px 0 10px; }
 .ai-suggest__acts { display: flex; align-items: center; gap: var(--scale-200); }
+@keyframes ai-pulse { 0%, 100% { opacity: .55; transform: scale(.9); } 50% { opacity: 1; transform: scale(1.12); } }
+/* AI-targeted gap field + inline chip */
+.gap-irow--ai { border-radius: var(--radius-sm); }
+.gap-irow--ai .gap-input { border-color: var(--border-primary-default); box-shadow: 0 0 0 3px var(--surface-primary-subtle); }
+.ai-chip { display: inline-flex; align-items: center; gap: 3px; font-size: 10px; font-weight: var(--font-weight-bold); color: var(--text-primary-default); background: var(--surface-primary-subtle); border: 1px solid var(--border-primary-default); border-radius: 999px; padding: 1px 7px; margin-left: 4px; }
+.ai-chip svg { animation: ai-pulse 2.2s ease-in-out infinite; }
+/* AI-suggested customer (identified box) */
+.identified-box--ai { border-color: var(--border-primary-default); background: var(--surface-primary-subtle); }
 /* remittance advice document */
 .remit-doc { border: 1px solid var(--border-default-default); border-radius: var(--radius-sm); overflow: hidden; }
 .remit-doc__head { display: flex; justify-content: space-between; gap: var(--scale-400); padding: var(--scale-400); background: var(--grey-75); border-bottom: 2px solid var(--grey-300); }
