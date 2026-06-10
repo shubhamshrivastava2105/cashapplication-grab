@@ -238,5 +238,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_fmrria6z60v",
+    "route": "#/workspace",
+    "anchor": "ws.allocation",
+    "anchorLabel": "Workspace · Open invoices & proposed allocation",
+    "xPct": 8.486238532110093,
+    "yPct": 17.116665243746265,
+    "author": "SME",
+    "text": "the checkboxes look very bad and is not going with the UI.",
+    "status": "open",
+    "createdAt": "2026-06-10T07:56:44.480Z",
+    "updatedAt": "2026-06-10T07:56:44.482Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
