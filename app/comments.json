@@ -254,5 +254,21 @@
     "resolvedAt": "2026-06-10T07:51:22.392Z",
     "resolvedBy": "Claude",
     "resolutionNote": "The two View breakdown links are now bottom-aligned (margin-top:auto) so they sit consistently regardless of sub-line length."
+  },
+  {
+    "id": "c_pt3g4rwur5k",
+    "route": "#/workspace",
+    "anchor": "ws.allocation",
+    "anchorLabel": "Workspace · Open invoices & proposed allocation",
+    "xPct": 100.45871559633028,
+    "yPct": 8.92064372918979,
+    "author": "SME",
+    "text": "the content is going out of the box, please make the UI in such a way that it is not scrollable and is also not going out of the box. Maybe make the columns - \"the credit\", \"open invoices\" and \"gap classification\" horizontally",
+    "status": "open",
+    "createdAt": "2026-06-10T07:53:18.584Z",
+    "updatedAt": "2026-06-10T07:53:18.584Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
