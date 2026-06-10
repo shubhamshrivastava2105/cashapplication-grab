@@ -312,12 +312,12 @@
     "yPct": 2.844697704252875,
     "author": "SME",
     "text": "remove match column",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-10T11:59:30.072Z",
-    "updatedAt": "2026-06-10T11:59:30.074Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-10T12:06:37.709Z",
+    "resolvedAt": "2026-06-10T12:06:37.709Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Removed the Match-rule column from the table (the match rule is shown in the detail modal)."
   },
   {
     "id": "c_64pb7w8nob6",
