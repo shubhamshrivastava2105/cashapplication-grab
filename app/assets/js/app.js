@@ -423,16 +423,14 @@
     const rebateTotal = r.gap.rebate || 0;
     // residual = invoices cleared − cash, after every explanation. WHT & discount
     // (per line) are already inside `allocated`; rebate/deduction + bank charge
-    // reduce a short. On-account then *absorbs* whatever residual is left — it
-    // always moves the variance toward 0 (parks an overpayment, or holds a short
-    // as unapplied cash), capped so it never overshoots into the opposite sign.
+    // reduce a short. On-account then *absorbs* whatever residual is left — it parks
+    // the leftover in either direction (excess cash → customer advance; an unmatched
+    // short → unapplied / suspense), always moving the variance toward 0 so the
+    // receipt can be applied & posted. Capped so it lands exactly on balanced and
+    // never overshoots into the opposite sign.
     const residual = allocated - r.amount - rebateTotal - bankCharge;
-    // On-account is a customer advance (credit) — it only absorbs an *overpayment*
-    // (residual < 0: cash exceeds invoices). It is capped at the overpaid amount so
-    // it always moves the variance toward 0 and can never push it negative — adding
-    // on-account never *increases* the gap. A short must be explained by a deduction.
-    const oaApplied = Math.min(onAccount, Math.max(0, -residual));
-    const unexplained = residual + oaApplied;
+    const oaApplied = Math.sign(residual) * Math.min(onAccount, Math.abs(residual));
+    const unexplained = residual - oaApplied;
     const exact = Math.abs(unexplained) < 0.5;
     const canPost = exact && r.invoices.some((i) => i.sel);
     const anyPartial = r.invoices.some((i) => i.sel && cleared(i) > 0 && cleared(i) < i.open - 0.5);
@@ -483,7 +481,7 @@
           <div class="gap-group">
             <div class="gap-irow"><span class="lbl">Bank charge</span><input class="gap-in" id="bankcharge-in" value="${bankCharge}" /></div>
             <div class="gap-irow"><span class="lbl">Rebate / deduction <select id="rebate-type" class="gap-sel">${rebTypes.map((t) => `<option ${t === rebateType ? "selected" : ""}>${t}</option>`).join("")}</select></span><input class="gap-in" id="rebate-in" value="${rebateTotal}" /></div>
-            <div class="gap-irow"><span class="lbl">On account ${residual < -0.5 && oaApplied < -residual - 0.5 ? `<button class="lnk-clear" id="park-oa">park overpayment</button>` : (onAccount > 0 ? `<button class="lnk-clear" id="clear-oa">clear</button>` : "")}</span><input class="gap-in ${onAccount ? "is-set" : ""}" id="onaccount-in" value="${onAccount}" /></div>
+            <div class="gap-irow"><span class="lbl">On account ${Math.abs(unexplained) > 0.5 ? `<button class="lnk-clear" id="park-oa">park residual</button>` : (onAccount > 0 ? `<button class="lnk-clear" id="clear-oa">clear</button>` : "")}</span><input class="gap-in ${onAccount ? "is-set" : ""}" id="onaccount-in" value="${onAccount}" /></div>
           </div>
           <div class="gap-derived">
             <span>WHT (per-invoice) <b>${whtTotal ? num(whtTotal) : "—"}</b>${whtTotal ? ` <button class="lnk-clear" id="clear-wht">clear</button>` : ""}</span>
@@ -535,7 +533,7 @@
 
     // on-account (park residual / clear / edit)
     const parkOa = $("#park-oa");
-    if (parkOa) parkOa.onclick = () => { const amt = Math.round(Math.max(0, -residual) * 100) / 100; r.gap.onAccount = amt; renderCockpit(r); toast(`Parked ${fmt(amt, r.ccy)} on account`); };
+    if (parkOa) parkOa.onclick = () => { const amt = Math.round(Math.abs(residual) * 100) / 100; r.gap.onAccount = amt; renderCockpit(r); toast(`Parked ${fmt(amt, r.ccy)} on account`); };
     const clrOa = $("#clear-oa");
     if (clrOa) clrOa.onclick = () => { r.gap.onAccount = 0; renderCockpit(r); };
     const oaIn = $("#onaccount-in");
@@ -655,16 +653,19 @@
     const rebate = r.gap.rebate || 0;
     const arCleared = applied + wht + disc;       // invoices cleared in full (Σ open of selected)
     const residual = applied - r.amount - rebate - bc;        // > 0 short, < 0 overpay
-    const oa = Math.min(r.gap.onAccount || 0, Math.max(0, -residual)); // advance absorbs overpay only
-    const unexplained = residual + oa;
-    // Debits = cash + non-cash explanations; Credits = AR cleared + on-account.
+    const oaApplied = Math.sign(residual) * Math.min(r.gap.onAccount || 0, Math.abs(residual));
+    const oaAmt = Math.abs(oaApplied);
+    const unexplained = residual - oaApplied;
+    // Debits = cash + non-cash explanations (+ short parked to suspense);
+    // Credits = AR cleared (+ overpayment parked as a customer advance).
     const lines = [["Bank (cash received)", r.amount, 0]];
     if (wht) lines.push(["WHT receivable (asset)", wht, 0]);
     if (disc) lines.push(["Cash discount allowed (expense)", disc, 0]);
     if (bc) lines.push(["Bank charges (expense)", bc, 0]);
     if (rebate) lines.push(["Deductions / claims (contra-AR)", rebate, 0]);
+    if (oaApplied > 0) lines.push(["On-account / unapplied cash (suspense)", oaAmt, 0]);
     if (arCleared) lines.push([`AR — ${cust} (invoices cleared)`, 0, arCleared]);
-    if (oa) lines.push(["Customer advances (on-account)", 0, oa]);
+    if (oaApplied < 0) lines.push(["Customer advances (on-account)", 0, oaAmt]);
     const body = lines.map((l) => `<tr><td class="cell-main">${l[0]}</td><td class="num">${l[1] ? fmt(l[1], ccy) : ""}</td><td class="num">${l[2] ? fmt(l[2], ccy) : ""}</td></tr>`).join("");
     const totD = lines.reduce((s, l) => s + l[1], 0), totC = lines.reduce((s, l) => s + l[2], 0);
     openModal("Simulated accounting entry", `
