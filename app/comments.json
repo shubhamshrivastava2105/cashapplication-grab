@@ -254,5 +254,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_sxd0a0m0ilu",
+    "route": "#/dashboard",
+    "anchor": "page",
+    "anchorLabel": "Page / navigation",
+    "xPct": 2.413793103448276,
+    "yPct": 3.10077519379845,
+    "author": "SME",
+    "text": "when collapsed it should show the \"N\" of neoflo logo.",
+    "status": "open",
+    "createdAt": "2026-06-10T07:57:47.442Z",
+    "updatedAt": "2026-06-10T07:57:47.445Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
