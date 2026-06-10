@@ -190,5 +190,21 @@
     "resolvedAt": "2026-06-10T07:22:24.947Z",
     "resolvedBy": "Claude",
     "resolutionNote": "Removed the Reports & close page after moving the trend chart to the dashboard."
+  },
+  {
+    "id": "c_4hajhny9bxk",
+    "route": "#/workspace",
+    "anchor": "ws.allocation",
+    "anchorLabel": "Workspace · Open invoices & proposed allocation",
+    "xPct": 55.32786885245902,
+    "yPct": 91.45549687484859,
+    "author": "SME",
+    "text": "is this message factually correct, please review. if not correct please review and make changes",
+    "status": "open",
+    "createdAt": "2026-06-10T09:00:37.928Z",
+    "updatedAt": "2026-06-10T09:00:37.931Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
