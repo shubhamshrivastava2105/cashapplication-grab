@@ -248,12 +248,12 @@
     "yPct": 19.96460329793663,
     "author": "SME",
     "text": "can ai somehow suggest some wht amount based on the variance to show ai capability, it should auto fill the amount and the user should just acknowledge that amount suggested by ai.",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-10T09:59:42.338Z",
-    "updatedAt": "2026-06-10T09:59:42.338Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-10T10:33:42.971Z",
+    "resolvedAt": "2026-06-10T10:33:42.971Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Added a Neoflo AI suggestion card: on a shortfall it auto-proposes the WHT amount (= the variance) with rationale, and the analyst just clicks Accept & apply WHT (it distributes the WHT across the selected invoices and closes the gap) or Dismiss."
   },
   {
     "id": "c_4apgjgqffh0",
