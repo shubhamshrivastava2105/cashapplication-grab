@@ -286,5 +286,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_smx1it9my5v",
+    "route": "#/applied",
+    "anchor": "aa.table",
+    "anchorLabel": "Auto-applied · straight-through ledger",
+    "xPct": 68.22033898305084,
+    "yPct": 2.7253606217462,
+    "author": "SME",
+    "text": "remove these columns from this table - conf., time",
+    "status": "open",
+    "createdAt": "2026-06-10T11:59:10.963Z",
+    "updatedAt": "2026-06-10T11:59:10.963Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
