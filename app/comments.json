@@ -264,11 +264,11 @@
     "yPct": 23.69886459513536,
     "author": "SME",
     "text": "remove \"apply\" column from the \"open invoices - proposed allocation\" section",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-10T08:25:27.531Z",
-    "updatedAt": "2026-06-10T08:25:27.531Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-10T08:26:38.225Z",
+    "resolvedAt": "2026-06-10T08:26:38.225Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Apply column already removed (live)."
   }
 ]
