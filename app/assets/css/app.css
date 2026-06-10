@@ -327,6 +327,12 @@ table.tbl--fixed { table-layout: fixed; }
 .hbar--ex { grid-template-columns: 190px 1fr 150px; }
 .table-scroll { max-height: calc(100vh - 300px); min-height: 320px; overflow-y: auto; }
 .svgchart { width: 100%; height: 150px; display: block; }
+.svgchart--tall { height: 240px; }
+.seg { display: inline-flex; gap: 2px; background: var(--grey-100); border-radius: var(--radius-full); padding: 3px; margin-left: auto; }
+.seg__btn { border: none; background: transparent; color: var(--text-default-caption); font-size: 12px; font-weight: var(--font-weight-semibold); padding: 4px 12px; border-radius: var(--radius-full); cursor: pointer; }
+.seg__btn.on { background: var(--surface-pagecard-card-1); color: var(--text-primary-hover); box-shadow: var(--shadow-small); }
+.sap-totals { display: flex; gap: var(--scale-400); padding: var(--scale-250) var(--scale-400); background: var(--grey-75); border-bottom: 1px solid var(--border-default-default); font-size: 13px; color: var(--text-default-caption); }
+.sap-totals b { color: var(--text-default-heading); font-family: var(--font-family-plus-jakarta-sans); margin-left: 4px; }
 .row-actions { display: inline-flex; gap: 6px; justify-content: flex-end; }
 th.sortable { cursor: pointer; user-select: none; }
 th.sortable:hover { color: var(--text-default-heading); background: var(--grey-100); }

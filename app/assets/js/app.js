@@ -40,10 +40,7 @@
   const routes = [
     { id: "dashboard",  label: "Dashboard",   render: viewDashboard },
     { id: "workspace",  label: "Apply cash",  render: viewWorkspace },
-    { id: "unapplied",  label: "Unapplied / on-account", render: viewUnapplied },
-    { id: "deductions", label: "Deductions / claims", render: viewDeductions },
     { id: "customers",  label: "Customers 360", render: viewCustomers },
-    { id: "reports",    label: "Reports & close", render: viewReports },
   ];
   function buildNav() {
     const nav = $("#sidebar-nav");
@@ -90,6 +87,23 @@
     const dots = pts.map((p) => `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="3" fill="${stroke}"/>`).join("");
     return `<svg viewBox="0 0 ${w} ${h}" class="svgchart" preserveAspectRatio="none"><path d="${area}" fill="${stroke}" opacity="0.08"/><path d="${line}" fill="none" stroke="${stroke}" stroke-width="2.5" stroke-linejoin="round"/>${dots}</svg>`;
   }
+  function svgMultiLine(series, labels) {
+    const w = 900, h = 240, padL = 34, padR = 10, padT = 14, padB = 26;
+    const all = series.flatMap((s) => s.vals); const max = Math.ceil(Math.max(...all) / 5) * 5, min = Math.floor(Math.min(...all) / 5) * 5;
+    const n = labels.length;
+    const X = (i) => padL + (n === 1 ? 0 : i * (w - padL - padR) / (n - 1));
+    const Y = (v) => h - padB - ((v - min) / ((max - min) || 1)) * (h - padT - padB);
+    const grid = [0, 0.25, 0.5, 0.75, 1].map((t) => { const v = Math.round(min + t * (max - min)); const y = Y(v).toFixed(1); return `<line x1="${padL}" y1="${y}" x2="${w - padR}" y2="${y}" stroke="#e7e6e3" stroke-width="1"/><text x="${padL - 6}" y="${(+y + 3)}" font-size="10" fill="#848076" text-anchor="end">${v}%</text>`; }).join("");
+    const paths = series.map((s) => {
+      const line = s.vals.map((v, i) => (i ? "L" : "M") + X(i).toFixed(1) + " " + Y(v).toFixed(1)).join(" ");
+      const dots = s.vals.map((v, i) => `<circle cx="${X(i).toFixed(1)}" cy="${Y(v).toFixed(1)}" r="3" fill="${s.color}"/>`).join("");
+      return `<path d="${line}" fill="none" stroke="${s.color}" stroke-width="2.5" stroke-linejoin="round"/>${dots}`;
+    }).join("");
+    const xl = labels.map((l, i) => `<text x="${X(i).toFixed(1)}" y="${h - 8}" font-size="10" fill="#848076" text-anchor="middle">${l}</text>`).join("");
+    return `<svg viewBox="0 0 ${w} ${h}" class="svgchart svgchart--tall" preserveAspectRatio="xMidYMid meet">${grid}${paths}${xl}</svg>`;
+  }
+  const MONTHS12 = ["Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun"];
+  let dashTf = 12; // trend timeframe in months
 
   // ════════════════════════════════════════════════════════════════════════
   //  DASHBOARD
@@ -152,9 +166,32 @@
         <td>${pill(u.reason, u.tone)}</td>
       </tr>`).join("");
 
+    // merged auto-apply + customer-identification trend (timeframe selectable)
+    const endAA = parseInt(db.kpis[0].value), endID = parseInt(db.kpis[1].value);
+    const genSeries = (end, span) => MONTHS12.map((_, i) => Math.min(99, Math.max(50, Math.round(end - span + span * (i / 11) + (((i * 7 + db.count) % 5) - 2)))));
+    const aaS = genSeries(endAA, 14), idS = genSeries(endID, 9), keep = dashTf;
+    const trendChart = svgMultiLine(
+      [{ vals: aaS.slice(12 - keep), color: "var(--surface-success-default)" }, { vals: idS.slice(12 - keep), color: "var(--surface-primary-default)" }],
+      MONTHS12.slice(12 - keep));
+
     content.innerHTML = `
       <div class="section" ${dc("dash.kpis", "Dashboard · KPI tiles")}>
         <div class="kpis">${kpis}</div>
+      </div>
+
+      <div class="section" ${dc("dash.trend", "Dashboard · Auto-apply & identification trend")}>
+        <div class="card">
+          <div class="card__head"><div class="card__title">Auto-apply rate &amp; customer identification — trend</div>
+            <div class="seg" id="tf-seg">${[3, 6, 12].map((m) => `<button class="seg__btn ${dashTf === m ? "on" : ""}" data-tf="${m}">${m}m</button>`).join("")}</div>
+          </div>
+          <div class="card__body">
+            <div class="legend" style="margin-bottom:6px">
+              <span><i style="background:var(--surface-success-default)"></i> Auto-apply rate</span>
+              <span><i style="background:var(--surface-primary-default)"></i> Customer identification</span>
+            </div>
+            ${trendChart}
+          </div>
+        </div>
       </div>
 
       <div class="grid" style="grid-template-columns: 1fr 1fr; align-items:start">
@@ -201,6 +238,9 @@
         if (dashSort.key === k) dashSort.dir *= -1; else { dashSort.key = k; dashSort.dir = -1; }
         viewDashboard(); if (window.COMMENTS) COMMENTS.refresh();
       };
+    });
+    content.querySelectorAll("#tf-seg .seg__btn").forEach((b) => {
+      b.onclick = () => { dashTf = +b.dataset.tf; viewDashboard(); if (window.COMMENTS) COMMENTS.refresh(); };
     });
   }
 
@@ -709,32 +749,36 @@
   // ════════════════════════════════════════════════════════════════════════
   //  CUSTOMERS 360
   // ════════════════════════════════════════════════════════════════════════
-  let activeCustomerId = null;
+  let activeCustomerId = null, custTab = "open", custSearch = "";
   function viewCustomers() {
     const all = D.customersFor(selectedEntityId);
     const c = all.find((x) => x.id === activeCustomerId) || all[0];
     activeCustomerId = c.id;
-    setTopbar("Customers 360", "Aliases, learned fingerprints, open AR — the evidence behind identification",
+    const ccy = c.ccy;
+    setTopbar("Customers 360", "Aliases, open AR and the full SAP-style account view",
       `<span class="topbar__chip"><span>Entity</span> ${currentEntity().name}</span><span class="topbar__chip"><span>Customers</span> ${all.length}</span>`);
 
-    const list = all.map((x) => `
+    const q = custSearch.toLowerCase();
+    const list = all.filter((x) => x.name.toLowerCase().includes(q)).map((x) => `
       <div class="cmt-card" data-cid="${x.id}" style="${x.id === c.id ? "border-color:var(--border-primary-default);background:var(--surface-primary-subtle)" : ""}">
         <div class="cell-main">${x.name}</div>
         <div class="cell-sub">${x.country} · ${x.ccy} · ${x.terms}</div>
         <div class="cmt-card__foot"><span>Open AR ${D.fmtCompact(x.openAr, x.ccy)}</span></div>
-      </div>`).join("");
+      </div>`).join("") || `<div class="muted" style="font-size:13px;padding:8px">No customers match “${escapeAttr(custSearch)}”.</div>`;
 
     const aliases = c.aliases.length ? c.aliases.map((a) => `
       <tr><td class="cell-main">${a.name}</td><td>${a.acct}</td><td>${pill(a.rel, "info")}</td></tr>`).join("")
       : `<tr><td colspan="3" class="muted">No aliases mapped.</td></tr>`;
 
-    const fps = c.fingerprints.length ? c.fingerprints.map((f) => `
-      <tr><td><code>${f.pattern}</code></td>
-        <td style="width:160px"><div class="progress"><i style="width:${f.weight * 100}%"></i></div></td>
-        <td class="num">${f.weight.toFixed(2)}</td><td class="muted">${f.lastSeen}</td></tr>`).join("")
-      : `<tr><td colspan="4" class="muted">No learned fingerprints yet.</td></tr>`;
-
-    const invs = c.invoices.map((i) => `<tr><td class="cell-main">${i.inv}</td><td class="muted">${i.due}</td><td class="num strong">${fmt(i.open, c.ccy)}</td></tr>`).join("");
+    // SAP-style account line items (open / cleared / all)
+    const openItems = c.invoices.map((i) => ({ doc: i.inv, date: i.due, type: "Invoice", amount: i.open, status: "Open", tone: "warn" }));
+    const clDates = ["2026-05-02", "2026-04-18", "2026-03-29", "2026-05-21", "2026-04-05", "2026-03-12"];
+    const cleared = clDates.map((d, j) => ({ doc: (j % 3 === 2 ? "CR-" : "INV-") + (6000 + j * 13 + c.id.length * 7), date: d, type: j % 3 === 2 ? "Credit memo" : "Invoice", amount: Math.round(c.openAr * 0.12 * (1 + (j % 4)) / 4) * (j % 3 === 2 ? -1 : 1), status: "Cleared", tone: "success" }));
+    const openTotal = openItems.reduce((s, i) => s + i.amount, 0);
+    const clearedTotal = cleared.reduce((s, i) => s + i.amount, 0);
+    const items = custTab === "open" ? openItems : custTab === "cleared" ? cleared : openItems.concat(cleared);
+    const itemRows = items.map((i) => `
+      <tr><td class="cell-main">${i.doc}</td><td class="muted">${i.date}</td><td>${i.type}</td><td class="num strong">${fmt(i.amount, ccy)}</td><td>${pill(i.status, i.tone)}</td></tr>`).join("");
 
     content.innerHTML = `
       <div class="split">
@@ -743,44 +787,56 @@
             <div class="card__body">
               <div class="section__head"><div class="section__title" style="font-size:20px">${c.name}</div>${pill(c.country, "neutral")}</div>
               <div class="kpis" style="grid-template-columns:repeat(3,1fr);margin-top:var(--scale-200)">
-                <div class="kpi kpi--accent-primary"><div class="kpi__label">Open AR</div><div class="kpi__value" style="font-size:22px">${D.fmtCompact(c.openAr, c.ccy)}</div></div>
-                <div class="kpi kpi--accent-brand"><div class="kpi__label">Unapplied</div><div class="kpi__value" style="font-size:22px">${D.fmtCompact(c.unapplied, c.ccy)}</div></div>
+                <div class="kpi kpi--accent-primary"><div class="kpi__label">Open AR</div><div class="kpi__value" style="font-size:22px">${D.fmtCompact(c.openAr, ccy)}</div></div>
+                <div class="kpi kpi--accent-brand"><div class="kpi__label">Unapplied</div><div class="kpi__value" style="font-size:22px">${D.fmtCompact(c.unapplied, ccy)}</div></div>
                 <div class="kpi kpi--accent-success"><div class="kpi__label">ID rate</div><div class="kpi__value" style="font-size:22px">${Math.round(c.idRate * 100)}%</div></div>
               </div>
             </div>
           </div>
 
-          <div class="card" style="margin-bottom:var(--scale-300)" ${dc("cust.aliases", "Customer 360 · Payer aliases")}>
+          <div class="card" style="margin-bottom:var(--scale-300)" ${dc("cust.items", "Customer 360 · SAP account view")}>
+            <div class="card__head"><div class="card__title">Account line items (SAP view)</div>
+              <div class="seg" id="cust-tab-seg">
+                <button class="seg__btn ${custTab === "open" ? "on" : ""}" data-tab="open">Open items</button>
+                <button class="seg__btn ${custTab === "cleared" ? "on" : ""}" data-tab="cleared">Cleared</button>
+                <button class="seg__btn ${custTab === "all" ? "on" : ""}" data-tab="all">All items</button>
+              </div>
+            </div>
+            <div class="sap-totals">
+              <span>Open <b>${fmt(openTotal, ccy)}</b></span>
+              <span>Cleared <b>${fmt(clearedTotal, ccy)}</b></span>
+              <span>Balance (open) <b>${fmt(openTotal, ccy)}</b></span>
+            </div>
+            <div class="card__body card__body--flush"><div class="table-wrap"><table class="tbl">
+              <thead><tr><th>Document</th><th>Posting date</th><th>Type</th><th class="num">Amount</th><th>Status</th></tr></thead>
+              <tbody>${itemRows}</tbody></table></div></div>
+          </div>
+
+          <div class="card" ${dc("cust.aliases", "Customer 360 · Payer aliases")}>
             <div class="card__head"><div class="card__title">Payer aliases &amp; relationships</div></div>
             <div class="card__body card__body--flush"><div class="table-wrap"><table class="tbl">
               <thead><tr><th>Payer name / account</th><th>Bank a/c</th><th>Relationship</th></tr></thead>
               <tbody>${aliases}</tbody></table></div></div>
           </div>
-
-          <div class="card" style="margin-bottom:var(--scale-300)" ${dc("cust.fingerprints", "Customer 360 · Learned fingerprints")}>
-            <div class="card__head"><div class="card__title">Learned narration fingerprints</div></div>
-            <div class="card__body card__body--flush"><div class="table-wrap"><table class="tbl">
-              <thead><tr><th>Pattern</th><th>Weight</th><th class="num">Score</th><th>Last seen</th></tr></thead>
-              <tbody>${fps}</tbody></table></div></div>
-          </div>
-
-          <div class="card" ${dc("cust.invoices", "Customer 360 · Open invoices")}>
-            <div class="card__head"><div class="card__title">Open invoices</div></div>
-            <div class="card__body card__body--flush"><div class="table-wrap"><table class="tbl">
-              <thead><tr><th>Invoice</th><th>Due</th><th class="num">Open amount</th></tr></thead>
-              <tbody>${invs}</tbody></table></div></div>
-          </div>
         </div>
 
         <div class="card aside-card" ${dc("cust.list", "Customer 360 · Customer picker")}>
           <div class="card__head"><div class="card__title">Customers</div></div>
-          <div class="card__body"><div class="detail-list" id="cust-list">${list}</div></div>
+          <div class="card__body">
+            <input id="cust-search" placeholder="Search customers…" value="${escapeAttr(custSearch)}" style="width:100%;padding:9px;border:1px solid var(--border-default-default);border-radius:var(--radius-sm);margin-bottom:10px;font-family:var(--font-family-inter);font-size:13px" />
+            <div class="detail-list" id="cust-list">${list}</div>
+          </div>
         </div>
       </div>`;
 
     content.querySelectorAll("#cust-list .cmt-card").forEach((el) => {
       el.onclick = () => { activeCustomerId = el.dataset.cid; viewCustomers(); window.COMMENTS && COMMENTS.refresh(); };
     });
+    content.querySelectorAll("#cust-tab-seg .seg__btn").forEach((b) => {
+      b.onclick = () => { custTab = b.dataset.tab; viewCustomers(); window.COMMENTS && COMMENTS.refresh(); };
+    });
+    const cs = $("#cust-search");
+    if (cs) cs.oninput = () => { custSearch = cs.value; const list2 = content.querySelector("#cust-list"); const matches = all.filter((x) => x.name.toLowerCase().includes(custSearch.toLowerCase())); list2.innerHTML = matches.length ? matches.map((x) => `<div class="cmt-card" data-cid="${x.id}" style="${x.id === c.id ? "border-color:var(--border-primary-default);background:var(--surface-primary-subtle)" : ""}"><div class="cell-main">${x.name}</div><div class="cell-sub">${x.country} · ${x.ccy} · ${x.terms}</div><div class="cmt-card__foot"><span>Open AR ${D.fmtCompact(x.openAr, x.ccy)}</span></div></div>`).join("") : `<div class="muted" style="font-size:13px;padding:8px">No customers match.</div>`; list2.querySelectorAll(".cmt-card").forEach((el) => { el.onclick = () => { activeCustomerId = el.dataset.cid; viewCustomers(); }; }); };
   }
 
   // ════════════════════════════════════════════════════════════════════════
