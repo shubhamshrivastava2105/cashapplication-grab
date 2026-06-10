@@ -208,22 +208,6 @@
     "resolutionNote": "Apply & post now shows a success modal after confirmation: a posted-to-ERP badge (amount cleared for customer, maker-checker), clearing document no. / company code / fiscal year / posting date, and the real balanced journal entry (Bank + WHT/discount/charges = AR cleared + advances) — shared with the Simulate preview so they match."
   },
   {
-    "id": "c_jm1f2rslh90",
-    "route": "#/customers",
-    "anchor": "cust.items",
-    "anchorLabel": "Customer 360 · SAP account view",
-    "xPct": 94.02985074626866,
-    "yPct": 4.546752319771592,
-    "author": "SME",
-    "text": "why does \"All items\" doesn't include \"Unapplied\" items",
-    "status": "resolved",
-    "createdAt": "2026-06-10T11:30:02.772Z",
-    "updatedAt": "2026-06-10T11:33:54.139Z",
-    "resolvedAt": "2026-06-10T11:33:54.139Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "Fixed — the All items tab now includes the Unapplied receipts as well (Open invoices + Unapplied + Cleared). Previously it only concatenated open + cleared."
-  },
-  {
     "id": "c_gzc76ah8ae7",
     "route": "#/applied",
     "anchor": "aa.table",
