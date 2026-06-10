@@ -96,22 +96,6 @@
     "resolutionNote": "Removed the Export button from Reports."
   },
   {
-    "id": "c_aidtydsfyf9",
-    "route": "#/workspace",
-    "anchor": "ws.gap",
-    "anchorLabel": "Workspace · Gap classification & actions",
-    "xPct": 31.470588235294116,
-    "yPct": 40.129902677415316,
-    "author": "SME",
-    "text": "each invoice can have wht and there should be an option to take wht amount on a line item level",
-    "status": "resolved",
-    "createdAt": "2026-06-09T13:02:03.525Z",
-    "updatedAt": "2026-06-09T13:22:25.208Z",
-    "resolvedAt": "2026-06-09T13:22:25.208Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "WHT is now editable per invoice (line-item WHT column); apply recomputes."
-  },
-  {
     "id": "c_teaqsgoh71s",
     "route": "#/workspace",
     "anchor": "ws.gap",
