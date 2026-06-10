@@ -192,22 +192,6 @@
     "resolutionNote": "Removed the Reports & close page after moving the trend chart to the dashboard."
   },
   {
-    "id": "c_609skuc953e",
-    "route": "#/workspace",
-    "anchor": "ws.queue",
-    "anchorLabel": "Workspace · Credit queue",
-    "xPct": 35.90425531914894,
-    "yPct": 5.482012516118347,
-    "author": "SME",
-    "text": "can we make the tables in such a way that the below columns also is visible when I land on the screen, without the need to scroll",
-    "status": "resolved",
-    "createdAt": "2026-06-10T07:36:30.218Z",
-    "updatedAt": "2026-06-10T07:51:19.980Z",
-    "resolvedAt": "2026-06-10T07:51:19.980Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "Credit queue is now a compact 220px scroll so the cockpit (credit / allocation / gap) is visible on landing without scrolling."
-  },
-  {
     "id": "c_gi9jcerdpj2",
     "route": "#/workspace",
     "anchor": "ws.gap",
