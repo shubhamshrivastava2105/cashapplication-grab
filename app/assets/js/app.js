@@ -78,6 +78,9 @@
   const pill = (text, tone) => `<span class="pill pill--${tone}">${text}</span>`;
   function dc(id, label) { return `data-comment="${id}" data-comment-label="${label}"`; }
   function escapeAttr(s) { return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+  function emptyState(title, hint) {
+    return `<div class="empty-state"><div class="empty-state__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 7v10l9 4 9-4V7"/><path d="M3 12l9 4 9-4"/></svg></div><div class="empty-state__title">${title}</div>${hint ? `<div class="empty-state__hint">${hint}</div>` : ""}</div>`;
+  }
   function svgLine(vals, stroke) {
     const w = 480, h = 150, pad = 12;
     const max = Math.max(...vals), min = Math.min(...vals);
@@ -380,25 +383,31 @@
       : `<div class="muted">No remittance advice matched to this credit yet.</div>`;
 
     const left = `
-      <div class="ws-pane" ${dc("ws.credit", "Workspace · The credit + identified customer")}>
-        <div class="ws-pane__title">The credit</div>
-        <div class="ws-pane__body">
-          <dl class="kv">
-            <dt>Amount</dt><dd>${fmt(r.amount, r.ccy)}</dd>
-            <dt>Value date</dt><dd>${r.valueDate}</dd>
-            <dt>Narration</dt><dd>${r.narration}</dd>
-            <dt>Bank a/c</dt><dd>${r.bankAcct}</dd>
-          </dl>
-          <div class="ws-pane__title" style="padding-left:0">Identified customer</div>
-          ${identified}
-          <div class="ws-pane__title" style="padding-left:0;margin-top:12px">Remittance advice</div>
-          <div class="remit-box">
-            ${remit}
-            <div class="remit-actions">
-              <button class="btn btn--ghost btn--sm" id="upload-remit">Upload remittance</button>
-              <input type="file" id="remit-file" style="display:none" accept=".pdf,.eml,.csv,.xlsx,.xls,.png,.jpg" />
+      <div class="ws-pane ws-pane--credit" ${dc("ws.credit", "Workspace · The credit + identified customer")}>
+        <div class="credit-cols">
+          <div class="credit-col">
+            <div class="ws-pane__title" style="padding:0 0 var(--scale-200)">The credit</div>
+            <dl class="kv">
+              <dt>Amount</dt><dd><b>${fmt(r.amount, r.ccy)}</b></dd>
+              <dt>Value date</dt><dd>${r.valueDate}</dd>
+              <dt>Bank a/c</dt><dd>${r.bankAcct}</dd>
+              <dt>Narration</dt><dd class="kv__narr">${r.narration}</dd>
+            </dl>
+          </div>
+          <div class="credit-col">
+            <div class="ws-pane__title" style="padding:0 0 var(--scale-200)">Identified customer</div>
+            ${identified}
+          </div>
+          <div class="credit-col">
+            <div class="ws-pane__title" style="padding:0 0 var(--scale-200)">Remittance advice</div>
+            <div class="remit-box">
+              ${remit}
+              <div class="remit-actions">
+                <button class="btn btn--ghost btn--sm" id="upload-remit">Upload remittance</button>
+                <input type="file" id="remit-file" style="display:none" accept=".pdf,.eml,.csv,.xlsx,.xls,.png,.jpg" />
+              </div>
+              <div class="remit-hint">Auto-matched from the connected AR mailbox; or upload a PDF/email to link a payment reference.</div>
             </div>
-            <div class="remit-hint">Auto-matched from the connected AR mailbox; or upload a PDF/email to link a payment reference and apply to invoices.</div>
           </div>
         </div>
       </div>`;
@@ -412,9 +421,10 @@
     const bankCharge = r.gap.bankCharge || 0;
     const onAccount = r.gap.onAccount || 0;
     const rebateTotal = r.gap.rebate || 0;
-    // variance = cash − invoices applied; WHT/discount (per line) + rebate + bank
-    // charge EXPLAIN a short and reduce it; on-account parks an overpayment.
-    const unexplained = r.amount - allocated + rebateTotal + bankCharge - onAccount;
+    // unexplained = invoices cleared − cash, reduced by every explanation. WHT &
+    // discount (per line) are already inside `allocated`; rebate/deduction + bank
+    // charge reduce a short; on-account parks an overpayment. → 0 = balanced.
+    const unexplained = allocated - r.amount - rebateTotal - bankCharge + onAccount;
     const exact = Math.abs(unexplained) < 0.5;
     const canPost = exact && r.invoices.some((i) => i.sel || onAccount > 0);
     const anyPartial = r.invoices.some((i) => i.sel && cleared(i) > 0 && cleared(i) < i.open - 0.5);
@@ -428,7 +438,7 @@
         <td class="num">${num(i.open)}</td>
         <td class="num"><input class="line-in" data-i="${idx}" data-f="wht" value="${i.wht || 0}" ${i.sel ? "" : "disabled"} /></td>
         <td class="num"><input class="line-in" data-i="${idx}" data-f="discount" value="${i.discount || 0}" ${i.sel ? "" : "disabled"} /></td>
-      </tr>`; }).join("") : `<tr><td colspan="6" class="cmt-empty">No open invoices — identify the customer first.</td></tr>`;
+      </tr>`; }).join("") : `<tr><td colspan="6">${emptyState("No open invoices to allocate", "Identify the customer first — the credit is in suspense.")}</td></tr>`;
 
     const mid = `
       <div class="ws-pane" ${dc("ws.allocation", "Workspace · Open invoices & proposed allocation")}>
@@ -465,7 +475,7 @@
           <div class="gap-group">
             <div class="gap-irow"><span class="lbl">Bank charge</span><input class="gap-in" id="bankcharge-in" value="${bankCharge}" /></div>
             <div class="gap-irow"><span class="lbl">Rebate / deduction <select id="rebate-type" class="gap-sel">${rebTypes.map((t) => `<option ${t === rebateType ? "selected" : ""}>${t}</option>`).join("")}</select></span><input class="gap-in" id="rebate-in" value="${rebateTotal}" /></div>
-            <div class="gap-irow"><span class="lbl">On account ${unexplained > 0.5 ? `<button class="lnk-clear" id="park-oa">park residual</button>` : (onAccount > 0 ? `<button class="lnk-clear" id="clear-oa">clear</button>` : "")}</span><input class="gap-in ${onAccount ? "is-set" : ""}" id="onaccount-in" value="${onAccount}" /></div>
+            <div class="gap-irow"><span class="lbl">On account ${unexplained < -0.5 ? `<button class="lnk-clear" id="park-oa">park overpayment</button>` : (onAccount > 0 ? `<button class="lnk-clear" id="clear-oa">clear</button>` : "")}</span><input class="gap-in ${onAccount ? "is-set" : ""}" id="onaccount-in" value="${onAccount}" /></div>
           </div>
           <div class="gap-derived">
             <span>WHT (per-invoice) <b>${whtTotal ? num(whtTotal) : "—"}</b>${whtTotal ? ` <button class="lnk-clear" id="clear-wht">clear</button>` : ""}</span>
@@ -484,7 +494,7 @@
         </div>
       </div>`;
 
-    cockpit.innerHTML = `<div class="workspace"><div class="ws-top">${left}${right}</div>${mid}</div>`;
+    cockpit.innerHTML = `<div class="workspace">${left}<div class="ws-bottom">${mid}${right}</div></div>`;
 
     cockpit.querySelectorAll("[data-act]").forEach((b) => {
       b.onclick = () => actionConfirm(b.dataset.act, r);
@@ -517,7 +527,7 @@
 
     // on-account (park residual / clear / edit)
     const parkOa = $("#park-oa");
-    if (parkOa) parkOa.onclick = () => { r.gap.onAccount = Math.round((r.gap.onAccount || 0) + Math.max(0, unexplained) * 100) / 100; renderCockpit(r); toast(`Parked ${fmt(Math.max(0, unexplained), r.ccy)} on account`); };
+    if (parkOa) parkOa.onclick = () => { const excess = Math.max(0, -unexplained); r.gap.onAccount = Math.round(((r.gap.onAccount || 0) + excess) * 100) / 100; renderCockpit(r); toast(`Parked ${fmt(excess, r.ccy)} on account`); };
     const clrOa = $("#clear-oa");
     if (clrOa) clrOa.onclick = () => { r.gap.onAccount = 0; renderCockpit(r); };
     const oaIn = $("#onaccount-in");
@@ -635,24 +645,25 @@
     const disc = sel.reduce((s, i) => s + (i.discount || 0), 0);
     const bc = r.gap.bankCharge || 0, oa = r.gap.onAccount || 0;
     const rebate = r.gap.rebate || 0;
-    const lines = [["Bank", r.amount, 0]];
+    const arCleared = applied + wht + disc;       // invoices cleared in full (Σ open of selected)
+    const unexplained = applied - r.amount - rebate - bc + oa;
+    // Debits = cash + non-cash explanations; Credits = AR cleared + on-account.
+    const lines = [["Bank (cash received)", r.amount, 0]];
     if (wht) lines.push(["WHT receivable (asset)", wht, 0]);
     if (disc) lines.push(["Cash discount allowed (expense)", disc, 0]);
     if (bc) lines.push(["Bank charges (expense)", bc, 0]);
     if (rebate) lines.push(["Deductions / claims (contra-AR)", rebate, 0]);
+    if (arCleared) lines.push([`AR — ${cust} (invoices cleared)`, 0, arCleared]);
     if (oa) lines.push(["Customer advances (on-account)", 0, oa]);
-    const arCredit = (applied + wht + disc) || (r.amount + wht + disc + bc + rebate - oa);
-    lines.push([`AR — ${cust}`, 0, arCredit]);
     const body = lines.map((l) => `<tr><td class="cell-main">${l[0]}</td><td class="num">${l[1] ? fmt(l[1], ccy) : ""}</td><td class="num">${l[2] ? fmt(l[2], ccy) : ""}</td></tr>`).join("");
     const totD = lines.reduce((s, l) => s + l[1], 0), totC = lines.reduce((s, l) => s + l[2], 0);
-    const unexplained = r.amount - applied + rebate + bc - oa;
     openModal("Simulated accounting entry", `
       <div class="modal-sub">Preview of the journal entry this application would post to the ERP. Nothing posts until you Apply &amp; post (under maker-checker).</div>
       <div class="table-wrap"><table class="tbl">
         <thead><tr><th>Account</th><th class="num">Debit</th><th class="num">Credit</th></tr></thead>
         <tbody>${body}<tr class="modal-total"><td>Total</td><td class="num">${fmt(totD, ccy)}</td><td class="num">${fmt(totC, ccy)}</td></tr></tbody>
       </table></div>
-      ${Math.abs(unexplained) >= 0.5 ? `<div class="gap-note" style="padding:12px 0 0">Note: ${fmt(Math.abs(unexplained), ccy)} is ${unexplained > 0 ? "unexplained / partial — balance stays open" : "an overpayment — park residual on-account"}.</div>` : ""}`);
+      <div class="gap-note" style="padding:12px 0 0">${Math.abs(unexplained) < 0.5 ? "✓ Balanced — debits equal credits; ready to post." : (unexplained > 0 ? `Short by ${fmt(unexplained, ccy)} — code a deduction / rebate (or reduce the selection) so it balances.` : `Overpaid by ${fmt(-unexplained, ccy)} — park it on-account so it balances.`)}</div>`);
   }
 
   // Action buttons open a confirmation dialog (clear, visible feedback)
@@ -786,7 +797,7 @@
         <div class="cell-main">${x.name}</div>
         <div class="cell-sub">${x.country} · ${x.ccy} · ${x.terms}</div>
         <div class="cmt-card__foot"><span>Open AR ${D.fmtCompact(x.openAr, x.ccy)}</span></div>
-      </div>`).join("") || `<div class="muted" style="font-size:13px;padding:8px">No customers match “${escapeAttr(custSearch)}”.</div>`;
+      </div>`).join("") || emptyState("No customers found", `Nothing matches “${escapeAttr(custSearch)}”.`);
 
     const aliases = c.aliases.length ? c.aliases.map((a) => `
       <tr><td class="cell-main">${a.name}</td><td>${a.acct}</td><td>${pill(a.rel, "info")}</td></tr>`).join("")
@@ -956,6 +967,7 @@
     const route = routes.find((r) => r.id === hash) || routes[0];
     setActiveNav(route.id);
     route.render();
+    content.classList.remove("view-in"); void content.offsetWidth; content.classList.add("view-in"); // smooth view transition
     window.scrollTo(0, 0);
     if (window.COMMENTS) COMMENTS.refresh();
   }

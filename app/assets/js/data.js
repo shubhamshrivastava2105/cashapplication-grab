@@ -162,7 +162,7 @@ window.DATA = (function () {
     const gap = { bankCharge: 0, onAccount: 0, note: "" };
     if (it.reason === "WHT certificate pending") { let r2 = it.amount; invs.forEach((i, j) => { const ap = j === invs.length - 1 ? r2 : Math.round(it.amount / invs.length); r2 -= ap; i.apply = ap; i.wht = Math.round(ap * 5 / 95); i.open = ap + i.wht; i.sel = true; }); gap.note = "Each invoice is short by ~5% WHT — cleared in full (cash + WHT receivable). Certificate pending."; }
     else if (it.reason === "Overpayment") { invs.forEach((i) => { i.apply = i.open; i.sel = true; }); gap.note = `Over by ${fmt(it.amount - invTotal, ccy)} → clear invoices, park the residual On account (it can still be posted).`; }
-    else { let r2 = it.amount; invs.forEach((i) => { const ap = Math.min(i.open, r2); i.apply = ap; i.sel = ap > 0; r2 -= ap; }); gap.note = `Short by ${fmt(invTotal - it.amount, ccy)} → partial; keep the balance open or code a deduction.`; }
+    else { invs.forEach((i) => { i.apply = i.open; i.sel = true; }); gap.note = `Short by ${fmt(invTotal - it.amount, ccy)} → code a deduction / rebate to clear the invoices, or reduce the selection.`; }
     // a few more of the customer's open invoices the analyst can add to the allocation
     const sc = CCY_SCALE[ccy] || 1;
     const available = [0, 1, 2, 3].map((j) => ({ inv: "INV-" + (8200 + (Math.abs(it.amount) % 700) + j * 11), due: dateMinus(-(j * 9 + 6)), open: Math.round((900 + ((Math.abs(it.amount) / sc * (j + 2)) % 6000)) * sc), apply: 0, wht: 0, discount: 0, sel: false }));

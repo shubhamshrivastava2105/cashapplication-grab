@@ -26,6 +26,18 @@ button { font-family: var(--font-family-plus-jakarta-sans); cursor: pointer; }
 ::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-thumb { background: var(--grey-300); border-radius: var(--radius-full); border: 2px solid var(--surface-pagecard-page); }
 
+/* ─── States: view transition, empty state, skeleton ────────────────────── */
+.view-in { animation: viewIn .22s ease both; }
+@keyframes viewIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.empty-state { display: flex; flex-direction: column; align-items: center; text-align: center; gap: var(--scale-200); padding: var(--scale-800) var(--scale-400); color: var(--text-default-caption); }
+.empty-state__icon { width: 44px; height: 44px; border-radius: var(--radius-full); display: grid; place-items: center; background: var(--grey-100); color: var(--text-default-placeholder); margin-bottom: 2px; }
+.empty-state__icon svg { width: 22px; height: 22px; }
+.empty-state__title { font-size: 14px; font-weight: var(--font-weight-semibold); color: var(--text-default-body); }
+.empty-state__hint { font-size: 12px; color: var(--text-default-caption); max-width: 320px; line-height: 1.5; }
+.skeleton { position: relative; overflow: hidden; background: var(--grey-100); border-radius: var(--radius-sm); }
+.skeleton::after { content: ""; position: absolute; inset: 0; transform: translateX(-100%); background: linear-gradient(90deg, transparent, rgba(255,255,255,.6), transparent); animation: shimmer 1.2s infinite; }
+@keyframes shimmer { 100% { transform: translateX(100%); } }
+
 /* ─── App shell ─────────────────────────────────────────────────────────── */
 #app { display: flex; min-height: 100vh; }
 
@@ -356,10 +368,13 @@ th.sortable:hover { color: var(--text-default-heading); background: var(--grey-1
 .pipe-arrow { color: var(--text-default-placeholder); font-size: 16px; }
 
 /* ─── Workspace (3-pane analyst cockpit) ───────────────────────────────── */
-/* Apply-cash cockpit: credit + gap on top, the allocation table full-width below */
+/* Apply-cash cockpit: credit strip on top → allocation (left) + gap (right) below */
 .workspace { display: flex; flex-direction: column; gap: var(--scale-300); }
-.workspace .ws-top { display: grid; grid-template-columns: 1fr 1fr; gap: var(--scale-300); align-items: start; }
+.workspace .ws-bottom { display: grid; grid-template-columns: minmax(0,1fr) 380px; gap: var(--scale-300); align-items: start; }
 .workspace .ws-pane { display: flex; flex-direction: column; }
+.ws-pane--credit .credit-cols { display: grid; grid-template-columns: 1fr 1fr 1.1fr; gap: var(--scale-400); padding: var(--scale-300) var(--scale-400) var(--scale-400); }
+.credit-col { min-width: 0; }
+.kv__narr { word-break: break-word; }
 .ws-pane { background: var(--surface-pagecard-card-1); border: 1px solid var(--border-default-default); border-radius: var(--radius-md); box-shadow: var(--shadow-small); }
 .ws-pane__title { font-size: 11px; font-weight: var(--font-weight-bold); letter-spacing: .8px; text-transform: uppercase; color: var(--text-default-caption); padding: var(--scale-300) var(--scale-400) 0; }
 .ws-pane__body { padding: var(--scale-300) var(--scale-400) var(--scale-400); }
@@ -494,7 +509,8 @@ th.sortable:hover { color: var(--text-default-heading); background: var(--grey-1
 
 @media (max-width: 1200px) {
   .kpis { grid-template-columns: repeat(2, 1fr); }
-  .workspace .ws-top { grid-template-columns: 1fr; }
+  .workspace .ws-bottom { grid-template-columns: 1fr; }
+  .ws-pane--credit .credit-cols { grid-template-columns: 1fr; }
 }
 @media (max-width: 900px) {
   .mobile-nav-btn { display: grid; }
