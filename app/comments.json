@@ -456,11 +456,11 @@
     "yPct": 25.8528740525264,
     "author": "SME",
     "text": "the user should see all the relevant invoices as dropdow and user should be able to add wht, discount etc on an invoice level, delete wht and discount suggested by ai",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-10T07:22:09.145Z",
-    "updatedAt": "2026-06-10T07:22:09.145Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-10T07:34:28.785Z",
+    "resolvedAt": "2026-06-10T07:34:28.785Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Added an Add-invoice dropdown of relevant open invoices; per-invoice WHT/discount editable; AI-suggested WHT/discount can be cleared."
   }
 ]
