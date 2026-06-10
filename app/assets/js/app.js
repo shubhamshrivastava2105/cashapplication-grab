@@ -40,7 +40,7 @@
   const routes = [
     { id: "dashboard",  label: "Dashboard",   render: viewDashboard },
     { id: "workspace",  label: "Apply cash",  render: viewWorkspace },
-    { id: "applied",    label: "Auto-applied", render: viewAutoApplied },
+    { id: "applied",    label: "Applied cash", render: viewAutoApplied },
     { id: "customers",  label: "Customers 360", render: viewCustomers },
   ];
   function buildNav() {
@@ -79,6 +79,7 @@
   const pill = (text, tone) => `<span class="pill pill--${tone}">${text}</span>`;
   function dc(id, label) { return `data-comment="${id}" data-comment-label="${label}"`; }
   function escapeAttr(s) { return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+  function initialsOf(name) { return String(name || "").split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join("").toUpperCase(); }
   function emptyState(title, hint) {
     return `<div class="empty-state"><div class="empty-state__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 7v10l9 4 9-4V7"/><path d="M3 12l9 4 9-4"/></svg></div><div class="empty-state__title">${title}</div>${hint ? `<div class="empty-state__hint">${hint}</div>` : ""}</div>`;
   }
@@ -377,9 +378,14 @@
       </div>` : (r.aiCustomer ? `
       <div class="identified-box identified-box--ai">
         <div class="ai-suggest__head"><span class="ai-suggest__spark">${aiSparkSvg}</span><span class="ai-suggest__name">Neoflo AI · suggested match</span><span class="ai-suggest__conf">${Math.round(r.aiCustomer.confidence * 100)}% match</span></div>
-        <div class="name" style="margin-top:7px">${r.aiCustomer.name}</div>
-        <div class="howline">how: ${r.aiCustomer.how}</div>
-        <div class="ai-suggest__acts" style="margin-top:10px"><button class="btn btn--success btn--sm" id="ai-accept-cust">Accept match</button><button class="btn btn--ghost btn--sm" id="change-customer">Not a match — pick</button></div>
+        <div class="ai-cust">
+          <div class="ai-cust__avatar">${initialsOf(r.aiCustomer.name)}</div>
+          <div class="ai-cust__meta">
+            <div class="ai-cust__name">${r.aiCustomer.name}</div>
+            <div class="ai-cust__why">${r.aiCustomer.how.charAt(0).toUpperCase() + r.aiCustomer.how.slice(1)}. Accept to pull their open invoices and propose a match.</div>
+          </div>
+        </div>
+        <div class="ai-suggest__acts"><button class="btn btn--success btn--sm" id="ai-accept-cust">Accept match</button><button class="btn btn--ghost btn--sm" id="change-customer">Not a match — pick another</button></div>
       </div>` : `
       <div class="identified-box" style="border-color:var(--border-error-default);background:var(--surface-error-subtle)">
         <div class="name" style="color:var(--text-error-hover)">No customer resolved</div>
@@ -1037,48 +1043,71 @@
   }
 
   // ════════════════════════════════════════════════════════════════════════
-  //  AUTO-APPLIED (straight-through)
+  //  APPLIED CASH
   // ════════════════════════════════════════════════════════════════════════
-  let autoSearch = "";
+  let autoSearch = "", autoPeriod = 30, autoBank = "all";
+  const PERIODS = [{ d: 7, label: "Last 7 days" }, { d: 30, label: "Last 30 days" }, { d: 90, label: "Last 90 days" }, { d: 9999, label: "All time" }];
   function viewAutoApplied() {
     const aa = D.autoAppliedFor(selectedEntityId), ccy = aa.ccy;
-    setTopbar("Auto-applied", "Cash matched &amp; posted straight-through by Neoflo AI — no analyst touch",
+    setTopbar("Applied cash", "Every receipt matched and posted to open invoices — searchable by period and bank account",
       `<span class="topbar__chip"><span>Entity</span> ${currentEntity().name}</span><span class="topbar__chip"><span>Auto-apply rate</span> <b>${aa.autoApply}%</b></span>`);
 
     const q = autoSearch.toLowerCase();
-    const rows = aa.list.filter((x) => !q || x.customer.toLowerCase().includes(q) || x.inv.toLowerCase().includes(q) || x.doc.includes(q));
-    const body = rows.length ? rows.map((x) => `
-      <tr>
+    const rows = aa.list.filter((x) =>
+      x.ageDays <= autoPeriod &&
+      (autoBank === "all" || x.bankId === autoBank) &&
+      (!q || x.customer.toLowerCase().includes(q) || x.inv.toLowerCase().includes(q) || x.doc.includes(q)));
+    // filter-aware KPIs
+    const count = rows.length;
+    const value = rows.reduce((s, x) => s + x.amount, 0);
+    const avgConf = count ? rows.reduce((s, x) => s + x.conf, 0) / count : 0;
+    const ttas = rows.map((x) => x.ttaMin).sort((a, b) => a - b);
+    const medTtaMin = ttas.length ? ttas[Math.floor(ttas.length / 2)] : 0;
+    const medTta = medTtaMin < 60 ? medTtaMin + " min" : (medTtaMin / 60).toFixed(1) + " hr";
+    const periodLabel = (PERIODS.find((p) => p.d === autoPeriod) || PERIODS[1]).label.toLowerCase();
+
+    const body = rows.length ? rows.map((x, idx) => `
+      <tr class="clickable" data-aid="${idx}">
         <td class="muted" style="white-space:nowrap">${x.date}</td>
         <td class="cell-main">${x.customer}</td>
         <td>${x.inv}</td>
         <td class="num strong">${fmt(x.amount, ccy)}</td>
+        <td class="muted">${x.bankName}</td>
         <td>${pill(x.rule, x.tone)}</td>
         <td><span class="conf-pill ${x.conf >= 0.85 ? "hi" : x.conf >= 0.7 ? "mid" : "lo"}">${Math.round(x.conf * 100)}%</span></td>
         <td class="muted">${x.tta}</td>
         <td class="mono">${x.doc}</td>
         <td>${pill("Posted", "success")}</td>
-      </tr>`).join("") : `<tr><td colspan="9">${emptyState("No matches", `Nothing matches “${escapeAttr(autoSearch)}”.`)}</td></tr>`;
+      </tr>`).join("") : `<tr><td colspan="10">${emptyState("No applied cash in this view", "Try a wider period, another bank account, or clear the search.")}</td></tr>`;
+
+    const bankOpts = `<option value="all" ${autoBank === "all" ? "selected" : ""}>All bank accounts (${aa.banks.length})</option>` +
+      aa.banks.map((b) => `<option value="${b.id}" ${autoBank === b.id ? "selected" : ""}>${b.name}</option>`).join("");
+    const periodOpts = PERIODS.map((p) => `<option value="${p.d}" ${autoPeriod === p.d ? "selected" : ""}>${p.label}</option>`).join("");
 
     content.innerHTML = `
-      <div class="section" ${dc("aa.kpis", "Auto-applied · summary")}>
-        <div class="kpis">
-          <div class="kpi kpi--accent-success"><div class="kpi__label">Auto-applied (period)</div><div class="kpi__value">${aa.total.toLocaleString("en-SG")}</div><div class="kpi__sub">straight-through receipts · ${aa.autoApply}% of all cash</div></div>
-          <div class="kpi kpi--accent-primary"><div class="kpi__label">Value auto-applied</div><div class="kpi__value">${D.fmtCompact(aa.totalValue, ccy)}</div><div class="kpi__sub">posted with no human touch</div></div>
-          <div class="kpi kpi--accent-brand"><div class="kpi__label">Avg match confidence</div><div class="kpi__value">${Math.round(aa.avgConf * 100)}%</div><div class="kpi__sub">across auto-applied receipts</div></div>
-          <div class="kpi kpi--accent-success"><div class="kpi__label">Median time to apply</div><div class="kpi__value">${aa.medianTta}</div><div class="kpi__sub">receipt → cleared in ERP</div></div>
+      <div class="section" ${dc("aa.filters", "Applied cash · filters")}>
+        <div class="filter-bar">
+          <label class="filter-field"><span>Period</span><select id="aa-period" class="filter-sel">${periodOpts}</select></label>
+          <label class="filter-field"><span>Bank account</span><select id="aa-bank" class="filter-sel">${bankOpts}</select></label>
+          <input id="aa-search" placeholder="Search customer / invoice / doc…" value="${escapeAttr(autoSearch)}" class="filter-search" />
         </div>
       </div>
-      <div class="section" ${dc("aa.table", "Auto-applied · straight-through ledger")}>
+      <div class="section" ${dc("aa.kpis", "Applied cash · summary")}>
+        <div class="kpis" style="grid-template-columns:repeat(3,1fr)">
+          <div class="kpi kpi--accent-success"><div class="kpi__label">Applied (${periodLabel})</div><div class="kpi__value">${count.toLocaleString("en-SG")}</div><div class="kpi__sub">receipts matched &amp; posted</div></div>
+          <div class="kpi kpi--accent-primary"><div class="kpi__label">Value applied</div><div class="kpi__value">${D.fmtCompact(value, ccy)}</div><div class="kpi__sub">cleared to open invoices</div></div>
+          <div class="kpi kpi--accent-brand"><div class="kpi__label">Avg match confidence</div><div class="kpi__value">${count ? Math.round(avgConf * 100) : 0}%</div><div class="kpi__sub">across applied receipts</div></div>
+        </div>
+      </div>
+      <div class="section" ${dc("aa.table", "Applied cash · ledger")}>
         <div class="card">
           <div class="card__head">
-            <div class="card__title">Straight-through applications</div>
-            <input id="aa-search" placeholder="Search customer / invoice / doc…" value="${escapeAttr(autoSearch)}" style="margin-left:auto;width:280px;max-width:40vw;padding:8px 10px;border:1px solid var(--border-default-default);border-radius:var(--radius-sm);font-family:var(--font-family-inter);font-size:13px" />
+            <div class="card__title">Applied-cash ledger</div>
+            <span class="muted" style="margin-left:auto;font-size:12px">${count.toLocaleString("en-SG")} of ${aa.total.toLocaleString("en-SG")} this period</span>
           </div>
-          <div class="aa-note">Showing the most recent <b>${aa.sampleN}</b> of <b>${aa.total.toLocaleString("en-SG")}</b> auto-applied this period. Every line was matched and posted by the engine under straight-through rules.</div>
-          <div class="card__body card__body--flush"><div class="table-wrap"><table class="tbl tbl--fixed">
-            <colgroup><col style="width:10%"><col style="width:18%"><col style="width:11%"><col style="width:12%"><col style="width:16%"><col style="width:9%"><col style="width:8%"><col style="width:10%"><col style="width:8%"></colgroup>
-            <thead><tr><th>Value date</th><th>Customer</th><th>Invoice</th><th class="num">Amount</th><th>Match rule</th><th>Conf.</th><th>Time</th><th>ERP doc</th><th>Status</th></tr></thead>
+          <div class="card__body card__body--flush"><div class="table-wrap aa-scroll"><table class="tbl tbl--fixed">
+            <colgroup><col style="width:9%"><col style="width:16%"><col style="width:10%"><col style="width:11%"><col style="width:14%"><col style="width:14%"><col style="width:7%"><col style="width:7%"><col style="width:8%"><col style="width:7%"></colgroup>
+            <thead><tr><th>Value date</th><th>Customer</th><th>Invoice</th><th class="num">Amount</th><th>Bank account</th><th>Match rule</th><th>Conf.</th><th>Time</th><th>ERP doc</th><th>Status</th></tr></thead>
             <tbody>${body}</tbody>
           </table></div></div>
         </div>
@@ -1086,6 +1115,51 @@
 
     const s = $("#aa-search");
     if (s) s.oninput = () => { autoSearch = s.value; viewAutoApplied(); window.COMMENTS && COMMENTS.refresh(); };
+    const ps = $("#aa-period");
+    if (ps) ps.onchange = () => { autoPeriod = +ps.value; viewAutoApplied(); window.COMMENTS && COMMENTS.refresh(); };
+    const bs = $("#aa-bank");
+    if (bs) bs.onchange = () => { autoBank = bs.value; viewAutoApplied(); window.COMMENTS && COMMENTS.refresh(); };
+    content.querySelectorAll("tr.clickable[data-aid]").forEach((tr) => {
+      tr.onclick = () => appliedDetail(rows[+tr.dataset.aid], ccy);
+    });
+  }
+
+  // Drill into one applied receipt — full allocation breakdown + posted journal entry.
+  function appliedDetail(x, ccy) {
+    if (!x) return;
+    const fields = [
+      ["Invoice cleared (gross)", x.gross, false],
+      ["Cash applied", x.amount, false],
+      ["WHT withheld", x.wht, true],
+      ["Cash discount", x.discount, true],
+      ["Bank charge", x.bankCharge, true],
+    ].filter((f) => f[1] || f[0] === "Invoice cleared (gross)" || f[0] === "Cash applied");
+    const breakdown = fields.map((f) => `<tr><td class="cell-main">${f[0]}</td><td class="num strong">${f[2] ? "− " : ""}${fmt(f[1], ccy)}</td></tr>`).join("");
+    // journal entry (balanced): Dr Bank + WHT + discount + bank charges = Cr AR (gross)
+    const je = [["Bank (cash received)", x.amount, 0]];
+    if (x.wht) je.push(["WHT receivable (asset)", x.wht, 0]);
+    if (x.discount) je.push(["Cash discount allowed (expense)", x.discount, 0]);
+    if (x.bankCharge) je.push(["Bank charges (expense)", x.bankCharge, 0]);
+    je.push([`AR — ${x.customer} (invoice cleared)`, 0, x.gross]);
+    const jeBody = je.map((l) => `<tr><td class="cell-main">${l[0]}</td><td class="num">${l[1] ? fmt(l[1], ccy) : ""}</td><td class="num">${l[2] ? fmt(l[2], ccy) : ""}</td></tr>`).join("");
+    const totD = je.reduce((s, l) => s + l[1], 0), totC = je.reduce((s, l) => s + l[2], 0);
+    openModal(`Applied receipt — ${x.id}`, `
+      <div class="post-ok">
+        <div class="post-ok__badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></div>
+        <div><div class="post-ok__title">${x.customer} · ${fmt(x.amount, ccy)}</div><div class="post-ok__sub">${pill(x.rule, x.tone)} <span class="conf-pill ${x.conf >= 0.85 ? "hi" : "mid"}" style="margin-left:6px">${Math.round(x.conf * 100)}% match</span></div></div>
+      </div>
+      <div class="post-meta">
+        <span>Invoice <b>${x.inv}</b></span><span>Bank account <b>${x.bankName}</b></span><span>Value date <b>${x.valueDate}</b></span><span>Time to apply <b>${x.tta}</b></span><span>Clearing doc <b>${x.doc}</b></span>
+      </div>
+      <div class="modal-sub" style="margin-top:14px">Allocation breakdown</div>
+      <div class="table-wrap"><table class="tbl"><tbody>${breakdown}</tbody></table></div>
+      <div class="modal-sub" style="margin-top:14px">Journal entry posted</div>
+      <div class="table-wrap"><table class="tbl">
+        <thead><tr><th>Account</th><th class="num">Debit</th><th class="num">Credit</th></tr></thead>
+        <tbody>${jeBody}<tr class="modal-total"><td>Total</td><td class="num">${fmt(totD, ccy)}</td><td class="num">${fmt(totC, ccy)}</td></tr></tbody>
+      </table></div>
+      <div style="margin-top:18px;display:flex;justify-content:flex-end"><button class="btn btn--primary" id="ad-done">Done</button></div>`);
+    const done = document.getElementById("ad-done"); if (done) done.onclick = closeModal;
   }
 
   // ════════════════════════════════════════════════════════════════════════

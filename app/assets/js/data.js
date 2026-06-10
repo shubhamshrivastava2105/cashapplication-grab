@@ -269,9 +269,10 @@ window.DATA = (function () {
     return out;
   }
 
-  // Straight-through (auto-applied) receipts — cash the engine matched & posted with no
-  // analyst touch. The count/value tie to the dashboard auto-apply rate so the numbers
-  // are consistent across the app. Detailed rows are a recent sample of the full volume.
+  // Applied cash — receipts the engine matched & posted to invoices. The count ties to
+  // the dashboard auto-apply rate so the numbers are consistent across the app. The FULL
+  // list is generated (spread over ~90 days, each tagged with the receiving bank account)
+  // so the page can filter by period and by bank, and show every line.
   const _autoCache = {};
   const AUTO_RULES = [
     { rule: "Exact match", tone: "success" },
@@ -285,27 +286,36 @@ window.DATA = (function () {
     const db = dashboardFor(entityId), ccy = db.ccy, ent = db.ent, pool = poolFor(ent), scale = CCY_SCALE[ccy] || 1;
     const seed = (entityId.length * 7 + ccy.charCodeAt(0) + ccy.charCodeAt(1)) % 97;
     const autoApply = 72 + (seed % 16);                                   // == dashboard auto-apply KPI
-    const total = Math.round(db.count * autoApply / (100 - autoApply));   // straight-through count this period
-    const totalValue = Math.round(db.totalUnapplied * autoApply / (100 - autoApply));
-    const sampleN = Math.min(total, 80);
+    const total = Math.round(db.count * autoApply / (100 - autoApply));   // applied count this period
+    const entBanks = banks.filter((b) => b.entity === entityId);
     const list = [];
-    for (let i = 0; i < sampleN; i++) {
+    for (let i = 0; i < total; i++) {
       const customer = pool[((i * 1103515245 + seed * 12345) >>> 0) % pool.length];
       const amount = Math.round((700 + ((i * 97 + seed * 53) % 9300)) * scale);
-      const ageDays = i % 6;                                              // applied within the last few days
+      const ageDays = (i * 13 + seed * 7) % 90;                           // spread across the quarter
       const date = dateMinus(ageDays);
       const r = AUTO_RULES[(i + seed) % AUTO_RULES.length];
       const conf = Math.round((0.95 + ((i * 7) % 5) / 100) * 100) / 100;  // 0.95–0.99
       const ttaMin = 1 + ((i * 17 + seed) % 58);                          // minutes from receipt → applied
+      const bank = entBanks[(i + seed) % (entBanks.length || 1)] || { id: "", name: "—" };
+      // breakdown: amount is the cash received; the invoice cleared (gross) = cash + any
+      // deduction the customer took. Rotate through clean / WHT / discount / bank charge.
+      const dk = i % 4;
+      let wht = 0, discount = 0, bankCharge = 0;
+      if (dk === 1) wht = Math.round(amount * 5 / 95);
+      else if (dk === 2) discount = Math.round(amount * 2 / 98);
+      else if (dk === 3) bankCharge = Math.round((10 + (i % 30)) * scale);
+      const gross = amount + wht + discount + bankCharge;                  // invoice open value cleared
       list.push({
-        id: "AA-" + (9000 - i), date, customer, amount,
+        id: "AA-" + (10000 + i), date, ageDays, customer, amount,
         inv: "INV-" + (5000 + ((i * 13 + seed) % 4000)),
         rule: r.rule, tone: r.tone, conf, doc: "1900" + (4000 + ((i * 31 + seed) % 5999)),
-        tta: ttaMin < 60 ? ttaMin + " min" : (ttaMin / 60).toFixed(1) + " hr",
+        ttaMin, tta: ttaMin < 60 ? ttaMin + " min" : (ttaMin / 60).toFixed(1) + " hr",
+        bankId: bank.id, bankName: bank.name, valueDate: date,
+        wht, discount, bankCharge, gross,
       });
     }
-    const avgConf = list.length ? list.reduce((s, x) => s + x.conf, 0) / list.length : 0;
-    const res = { list, total, sampleN, autoApply, totalValue, ccy, avgConf, medianTta: "2.4 hr" };
+    const res = { list, total, autoApply, ccy, banks: entBanks };
     _autoCache[entityId] = res;
     return res;
   }
