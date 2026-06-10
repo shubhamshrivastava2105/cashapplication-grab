@@ -216,12 +216,12 @@
     "yPct": 8.92064372918979,
     "author": "SME",
     "text": "the content is going out of the box, please make the UI in such a way that it is not scrollable and is also not going out of the box. Maybe make the columns - \"the credit\", \"open invoices\" and \"gap classification\" horizontally",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-10T07:53:18.584Z",
-    "updatedAt": "2026-06-10T07:53:18.584Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-10T07:59:01.957Z",
+    "resolvedAt": "2026-06-10T07:59:01.957Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "The allocation table now uses a fixed layout with set column widths so it fits inside the pane — no horizontal scroll and nothing spills out of the box. The three panes (credit / open invoices / gap) stay side by side."
   },
   {
     "id": "c_zfpryjnxgxs",
