@@ -216,12 +216,12 @@
     "yPct": 81.96911982786193,
     "author": "SME",
     "text": "ideally when apply and post is clicked it should show the success message after confirmation and should show a real accounting entry details to make it look real",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-10T10:58:11.447Z",
-    "updatedAt": "2026-06-10T10:58:11.447Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-10T11:12:16.226Z",
+    "resolvedAt": "2026-06-10T11:12:16.226Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Apply & post now shows a success modal after confirmation: a posted-to-ERP badge (amount cleared for customer, maker-checker), clearing document no. / company code / fiscal year / posting date, and the real balanced journal entry (Bank + WHT/discount/charges = AR cleared + advances) — shared with the Simulate preview so they match."
   },
   {
     "id": "c_cntupeykwzw",
