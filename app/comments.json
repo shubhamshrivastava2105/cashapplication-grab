@@ -254,5 +254,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_kmyxhq3hvag",
+    "route": "#/workspace",
+    "anchor": "ws.gap",
+    "anchorLabel": "Workspace · Gap classification & actions",
+    "xPct": 13.529411764705882,
+    "yPct": 55.50136600358576,
+    "author": "SME",
+    "text": "change \"gst\" in the dropdown to \"gst/vat\"",
+    "status": "open",
+    "createdAt": "2026-06-10T08:11:17.032Z",
+    "updatedAt": "2026-06-10T08:11:17.032Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
