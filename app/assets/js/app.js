@@ -119,6 +119,16 @@
   function viewDashboard() {
     const db = D.dashboardFor(selectedEntityId);
     const ccy = db.ccy;
+    // Recompute the open aggregates from the non-posted credits so posting a credit in
+    // Apply cash decrements the dashboard (Open exceptions, Unapplied cash, ageing, types, queue).
+    const openList = db.list.filter((x) => !postedIds.has(postedKey(x.id)));
+    const ageBucketOf = (d) => d <= 15 ? "0–15 days" : d <= 30 ? "15–30 days" : d <= 90 ? "1–3 months" : d <= 180 ? "3–6 months" : "6 months+";
+    const AGE_ORDER = ["0–15 days", "15–30 days", "1–3 months", "3–6 months", "6 months+"];
+    const ageing = AGE_ORDER.map((lbl) => { const s = openList.filter((x) => ageBucketOf(x.ageDays) === lbl); return { label: lbl, amount: s.reduce((a, x) => a + x.amount, 0), count: s.length }; });
+    const byType = db.byType.map((bt) => { const s = openList.filter((x) => x.reason === bt.label); return { label: bt.label, tone: bt.tone, count: s.length, amount: s.reduce((a, x) => a + x.amount, 0) }; });
+    const totalUnapplied = openList.reduce((s, x) => s + x.amount, 0);
+    const over30 = openList.filter((x) => x.ageDays > 30).reduce((s, x) => s + x.amount, 0);
+    const count = openList.length;
     setTopbar("Cash Application Dashboard", "Daily health — applied, identified, unapplied, exceptions",
       `<label class="topbar__chip topbar__chip--select"><span>Entity</span>
          <select id="entity-select" aria-label="Select entity">
@@ -130,19 +140,23 @@
        ${bankSelectChip()}`,
       uploadStmtAction());
 
-    const kpis = db.kpis.map((k) => `
+    const kpis = db.kpis.map((k) => {
+      let value = k.value, sub = k.sub, exact = k.exact;
+      if (k.key === "unapplied") { value = D.fmtCompact(totalUnapplied, ccy); exact = fmt(totalUnapplied, ccy); sub = `${count} on-account · ${D.fmtCompact(over30, ccy)} aged > 30d`; }
+      else if (k.key === "exceptions") { value = String(count); exact = count + " exceptions"; }
+      return `
       <div class="kpi kpi--${k.tone} kpi--accent-${k.accent || "primary"} ${k.drill ? "kpi--clickable" : ""}" ${k.drill ? `data-drill="${k.drill}"` : ""}>
         <div class="kpi__top">
           <div class="kpi__label">${k.label}</div>
           ${k.info ? `<button class="info-btn" data-info="${escapeAttr(k.info)}" aria-label="What is this metric?">i</button>` : ""}
         </div>
-        <div class="kpi__value" ${k.exact ? `title="${escapeAttr(k.exact)}"` : ""}>${k.value} <span class="kpi__trend ${k.deltaTone === "up" ? "up" : "down"}">${k.delta}</span></div>
-        <div class="kpi__sub">${k.sub || ""}</div>
+        <div class="kpi__value" ${exact ? `title="${escapeAttr(exact)}"` : ""}>${value} <span class="kpi__trend ${k.deltaTone === "up" ? "up" : "down"}">${k.delta}</span></div>
+        <div class="kpi__sub">${sub || ""}</div>
         ${k.drill ? `<div class="kpi__drill">View breakdown →</div>` : ""}
-      </div>`).join("");
+      </div>`; }).join("");
 
-    const maxAge = Math.max(...db.ageing.map((b) => b.amount));
-    const ageBars = db.ageing.map((b) => `
+    const maxAge = Math.max(...ageing.map((b) => b.amount), 1);
+    const ageBars = ageing.map((b) => `
       <div class="hbar">
         <span>${b.label}</span>
         <div class="hbar__track"><div class="hbar__fill hbar__fill--age" style="width:${maxAge ? (b.amount / maxAge) * 100 : 0}%"></div></div>
@@ -150,8 +164,8 @@
       </div>`).join("");
 
     // exceptions by type: count + amount (both shown)
-    const maxEx = Math.max(...db.byType.map((e) => e.count));
-    const hbars = db.byType.map((e) => `
+    const maxEx = Math.max(...byType.map((e) => e.count), 1);
+    const hbars = byType.map((e) => `
       <div class="hbar hbar--ex">
         <span>${e.label}</span>
         <div class="hbar__track"><div class="hbar__fill" style="width:${maxEx ? (e.count / maxEx) * 100 : 0}%"></div></div>
@@ -160,7 +174,7 @@
 
     // Aged unapplied — bank-statement style, full list (scrollable, sortable)
     const sortArrow = (k) => dashSort.key === k ? (dashSort.dir < 0 ? " ▾" : " ▴") : "";
-    const sorted = db.list.slice().sort((a, b) => {
+    const sorted = openList.slice().sort((a, b) => {
       const av = dashSort.key === "date" ? a.date : dashSort.key === "amount" ? a.amount : a.ageDays;
       const bv = dashSort.key === "date" ? b.date : dashSort.key === "amount" ? b.amount : b.ageDays;
       return (av < bv ? -1 : av > bv ? 1 : 0) * dashSort.dir;
@@ -204,18 +218,18 @@
 
       <div class="grid" style="grid-template-columns: 1fr 1fr; align-items:start">
         <div class="card">
-          <div class="card__head"><div class="card__title">Unapplied cash ageing — ${D.fmtCompact(db.totalUnapplied, ccy)}</div></div>
+          <div class="card__head"><div class="card__title">Unapplied cash ageing — ${D.fmtCompact(totalUnapplied, ccy)}</div></div>
           <div class="card__body"><div class="hbars hbars--age">${ageBars}</div></div>
         </div>
         <div class="card">
-          <div class="card__head"><div class="card__title">Exceptions by type</div><span class="muted" style="font-size:12px">${db.count} total · count · amount</span></div>
+          <div class="card__head"><div class="card__title">Exceptions by type</div><span class="muted" style="font-size:12px">${count} total · count · amount</span></div>
           <div class="card__body"><div class="hbars">${hbars}</div></div>
         </div>
       </div>
 
       <div class="section" style="margin-top:var(--scale-300)">
         <div class="card">
-          <div class="card__head"><div class="card__title">Bank statement — aged unapplied credits (oldest first)</div><span class="muted" style="font-size:12px">${db.list.length} line items</span></div>
+          <div class="card__head"><div class="card__title">Bank statement — aged unapplied credits (oldest first)</div><span class="muted" style="font-size:12px">${count} line items</span></div>
           <div class="card__body card__body--flush"><div class="table-wrap table-scroll"><table class="tbl tbl--fixed">
             <colgroup><col style="width:12%"><col style="width:40%"><col style="width:16%"><col style="width:12%"><col style="width:20%"></colgroup>
             <thead><tr><th class="sortable" data-sort="date">Date${sortArrow("date")}</th><th>Description</th><th class="num sortable" data-sort="amount">Amount${sortArrow("amount")}</th><th class="sortable" data-sort="ageDays">Age${sortArrow("ageDays")}</th><th>Reason / exception type</th></tr></thead>
@@ -256,24 +270,26 @@
   // ── KPI breakdown modal (derived from the same entity data, always ties) ──
   function openBreakdown(key) {
     const db = D.dashboardFor(selectedEntityId), ccy = db.ccy;
+    const open = db.list.filter((x) => !postedIds.has(postedKey(x.id)));   // exclude posted credits
+    const total = open.reduce((s, x) => s + x.amount, 0);
     if (key === "unapplied") {
-      const rows = db.list.slice().sort((a, b) => b.ageDays - a.ageDays).map((u) => `
+      const rows = open.slice().sort((a, b) => b.ageDays - a.ageDays).map((u) => `
         <tr><td class="muted" style="white-space:nowrap">${u.date}</td><td class="cell-main">${u.desc}</td><td class="muted">${u.customer}</td><td class="num strong">${fmt(u.amount, ccy)}</td></tr>`).join("");
       openModal("Unapplied cash — line by line", `
-        <div class="modal-sub">All ${db.list.length} unapplied lines from the bank statement. Total ties to the tile: <b>${D.fmtCompact(db.totalUnapplied, ccy)}</b> (${fmt(db.totalUnapplied, ccy)}).</div>
+        <div class="modal-sub">All ${open.length} unapplied lines from the bank statement. Total ties to the tile: <b>${D.fmtCompact(total, ccy)}</b> (${fmt(total, ccy)}).</div>
         <div class="table-wrap table-scroll"><table class="tbl">
           <thead><tr><th>Value date</th><th>Description</th><th>Customer</th><th class="num">Amount</th></tr></thead>
-          <tbody>${rows}<tr class="modal-total"><td colspan="3" class="num">Total</td><td class="num strong">${fmt(db.totalUnapplied, ccy)}</td></tr></tbody>
+          <tbody>${rows}<tr class="modal-total"><td colspan="3" class="num">Total</td><td class="num strong">${fmt(total, ccy)}</td></tr></tbody>
         </table></div>`);
     } else {
       // Line-by-line, same shape as the unapplied modal, with an exception-type column
-      const rows = db.list.slice().sort((a, b) => b.ageDays - a.ageDays).map((u) => `
+      const rows = open.slice().sort((a, b) => b.ageDays - a.ageDays).map((u) => `
         <tr><td class="muted" style="white-space:nowrap">${u.date}</td><td class="cell-main">${u.desc}</td><td>${pill(u.reason, u.tone)}</td><td class="num strong">${fmt(u.amount, ccy)}</td></tr>`).join("");
       openModal("Open exceptions — line by line", `
-        <div class="modal-sub">All ${db.count} open exceptions from the bank statement, by exception type. Total ties to <b>${D.fmtCompact(db.totalUnapplied, ccy)}</b> (${fmt(db.totalUnapplied, ccy)}).</div>
+        <div class="modal-sub">All ${open.length} open exceptions from the bank statement, by exception type. Total ties to <b>${D.fmtCompact(total, ccy)}</b> (${fmt(total, ccy)}).</div>
         <div class="table-wrap table-scroll"><table class="tbl">
           <thead><tr><th>Value date</th><th>Description</th><th>Exception type</th><th class="num">Amount</th></tr></thead>
-          <tbody>${rows}<tr class="modal-total"><td colspan="3" class="num">Total (${db.count})</td><td class="num strong">${fmt(db.totalUnapplied, ccy)}</td></tr></tbody>
+          <tbody>${rows}<tr class="modal-total"><td colspan="3" class="num">Total (${open.length})</td><td class="num strong">${fmt(total, ccy)}</td></tr></tbody>
         </table></div>`);
     }
   }
@@ -1112,12 +1128,8 @@
       (autoBank === "all" || x.bankId === autoBank) &&
       (!q || x.customer.toLowerCase().includes(q) || x.invoices.some((v) => v.inv.toLowerCase().includes(q)) || x.doc.includes(q)));
     // column sort
-    rows.sort((a, b) => {
-      const k = autoSort.key;
-      const av = k === "amount" ? a.amount : k === "customer" ? a.customer : k === "bank" ? a.bankName : a.date;
-      const bv = k === "amount" ? b.amount : k === "customer" ? b.customer : k === "bank" ? b.bankName : b.date;
-      return (av < bv ? -1 : av > bv ? 1 : 0) * autoSort.dir;
-    });
+    const sortVal = (x) => { const k = autoSort.key; return k === "amount" ? x.amount : k === "customer" ? x.customer : k === "bank" ? x.bankName : k === "doc" ? x.doc : x.date; };
+    rows.sort((a, b) => { const av = sortVal(a), bv = sortVal(b); return (av < bv ? -1 : av > bv ? 1 : 0) * autoSort.dir; });
     const sortInd = (k) => autoSort.key === k ? `<span class="sort-ind">${autoSort.dir < 0 ? "↓" : "↑"}</span>` : "";
     // filter-aware KPIs
     const count = rows.length;
@@ -1170,7 +1182,7 @@
           </div>
           <div class="card__body card__body--flush"><div class="table-wrap aa-scroll"><table class="tbl tbl--fixed">
             <colgroup><col style="width:9%"><col style="width:21%"><col style="width:11%"><col style="width:16%"><col style="width:11%"><col style="width:14%"><col style="width:10%"><col style="width:8%"></colgroup>
-            <thead><tr><th class="sortable" data-asort="date">Value date ${sortInd("date")}</th><th>Description</th><th class="num sortable" data-asort="amount">Amount ${sortInd("amount")}</th><th class="sortable" data-asort="customer">Customer ${sortInd("customer")}</th><th>Invoice</th><th class="sortable" data-asort="bank">Bank account ${sortInd("bank")}</th><th>ERP doc</th><th>Status</th></tr></thead>
+            <thead><tr><th class="sortable" data-asort="date">Value date ${sortInd("date")}</th><th>Description</th><th class="num sortable" data-asort="amount">Amount ${sortInd("amount")}</th><th class="sortable" data-asort="customer">Customer ${sortInd("customer")}</th><th>Invoice</th><th class="sortable" data-asort="bank">Bank account ${sortInd("bank")}</th><th class="sortable" data-asort="doc">ERP doc ${sortInd("doc")}</th><th>Status</th></tr></thead>
             <tbody>${body}</tbody>
           </table></div></div>
         </div>
