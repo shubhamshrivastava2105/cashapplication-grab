@@ -192,22 +192,6 @@
     "resolutionNote": "Removed the Reports & close page after moving the trend chart to the dashboard."
   },
   {
-    "id": "c_4apgjgqffh0",
-    "route": "#/customers",
-    "anchor": "cust.header",
-    "anchorLabel": "Customer 360 · Header & metrics",
-    "xPct": 75.55970149253731,
-    "yPct": 60.690463313502796,
-    "author": "SME",
-    "text": "what is this id rate. can you also add the i button for these - open ar, unapplied and id rate",
-    "status": "resolved",
-    "createdAt": "2026-06-10T10:01:21.684Z",
-    "updatedAt": "2026-06-10T10:33:43.996Z",
-    "resolvedAt": "2026-06-10T10:33:43.996Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "Added (i) info buttons to Open AR, Unapplied and ID rate on Customers 360. ID rate = identification rate (share of the customers payments auto-attributed to them). Also fixed the figures so they tie out — Open AR now equals the sum of the open invoices, with Net receivable = Open AR − Unapplied."
-  },
-  {
     "id": "c_4egouttet04",
     "route": "#/workspace",
     "anchor": "ws.credit",
