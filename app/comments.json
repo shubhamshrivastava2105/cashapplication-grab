@@ -32,22 +32,6 @@
     "resolutionNote": "Replaced the daily applied-vs-unapplied chart with an Unapplied cash ageing chart (0–15d, 15–30d, 1–3mo, 3–6mo, 6mo+), summing to SGD 1.24M."
   },
   {
-    "id": "c_aoph8bosnou",
-    "route": "#/workspace",
-    "anchor": "ws.allocation",
-    "anchorLabel": "Workspace · Open invoices & proposed allocation",
-    "xPct": 48.68421052631579,
-    "yPct": 94.9612452109702,
-    "author": "SME",
-    "text": "nothing is changing based on the dropdown change.",
-    "status": "resolved",
-    "createdAt": "2026-06-09T11:19:57.678Z",
-    "updatedAt": "2026-06-09T11:36:24.538Z",
-    "resolvedAt": "2026-06-09T11:36:24.538Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "The allocation-rule dropdown now actually re-allocates (FIFO/due-date/exact greedily re-spread the receipt; Remittance restores the directed allocation)."
-  },
-  {
     "id": "c_nk510qxyk71",
     "route": "#/reports",
     "anchor": "page",
