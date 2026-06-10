@@ -701,7 +701,7 @@
     if (wht) lines.push(["WHT receivable (asset)", wht, 0]);
     if (disc) lines.push(["Cash discount allowed (expense)", disc, 0]);
     if (bc) lines.push(["Bank charges (expense)", bc, 0]);
-    if (rebate) lines.push(["Deductions / claims (contra-AR)", rebate, 0]);
+    if (rebate) lines.push(["Deductions / claims", rebate, 0]);
     if (oaDebit) lines.push(["On-account / unapplied cash (suspense)", oaDebit, 0]);
     if (arCleared) lines.push([`AR — ${cust} (invoices cleared)`, 0, arCleared]);
     if (oaCredit) lines.push(["Customer advances (on-account)", 0, oaCredit]);
