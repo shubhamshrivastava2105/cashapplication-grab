@@ -206,5 +206,21 @@
     "resolvedAt": "2026-06-10T11:12:16.226Z",
     "resolvedBy": "Claude",
     "resolutionNote": "Apply & post now shows a success modal after confirmation: a posted-to-ERP badge (amount cleared for customer, maker-checker), clearing document no. / company code / fiscal year / posting date, and the real balanced journal entry (Bank + WHT/discount/charges = AR cleared + advances) — shared with the Simulate preview so they match."
+  },
+  {
+    "id": "c_jm1f2rslh90",
+    "route": "#/customers",
+    "anchor": "cust.items",
+    "anchorLabel": "Customer 360 · SAP account view",
+    "xPct": 94.02985074626866,
+    "yPct": 4.546752319771592,
+    "author": "SME",
+    "text": "why does \"All items\" doesn't include \"Unapplied\" items",
+    "status": "open",
+    "createdAt": "2026-06-10T11:30:02.772Z",
+    "updatedAt": "2026-06-10T11:30:02.772Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
