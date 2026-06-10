@@ -208,22 +208,6 @@
     "resolutionNote": "Credit queue is now a compact 220px scroll so the cockpit (credit / allocation / gap) is visible on landing without scrolling."
   },
   {
-    "id": "c_zfpryjnxgxs",
-    "route": "#/dashboard",
-    "anchor": "dash.kpis",
-    "anchorLabel": "Dashboard · KPI tiles",
-    "xPct": 59.840425531914896,
-    "yPct": 82.86878718321076,
-    "author": "SME",
-    "text": "the ui for the \"view breakdown\" is looking very basic. please improve it",
-    "status": "resolved",
-    "createdAt": "2026-06-10T07:55:25.313Z",
-    "updatedAt": "2026-06-10T07:59:03.449Z",
-    "resolvedAt": "2026-06-10T07:59:03.449Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "Restyled View breakdown as a polished pill button (subtle blue background, rounded, hover state), bottom-aligned and consistent across tiles."
-  },
-  {
     "id": "c_sxd0a0m0ilu",
     "route": "#/dashboard",
     "anchor": "page",
