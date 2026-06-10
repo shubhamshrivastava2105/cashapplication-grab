@@ -128,22 +128,6 @@
     "resolutionNote": "Removed the Export button from Reports."
   },
   {
-    "id": "c_mntv5buehiu",
-    "route": "#/workspace",
-    "anchor": "ws.allocation",
-    "anchorLabel": "Workspace · Open invoices & proposed allocation",
-    "xPct": 22.706422018348622,
-    "yPct": 94.53030366317196,
-    "author": "SME",
-    "text": "remove allocation rule",
-    "status": "resolved",
-    "createdAt": "2026-06-09T13:00:54.966Z",
-    "updatedAt": "2026-06-09T13:22:24.123Z",
-    "resolvedAt": "2026-06-09T13:22:24.123Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "Removed the allocation-rule dropdown."
-  },
-  {
     "id": "c_aidtydsfyf9",
     "route": "#/workspace",
     "anchor": "ws.gap",
