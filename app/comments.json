@@ -222,5 +222,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_0fuwm4oc18n",
+    "route": "#/workspace",
+    "anchor": "ws.gap",
+    "anchorLabel": "Workspace · Gap classification & actions",
+    "xPct": 40,
+    "yPct": 35.50677701811203,
+    "author": "SME",
+    "text": "on account should be disabled when the amount received is lesser than invoice amount. the apply and post should also be disabled",
+    "status": "open",
+    "createdAt": "2026-06-10T09:58:43.271Z",
+    "updatedAt": "2026-06-10T09:58:43.273Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
