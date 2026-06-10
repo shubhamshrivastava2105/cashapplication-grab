@@ -197,7 +197,7 @@ body.nav-collapsed .sidebar__user-meta { display: none; }
 .content { padding: var(--scale-500); max-width: 1480px; width: 100%; }
 .section { margin-bottom: var(--scale-500); }
 .section__head { display: flex; align-items: center; gap: var(--scale-250); margin-bottom: var(--scale-300); }
-.section__title { font-size: 16px; font-weight: var(--font-weight-bold); color: var(--text-default-heading); }
+.section__title { font-size: 16px; font-weight: var(--font-weight-bold); color: var(--text-default-heading); letter-spacing: -.2px; }
 .section__sub { font-size: 13px; color: var(--text-default-caption); }
 .muted { color: var(--text-default-caption); }
 .grid { display: grid; gap: var(--scale-300); }
@@ -260,11 +260,22 @@ body.nav-collapsed .sidebar__user-meta { display: none; }
   border-radius: var(--radius-sm); box-shadow: var(--shadow-large);
 }
 .kpi__label { font-size: 11px; color: var(--text-default-caption); font-weight: var(--font-weight-semibold); text-transform: uppercase; letter-spacing: .5px; }
-.kpi__value { font-family: var(--font-family-plus-jakarta-sans); font-size: 26px; font-weight: var(--font-weight-bold); letter-spacing: -1px; line-height: 1.1; white-space: nowrap; }
+.kpi__value { font-family: var(--font-family-plus-jakarta-sans); font-size: 28px; font-weight: var(--font-weight-bold); letter-spacing: -1.2px; line-height: 1.08; white-space: nowrap; }
 .kpi__delta { font-size: 12px; margin-top: 4px; font-weight: var(--font-weight-semibold); }
 .kpi__value { color: var(--text-default-heading); }   /* neutral value; the accent border + trend carry the signal */
 .delta-up { color: var(--text-success-default); }
 .delta-down { color: var(--text-error-default); }
+
+/* ─── Micro-interactions (subtle, consistent) ───────────────────────────── */
+.btn, .navlink, .navsub, .seg__btn, .cmt-filter, .info-btn, .chk, .kpi--clickable,
+.cmt-tool, .sidebar__addbank, .sidebar__select, .gap-in, .line-in, .topbar__chip--select,
+.picker-item, .cmt-card, .pill, .row-actions .btn, .lnk-clear {
+  transition: background-color .13s ease, border-color .13s ease, color .13s ease, box-shadow .13s ease, transform .07s ease;
+}
+.btn:active:not(:disabled), .seg__btn:active, .info-btn:active, .cmt-tool:active, .chk:active { transform: translateY(1px); }
+.tbl tbody tr { transition: background-color .1s ease; }
+.tbl tbody tr.clickable, .queue-row, .cmt-card, .picker-item, .kpi--clickable { cursor: pointer; }
+.tbl tbody tr.clickable:active, .queue-row:active { background: var(--surface-primary-subtle-hover); }
 
 /* ─── Buttons ───────────────────────────────────────────────────────────── */
 .btn {
