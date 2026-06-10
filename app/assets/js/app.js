@@ -1056,7 +1056,7 @@
     const rows = aa.list.filter((x) =>
       x.ageDays <= autoPeriod &&
       (autoBank === "all" || x.bankId === autoBank) &&
-      (!q || x.customer.toLowerCase().includes(q) || x.inv.toLowerCase().includes(q) || x.doc.includes(q)));
+      (!q || x.customer.toLowerCase().includes(q) || x.invoices.some((v) => v.inv.toLowerCase().includes(q)) || x.doc.includes(q)));
     // filter-aware KPIs
     const count = rows.length;
     const value = rows.reduce((s, x) => s + x.amount, 0);
@@ -1070,15 +1070,12 @@
       <tr class="clickable" data-aid="${idx}">
         <td class="muted" style="white-space:nowrap">${x.date}</td>
         <td class="cell-main">${x.customer}</td>
-        <td>${x.inv}</td>
+        <td>${x.nInv > 1 ? `<span class="multi-inv">${x.invLabel}</span>` : x.invLabel}</td>
         <td class="num strong">${fmt(x.amount, ccy)}</td>
         <td class="muted">${x.bankName}</td>
-        <td>${pill(x.rule, x.tone)}</td>
-        <td><span class="conf-pill ${x.conf >= 0.85 ? "hi" : x.conf >= 0.7 ? "mid" : "lo"}">${Math.round(x.conf * 100)}%</span></td>
-        <td class="muted">${x.tta}</td>
         <td class="mono">${x.doc}</td>
-        <td>${pill("Posted", "success")}</td>
-      </tr>`).join("") : `<tr><td colspan="10">${emptyState("No applied cash in this view", "Try a wider period, another bank account, or clear the search.")}</td></tr>`;
+        <td>${pill("Posted", "success")} <span class="row-chev">›</span></td>
+      </tr>`).join("") : `<tr><td colspan="7">${emptyState("No applied cash in this view", "Try a wider period, another bank account, or clear the search.")}</td></tr>`;
 
     const bankOpts = `<option value="all" ${autoBank === "all" ? "selected" : ""}>All bank accounts (${aa.banks.length})</option>` +
       aa.banks.map((b) => `<option value="${b.id}" ${autoBank === b.id ? "selected" : ""}>${b.name}</option>`).join("");
@@ -1106,8 +1103,8 @@
             <span class="muted" style="margin-left:auto;font-size:12px">${count.toLocaleString("en-SG")} of ${aa.total.toLocaleString("en-SG")} this period</span>
           </div>
           <div class="card__body card__body--flush"><div class="table-wrap aa-scroll"><table class="tbl tbl--fixed">
-            <colgroup><col style="width:9%"><col style="width:16%"><col style="width:10%"><col style="width:11%"><col style="width:14%"><col style="width:14%"><col style="width:7%"><col style="width:7%"><col style="width:8%"><col style="width:7%"></colgroup>
-            <thead><tr><th>Value date</th><th>Customer</th><th>Invoice</th><th class="num">Amount</th><th>Bank account</th><th>Match rule</th><th>Conf.</th><th>Time</th><th>ERP doc</th><th>Status</th></tr></thead>
+            <colgroup><col style="width:12%"><col style="width:22%"><col style="width:15%"><col style="width:14%"><col style="width:17%"><col style="width:11%"><col style="width:9%"></colgroup>
+            <thead><tr><th>Value date</th><th>Customer</th><th>Invoice</th><th class="num">Amount</th><th>Bank account</th><th>ERP doc</th><th>Status</th></tr></thead>
             <tbody>${body}</tbody>
           </table></div></div>
         </div>
@@ -1124,35 +1121,41 @@
     });
   }
 
-  // Drill into one applied receipt — full allocation breakdown + posted journal entry.
+  // Drill into one applied receipt — per-invoice allocation + posted journal entry.
   function appliedDetail(x, ccy) {
     if (!x) return;
-    const fields = [
-      ["Invoice cleared (gross)", x.gross, false],
-      ["Cash applied", x.amount, false],
-      ["WHT withheld", x.wht, true],
-      ["Cash discount", x.discount, true],
-      ["Bank charge", x.bankCharge, true],
-    ].filter((f) => f[1] || f[0] === "Invoice cleared (gross)" || f[0] === "Cash applied");
-    const breakdown = fields.map((f) => `<tr><td class="cell-main">${f[0]}</td><td class="num strong">${f[2] ? "− " : ""}${fmt(f[1], ccy)}</td></tr>`).join("");
+    const num = (n) => n ? fmt(n, ccy) : "—";
+    // per-invoice allocation (handles single AND multiple invoices)
+    const allocRows = x.invoices.map((v) => `<tr>
+      <td class="cell-main">${v.inv}</td>
+      <td class="num">${fmt(v.gross, ccy)}</td>
+      <td class="num">${num(v.wht)}</td>
+      <td class="num">${num(v.discount)}</td>
+      <td class="num">${num(v.bankCharge)}</td>
+      <td class="num strong">${fmt(v.cash, ccy)}</td>
+    </tr>`).join("");
+    const allocTotal = `<tr class="modal-total"><td>Total (${x.nInv} invoice${x.nInv > 1 ? "s" : ""})</td><td class="num">${fmt(x.gross, ccy)}</td><td class="num">${num(x.wht)}</td><td class="num">${num(x.discount)}</td><td class="num">${num(x.bankCharge)}</td><td class="num strong">${fmt(x.amount, ccy)}</td></tr>`;
     // journal entry (balanced): Dr Bank + WHT + discount + bank charges = Cr AR (gross)
     const je = [["Bank (cash received)", x.amount, 0]];
     if (x.wht) je.push(["WHT receivable (asset)", x.wht, 0]);
     if (x.discount) je.push(["Cash discount allowed (expense)", x.discount, 0]);
     if (x.bankCharge) je.push(["Bank charges (expense)", x.bankCharge, 0]);
-    je.push([`AR — ${x.customer} (invoice cleared)`, 0, x.gross]);
+    je.push([`AR — ${x.customer} (invoice${x.nInv > 1 ? "s" : ""} cleared)`, 0, x.gross]);
     const jeBody = je.map((l) => `<tr><td class="cell-main">${l[0]}</td><td class="num">${l[1] ? fmt(l[1], ccy) : ""}</td><td class="num">${l[2] ? fmt(l[2], ccy) : ""}</td></tr>`).join("");
     const totD = je.reduce((s, l) => s + l[1], 0), totC = je.reduce((s, l) => s + l[2], 0);
     openModal(`Applied receipt — ${x.id}`, `
       <div class="post-ok">
         <div class="post-ok__badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></div>
-        <div><div class="post-ok__title">${x.customer} · ${fmt(x.amount, ccy)}</div><div class="post-ok__sub">${pill(x.rule, x.tone)} <span class="conf-pill ${x.conf >= 0.85 ? "hi" : "mid"}" style="margin-left:6px">${Math.round(x.conf * 100)}% match</span></div></div>
+        <div><div class="post-ok__title">${x.customer} · ${fmt(x.amount, ccy)}</div><div class="post-ok__sub">${pill(x.rule, x.tone)} <span class="conf-pill ${x.conf >= 0.85 ? "hi" : "mid"}" style="margin-left:6px">${Math.round(x.conf * 100)}% match</span> · cleared ${x.nInv} invoice${x.nInv > 1 ? "s" : ""}</div></div>
       </div>
       <div class="post-meta">
-        <span>Invoice <b>${x.inv}</b></span><span>Bank account <b>${x.bankName}</b></span><span>Value date <b>${x.valueDate}</b></span><span>Time to apply <b>${x.tta}</b></span><span>Clearing doc <b>${x.doc}</b></span>
+        <span>Bank account <b>${x.bankName}</b></span><span>Value date <b>${x.valueDate}</b></span><span>Time to apply <b>${x.tta}</b></span><span>Clearing doc <b>${x.doc}</b></span>
       </div>
-      <div class="modal-sub" style="margin-top:14px">Allocation breakdown</div>
-      <div class="table-wrap"><table class="tbl"><tbody>${breakdown}</tbody></table></div>
+      <div class="modal-sub" style="margin-top:14px">Allocation — invoices cleared</div>
+      <div class="table-wrap"><table class="tbl">
+        <thead><tr><th>Invoice</th><th class="num">Gross</th><th class="num">WHT</th><th class="num">Discount</th><th class="num">Bank chg</th><th class="num">Cash applied</th></tr></thead>
+        <tbody>${allocRows}${x.nInv > 1 ? allocTotal : ""}</tbody>
+      </table></div>
       <div class="modal-sub" style="margin-top:14px">Journal entry posted</div>
       <div class="table-wrap"><table class="tbl">
         <thead><tr><th>Account</th><th class="num">Debit</th><th class="num">Credit</th></tr></thead>

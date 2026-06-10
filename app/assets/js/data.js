@@ -298,17 +298,27 @@ window.DATA = (function () {
       const conf = Math.round((0.95 + ((i * 7) % 5) / 100) * 100) / 100;  // 0.95–0.99
       const ttaMin = 1 + ((i * 17 + seed) % 58);                          // minutes from receipt → applied
       const bank = entBanks[(i + seed) % (entBanks.length || 1)] || { id: "", name: "—" };
-      // breakdown: amount is the cash received; the invoice cleared (gross) = cash + any
-      // deduction the customer took. Rotate through clean / WHT / discount / bank charge.
+      // A receipt may clear ONE or SEVERAL invoices. The cash is split across them; each
+      // invoice's gross = its cash + any deduction the customer took on it (clean / WHT /
+      // discount / bank charge, rotated per receipt). All sub-amounts tie to the totals.
+      const nInv = (i % 5 === 0) ? 3 : (i % 3 === 0) ? 2 : 1;
       const dk = i % 4;
-      let wht = 0, discount = 0, bankCharge = 0;
-      if (dk === 1) wht = Math.round(amount * 5 / 95);
-      else if (dk === 2) discount = Math.round(amount * 2 / 98);
-      else if (dk === 3) bankCharge = Math.round((10 + (i % 30)) * scale);
-      const gross = amount + wht + discount + bankCharge;                  // invoice open value cleared
+      const invoices = []; let remCash = amount;
+      for (let k = 0; k < nInv; k++) {
+        const cash = k === nInv - 1 ? remCash : Math.round(amount / nInv); remCash -= cash;
+        let wht = 0, discount = 0, bankCharge = 0;
+        if (dk === 1) wht = Math.round(cash * 5 / 95);
+        else if (dk === 2) discount = Math.round(cash * 2 / 98);
+        else if (dk === 3 && k === 0) bankCharge = Math.round((10 + (i % 30)) * scale);
+        invoices.push({ inv: "INV-" + (5000 + ((i * 13 + seed + k * 137) % 4000)), cash, wht, discount, bankCharge, gross: cash + wht + discount + bankCharge });
+      }
+      const wht = invoices.reduce((s, v) => s + v.wht, 0);
+      const discount = invoices.reduce((s, v) => s + v.discount, 0);
+      const bankCharge = invoices.reduce((s, v) => s + v.bankCharge, 0);
+      const gross = invoices.reduce((s, v) => s + v.gross, 0);
       list.push({
         id: "AA-" + (10000 + i), date, ageDays, customer, amount,
-        inv: "INV-" + (5000 + ((i * 13 + seed) % 4000)),
+        invoices, nInv, invLabel: nInv === 1 ? invoices[0].inv : nInv + " invoices",
         rule: r.rule, tone: r.tone, conf, doc: "1900" + (4000 + ((i * 31 + seed) % 5999)),
         ttaMin, tta: ttaMin < 60 ? ttaMin + " min" : (ttaMin / 60).toFixed(1) + " hr",
         bankId: bank.id, bankName: bank.name, valueDate: date,
