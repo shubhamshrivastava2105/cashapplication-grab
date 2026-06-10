@@ -224,22 +224,6 @@
     "resolutionNote": "Removed the Reports & close page after moving the trend chart to the dashboard."
   },
   {
-    "id": "c_uopucnz99nf",
-    "route": "#/dashboard",
-    "anchor": "dash.kpis",
-    "anchorLabel": "Dashboard · KPI tiles",
-    "xPct": 61.79078014184397,
-    "yPct": 84.40358863304901,
-    "author": "SME",
-    "text": "can you keep the view breakdown ui consistent everywhere and make it look better",
-    "status": "resolved",
-    "createdAt": "2026-06-09T13:24:51.099Z",
-    "updatedAt": "2026-06-10T07:34:12.071Z",
-    "resolvedAt": "2026-06-10T07:34:12.071Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "View breakdown is now a consistent link on its own line (divider) on both clickable tiles."
-  },
-  {
     "id": "c_qmfq90nevmm",
     "route": "#/workspace",
     "anchor": "ws.credit",
