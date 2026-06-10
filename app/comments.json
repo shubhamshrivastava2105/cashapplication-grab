@@ -206,5 +206,21 @@
     "resolvedAt": "2026-06-10T10:33:43.996Z",
     "resolvedBy": "Claude",
     "resolutionNote": "Added (i) info buttons to Open AR, Unapplied and ID rate on Customers 360. ID rate = identification rate (share of the customers payments auto-attributed to them). Also fixed the figures so they tie out — Open AR now equals the sum of the open invoices, with Net receivable = Open AR − Unapplied."
+  },
+  {
+    "id": "c_4egouttet04",
+    "route": "#/workspace",
+    "anchor": "ws.credit",
+    "anchorLabel": "Workspace · The credit + identified customer",
+    "xPct": 42.867231638418076,
+    "yPct": 58.53468433359315,
+    "author": "SME",
+    "text": "give the matching reasoning in such a way that it contains some unique reference or text in the description which always comes when the payment comes from this particular customer. the reasoning should make sense and should look real and should correspond to the unique reference",
+    "status": "open",
+    "createdAt": "2026-06-10T10:56:51.796Z",
+    "updatedAt": "2026-06-10T10:56:51.797Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
