@@ -200,12 +200,12 @@
     "yPct": 58.53468433359315,
     "author": "SME",
     "text": "give the matching reasoning in such a way that it contains some unique reference or text in the description which always comes when the payment comes from this particular customer. the reasoning should make sense and should look real and should correspond to the unique reference",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-10T10:56:51.796Z",
-    "updatedAt": "2026-06-10T10:56:51.797Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-10T11:12:14.901Z",
+    "resolvedAt": "2026-06-10T11:12:14.901Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Each customer now has a recurring sender-account reference (payerKey, e.g. SSPL39688) that appears in EVERY one of their bank narrations (e.g. /ACC SSPL39688). The identification reasoning cites that exact token: \"recurring sender account SSPL39688 in the narration + payer-name match (ID-3/ID-4) — seen on every <customer> remittance.\""
   },
   {
     "id": "c_asmf20hgign",
