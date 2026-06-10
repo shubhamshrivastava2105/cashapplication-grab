@@ -408,12 +408,12 @@
     "yPct": 76.09377599277549,
     "author": "SME",
     "text": "if the match is not exact, the user should not be able to post",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T13:36:12.765Z",
-    "updatedAt": "2026-06-09T13:36:12.765Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-10T07:34:24.767Z",
+    "resolvedAt": "2026-06-10T07:34:24.767Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Apply & post is disabled until the receipt is balanced (gap explained or residual parked on-account)."
   },
   {
     "id": "c_34p6bvuog9a",
