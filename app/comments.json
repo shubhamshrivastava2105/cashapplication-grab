@@ -462,5 +462,21 @@
     "resolvedAt": "2026-06-10T07:34:28.785Z",
     "resolvedBy": "Claude",
     "resolutionNote": "Added an Add-invoice dropdown of relevant open invoices; per-invoice WHT/discount editable; AI-suggested WHT/discount can be cleared."
+  },
+  {
+    "id": "c_bdy8ik373ic",
+    "route": "#/workspace",
+    "anchor": "ws.allocation",
+    "anchorLabel": "Workspace · Open invoices & proposed allocation",
+    "xPct": 76.14678899082568,
+    "yPct": 32.6640415292017,
+    "author": "SME",
+    "text": "can we make the \"open invoices - proposed allocation\" section UI better, right now it is scrollable",
+    "status": "open",
+    "createdAt": "2026-06-10T07:34:54.852Z",
+    "updatedAt": "2026-06-10T07:34:54.854Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
