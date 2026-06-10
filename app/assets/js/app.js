@@ -961,18 +961,21 @@
       <tr><td class="cell-main">${a.name}</td><td>${a.acct}</td><td>${pill(a.rel, "info")}</td></tr>`).join("")
       : `<tr><td colspan="3" class="muted">No aliases mapped.</td></tr>`;
 
-    // SAP-style account line items (open / cleared / all)
-    const openItems = c.invoices.map((i) => ({ doc: i.inv, date: i.due, type: "Invoice", amount: i.open, status: "Open", tone: "warn" }));
+    // SAP-style account line items. Open items = open invoices (debits) PLUS unapplied
+    // receipts (credits on the account) — so the open total nets to Net AR.
+    const openInvoiceRows = c.invoices.map((i) => ({ doc: i.inv, date: i.due, type: "Invoice", amount: i.open, status: "Open", tone: "warn" }));
+    const unapCreditRows = (c.unapItems || []).map((u) => ({ doc: u.id, date: u.date, type: "Unapplied receipt · " + u.reason, amount: -u.amount, status: "Unapplied", tone: "info" }));
+    const openItems = openInvoiceRows.concat(unapCreditRows);
     const clDates = ["2026-05-02", "2026-04-18", "2026-03-29", "2026-05-21", "2026-04-05", "2026-03-12"];
     const cleared = clDates.map((d, j) => ({ doc: (j % 3 === 2 ? "CR-" : "INV-") + (6000 + j * 13 + c.id.length * 7), date: d, type: j % 3 === 2 ? "Credit memo" : "Invoice", amount: Math.round(c.openAr * 0.12 * (1 + (j % 4)) / 4) * (j % 3 === 2 ? -1 : 1), status: "Cleared", tone: "success" }));
-    // Unapplied receipts that make up the Unapplied figure (ties to the dashboard line items)
+    // Pure unapplied breakdown (received amounts, positive) for the Unapplied tab.
     const unapRows = (c.unapItems || []).map((u) => ({ doc: u.id, date: u.date, type: "Receipt · " + u.reason, amount: u.amount, status: u.ageDays + "d aged", tone: u.tone || "warn" }));
-    const openTotal = openItems.reduce((s, i) => s + i.amount, 0);
-    const clearedTotal = cleared.reduce((s, i) => s + i.amount, 0);
-    const items = custTab === "open" ? openItems : custTab === "cleared" ? cleared : custTab === "unapplied" ? unapRows : openItems.concat(unapRows, cleared);
+    const netAr = c.openAr - c.unapplied;
+    const items = custTab === "open" ? openItems : custTab === "cleared" ? cleared : custTab === "unapplied" ? unapRows : openInvoiceRows.concat(unapCreditRows, cleared);
+    const totLabel = custTab === "unapplied" ? "Total unapplied" : custTab === "cleared" ? "Total cleared" : custTab === "all" ? "Total" : "Net AR";
     const itemRows = items.length ? items.map((i) => `
       <tr><td class="cell-main">${i.doc}</td><td class="muted">${i.date}</td><td>${i.type}</td><td class="num strong">${fmt(i.amount, ccy)}</td><td>${pill(i.status, i.tone)}</td></tr>`).join("")
-      : `<tr><td colspan="5">${emptyState("No unapplied receipts", "All cash from this customer has been applied.")}</td></tr>`;
+      : `<tr><td colspan="5">${emptyState("No items", "Nothing to show in this view.")}</td></tr>`;
 
     content.innerHTML = `
       <div class="split">
@@ -980,10 +983,11 @@
           <div class="card" style="margin-bottom:var(--scale-300)" ${dc("cust.header", "Customer 360 · Header & metrics")}>
             <div class="card__body">
               <div class="section__head"><div class="section__title" style="font-size:20px">${c.name}</div>${pill(c.country, "neutral")}</div>
-              <div class="kpis" style="grid-template-columns:repeat(3,1fr);margin-top:var(--scale-200)">
-                <div class="kpi kpi--accent-primary"><div class="kpi__top"><div class="kpi__label">Open AR</div><button class="info-btn" data-info="Total receivable owed by this customer — the sum of their open invoices in the SAP account view below." aria-label="What is Open AR?">i</button></div><div class="kpi__value" style="font-size:22px">${D.fmtCompact(c.openAr, ccy)}</div></div>
-                <div class="kpi kpi--accent-brand"><div class="kpi__top"><div class="kpi__label">Unapplied</div><button class="info-btn" data-info="Cash received from this customer that hasn't yet been matched to an invoice — it sits as a credit on the account until applied." aria-label="What is Unapplied?">i</button></div><div class="kpi__value" style="font-size:22px">${D.fmtCompact(c.unapplied, ccy)}</div></div>
-                <div class="kpi kpi--accent-success"><div class="kpi__top"><div class="kpi__label">ID rate</div><button class="info-btn" data-info="Identification rate — the share of this customer's incoming payments that were automatically attributed to them (matched to a payer), with no analyst touch." aria-label="What is ID rate?">i</button></div><div class="kpi__value" style="font-size:22px">${Math.round(c.idRate * 100)}%</div></div>
+              <div class="kpis" style="grid-template-columns:repeat(4,1fr);margin-top:var(--scale-200)">
+                <div class="kpi kpi--accent-primary"><div class="kpi__top"><div class="kpi__label">Open AR</div><button class="info-btn" data-info="Total receivable owed by this customer — the sum of their open invoices." aria-label="What is Open AR?">i</button></div><div class="kpi__value" style="font-size:22px">${D.fmtCompact(c.openAr, ccy)}</div></div>
+                <div class="kpi kpi--accent-brand"><div class="kpi__top"><div class="kpi__label">Unapplied</div><button class="info-btn" data-info="Cash received from this customer that hasn't yet been matched to an invoice — it sits as an open credit on the account until applied." aria-label="What is Unapplied?">i</button></div><div class="kpi__value" style="font-size:22px">${D.fmtCompact(c.unapplied, ccy)}</div></div>
+                <div class="kpi kpi--accent-success"><div class="kpi__top"><div class="kpi__label">Net AR</div><button class="info-btn" data-info="Net receivable = Open AR − unapplied credits. What the customer effectively still owes once their unapplied cash on the account is offset." aria-label="What is Net AR?">i</button></div><div class="kpi__value" style="font-size:22px">${D.fmtCompact(netAr, ccy)}</div></div>
+                <div class="kpi kpi--accent-primary"><div class="kpi__top"><div class="kpi__label">ID rate</div><button class="info-btn" data-info="Identification rate — the share of this customer's incoming payments that were automatically attributed to them (matched to a payer), with no analyst touch." aria-label="What is ID rate?">i</button></div><div class="kpi__value" style="font-size:22px">${Math.round(c.idRate * 100)}%</div></div>
               </div>
             </div>
           </div>
@@ -998,13 +1002,13 @@
               </div>
             </div>
             <div class="sap-totals">
-              <span>Open AR <b>${fmt(openTotal, ccy)}</b></span>
-              <span>Unapplied credits <b>${fmt(c.unapplied, ccy)}</b></span>
-              <span>Net receivable <b>${fmt(openTotal - c.unapplied, ccy)}</b></span>
+              <span>Open AR <b>${fmt(c.openAr, ccy)}</b></span>
+              <span>Unapplied credits <b>− ${fmt(c.unapplied, ccy)}</b></span>
+              <span>Net AR <b>${fmt(netAr, ccy)}</b></span>
             </div>
             <div class="card__body card__body--flush"><div class="table-wrap"><table class="tbl">
               <thead><tr><th>Document</th><th>Posting date</th><th>Type</th><th class="num">Amount</th><th>Status</th></tr></thead>
-              <tbody>${itemRows}${items.length ? `<tr class="modal-total"><td colspan="3" class="num">${custTab === "unapplied" ? "Total unapplied" : custTab === "cleared" ? "Total cleared" : custTab === "all" ? "Total" : "Total open AR"}</td><td class="num strong">${fmt(items.reduce((s, i) => s + i.amount, 0), ccy)}</td><td></td></tr>` : ""}</tbody></table></div></div>
+              <tbody>${itemRows}${items.length ? `<tr class="modal-total"><td colspan="3" class="num">${totLabel}</td><td class="num strong">${fmt(items.reduce((s, i) => s + i.amount, 0), ccy)}</td><td></td></tr>` : ""}</tbody></table></div></div>
           </div>
 
           <div class="card" ${dc("cust.aliases", "Customer 360 · Payer aliases")}>
