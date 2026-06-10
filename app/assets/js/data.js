@@ -269,6 +269,47 @@ window.DATA = (function () {
     return out;
   }
 
+  // Straight-through (auto-applied) receipts — cash the engine matched & posted with no
+  // analyst touch. The count/value tie to the dashboard auto-apply rate so the numbers
+  // are consistent across the app. Detailed rows are a recent sample of the full volume.
+  const _autoCache = {};
+  const AUTO_RULES = [
+    { rule: "Exact match", tone: "success" },
+    { rule: "Remittance-linked", tone: "primary" },
+    { rule: "In-narration invoice ref", tone: "primary" },
+    { rule: "Payer alias + amount", tone: "info" },
+    { rule: "Subset-sum match", tone: "info" },
+  ];
+  function autoAppliedFor(entityId) {
+    if (_autoCache[entityId]) return _autoCache[entityId];
+    const db = dashboardFor(entityId), ccy = db.ccy, ent = db.ent, pool = poolFor(ent), scale = CCY_SCALE[ccy] || 1;
+    const seed = (entityId.length * 7 + ccy.charCodeAt(0) + ccy.charCodeAt(1)) % 97;
+    const autoApply = 72 + (seed % 16);                                   // == dashboard auto-apply KPI
+    const total = Math.round(db.count * autoApply / (100 - autoApply));   // straight-through count this period
+    const totalValue = Math.round(db.totalUnapplied * autoApply / (100 - autoApply));
+    const sampleN = Math.min(total, 80);
+    const list = [];
+    for (let i = 0; i < sampleN; i++) {
+      const customer = pool[((i * 1103515245 + seed * 12345) >>> 0) % pool.length];
+      const amount = Math.round((700 + ((i * 97 + seed * 53) % 9300)) * scale);
+      const ageDays = i % 6;                                              // applied within the last few days
+      const date = dateMinus(ageDays);
+      const r = AUTO_RULES[(i + seed) % AUTO_RULES.length];
+      const conf = Math.round((0.95 + ((i * 7) % 5) / 100) * 100) / 100;  // 0.95–0.99
+      const ttaMin = 1 + ((i * 17 + seed) % 58);                          // minutes from receipt → applied
+      list.push({
+        id: "AA-" + (9000 - i), date, customer, amount,
+        inv: "INV-" + (5000 + ((i * 13 + seed) % 4000)),
+        rule: r.rule, tone: r.tone, conf, doc: "1900" + (4000 + ((i * 31 + seed) % 5999)),
+        tta: ttaMin < 60 ? ttaMin + " min" : (ttaMin / 60).toFixed(1) + " hr",
+      });
+    }
+    const avgConf = list.length ? list.reduce((s, x) => s + x.conf, 0) / list.length : 0;
+    const res = { list, total, sampleN, autoApply, totalValue, ccy, avgConf, medianTta: "2.4 hr" };
+    _autoCache[entityId] = res;
+    return res;
+  }
+
   // Deductions / claims, drawn from the entity's Partial/short & deductions items
   function deductionsFor(entityId) {
     const db = dashboardFor(entityId);
@@ -493,5 +534,5 @@ window.DATA = (function () {
   // ── Pipeline (reference strip on dashboard) ─────────────────────────────
   const pipeline = ["① Identify customer", "② Identify obligations", "③ Reconcile amount", "④ Apply & post", "⑤ Resolve residual"];
 
-  return { fmt, fmtCompact, entities, banks, lastStatementDate, dashboardFor, buildCockpit, fetchOpenInvoices, customersFor, deductionsFor, customersPoolFor, reports, pipeline };
+  return { fmt, fmtCompact, entities, banks, lastStatementDate, dashboardFor, buildCockpit, fetchOpenInvoices, customersFor, autoAppliedFor, deductionsFor, customersPoolFor, reports, pipeline };
 })();

@@ -40,6 +40,7 @@
   const routes = [
     { id: "dashboard",  label: "Dashboard",   render: viewDashboard },
     { id: "workspace",  label: "Apply cash",  render: viewWorkspace },
+    { id: "applied",    label: "Auto-applied", render: viewAutoApplied },
     { id: "customers",  label: "Customers 360", render: viewCustomers },
   ];
   function buildNav() {
@@ -1033,6 +1034,58 @@
     });
     const cs = $("#cust-search");
     if (cs) cs.oninput = () => { custSearch = cs.value; const list2 = content.querySelector("#cust-list"); const matches = all.filter((x) => x.name.toLowerCase().includes(custSearch.toLowerCase())); list2.innerHTML = matches.length ? matches.map((x) => `<div class="cmt-card" data-cid="${x.id}" style="${x.id === c.id ? "border-color:var(--border-primary-default);background:var(--surface-primary-subtle)" : ""}"><div class="cell-main">${x.name}</div><div class="cell-sub">${x.country} · ${x.ccy} · ${x.terms}</div><div class="cmt-card__foot"><span>Open AR ${D.fmtCompact(x.openAr, x.ccy)}</span></div></div>`).join("") : `<div class="muted" style="font-size:13px;padding:8px">No customers match.</div>`; list2.querySelectorAll(".cmt-card").forEach((el) => { el.onclick = () => { activeCustomerId = el.dataset.cid; viewCustomers(); }; }); };
+  }
+
+  // ════════════════════════════════════════════════════════════════════════
+  //  AUTO-APPLIED (straight-through)
+  // ════════════════════════════════════════════════════════════════════════
+  let autoSearch = "";
+  function viewAutoApplied() {
+    const aa = D.autoAppliedFor(selectedEntityId), ccy = aa.ccy;
+    setTopbar("Auto-applied", "Cash matched &amp; posted straight-through by Neoflo AI — no analyst touch",
+      `<span class="topbar__chip"><span>Entity</span> ${currentEntity().name}</span><span class="topbar__chip"><span>Auto-apply rate</span> <b>${aa.autoApply}%</b></span>`);
+
+    const q = autoSearch.toLowerCase();
+    const rows = aa.list.filter((x) => !q || x.customer.toLowerCase().includes(q) || x.inv.toLowerCase().includes(q) || x.doc.includes(q));
+    const body = rows.length ? rows.map((x) => `
+      <tr>
+        <td class="muted" style="white-space:nowrap">${x.date}</td>
+        <td class="cell-main">${x.customer}</td>
+        <td>${x.inv}</td>
+        <td class="num strong">${fmt(x.amount, ccy)}</td>
+        <td>${pill(x.rule, x.tone)}</td>
+        <td><span class="conf-pill ${x.conf >= 0.85 ? "hi" : x.conf >= 0.7 ? "mid" : "lo"}">${Math.round(x.conf * 100)}%</span></td>
+        <td class="muted">${x.tta}</td>
+        <td class="mono">${x.doc}</td>
+        <td>${pill("Posted", "success")}</td>
+      </tr>`).join("") : `<tr><td colspan="9">${emptyState("No matches", `Nothing matches “${escapeAttr(autoSearch)}”.`)}</td></tr>`;
+
+    content.innerHTML = `
+      <div class="section" ${dc("aa.kpis", "Auto-applied · summary")}>
+        <div class="kpis">
+          <div class="kpi kpi--accent-success"><div class="kpi__label">Auto-applied (period)</div><div class="kpi__value">${aa.total.toLocaleString("en-SG")}</div><div class="kpi__sub">straight-through receipts · ${aa.autoApply}% of all cash</div></div>
+          <div class="kpi kpi--accent-primary"><div class="kpi__label">Value auto-applied</div><div class="kpi__value">${D.fmtCompact(aa.totalValue, ccy)}</div><div class="kpi__sub">posted with no human touch</div></div>
+          <div class="kpi kpi--accent-brand"><div class="kpi__label">Avg match confidence</div><div class="kpi__value">${Math.round(aa.avgConf * 100)}%</div><div class="kpi__sub">across auto-applied receipts</div></div>
+          <div class="kpi kpi--accent-success"><div class="kpi__label">Median time to apply</div><div class="kpi__value">${aa.medianTta}</div><div class="kpi__sub">receipt → cleared in ERP</div></div>
+        </div>
+      </div>
+      <div class="section" ${dc("aa.table", "Auto-applied · straight-through ledger")}>
+        <div class="card">
+          <div class="card__head">
+            <div class="card__title">Straight-through applications</div>
+            <input id="aa-search" placeholder="Search customer / invoice / doc…" value="${escapeAttr(autoSearch)}" style="margin-left:auto;width:280px;max-width:40vw;padding:8px 10px;border:1px solid var(--border-default-default);border-radius:var(--radius-sm);font-family:var(--font-family-inter);font-size:13px" />
+          </div>
+          <div class="aa-note">Showing the most recent <b>${aa.sampleN}</b> of <b>${aa.total.toLocaleString("en-SG")}</b> auto-applied this period. Every line was matched and posted by the engine under straight-through rules.</div>
+          <div class="card__body card__body--flush"><div class="table-wrap"><table class="tbl tbl--fixed">
+            <colgroup><col style="width:10%"><col style="width:18%"><col style="width:11%"><col style="width:12%"><col style="width:16%"><col style="width:9%"><col style="width:8%"><col style="width:10%"><col style="width:8%"></colgroup>
+            <thead><tr><th>Value date</th><th>Customer</th><th>Invoice</th><th class="num">Amount</th><th>Match rule</th><th>Conf.</th><th>Time</th><th>ERP doc</th><th>Status</th></tr></thead>
+            <tbody>${body}</tbody>
+          </table></div></div>
+        </div>
+      </div>`;
+
+    const s = $("#aa-search");
+    if (s) s.oninput = () => { autoSearch = s.value; viewAutoApplied(); window.COMMENTS && COMMENTS.refresh(); };
   }
 
   // ════════════════════════════════════════════════════════════════════════
