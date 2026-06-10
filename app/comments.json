@@ -240,22 +240,6 @@
     "resolutionNote": "Apply & post is enabled only when there is no variance (gap fully explained or residual parked on-account); disabled otherwise."
   },
   {
-    "id": "c_bimblh7ehwf",
-    "route": "#/dashboard",
-    "anchor": "dash.kpis",
-    "anchorLabel": "Dashboard · KPI tiles",
-    "xPct": 61.87943262411347,
-    "yPct": 83.8378927829584,
-    "author": "SME",
-    "text": "the \"view breakdown\" for \"Unapplied cash\" and \"view breakdown\" of \"open exceptions\" are not consistent.",
-    "status": "resolved",
-    "createdAt": "2026-06-10T07:40:40.095Z",
-    "updatedAt": "2026-06-10T07:51:22.392Z",
-    "resolvedAt": "2026-06-10T07:51:22.392Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "The two View breakdown links are now bottom-aligned (margin-top:auto) so they sit consistently regardless of sub-line length."
-  },
-  {
     "id": "c_pt3g4rwur5k",
     "route": "#/workspace",
     "anchor": "ws.allocation",
