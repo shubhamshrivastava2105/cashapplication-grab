@@ -411,8 +411,10 @@
     const discTotal = r.invoices.filter((i) => i.sel).reduce((s, i) => s + (i.discount || 0), 0);
     const bankCharge = r.gap.bankCharge || 0;
     const onAccount = r.gap.onAccount || 0;
-    const rebateTotal = r.adjustments.reduce((s, a) => s + a.amount, 0);
-    const unexplained = r.amount - allocated - bankCharge - rebateTotal - onAccount;
+    const rebateTotal = r.gap.rebate || 0;
+    // variance = cash − invoices applied; WHT/discount (per line) + rebate + bank
+    // charge EXPLAIN a short and reduce it; on-account parks an overpayment.
+    const unexplained = r.amount - allocated + rebateTotal + bankCharge - onAccount;
     const exact = Math.abs(unexplained) < 0.5;
     const canPost = exact && r.invoices.some((i) => i.sel || onAccount > 0);
     const anyPartial = r.invoices.some((i) => i.sel && cleared(i) > 0 && cleared(i) < i.open - 0.5);
@@ -426,15 +428,14 @@
         <td class="num">${num(i.open)}</td>
         <td class="num"><input class="line-in" data-i="${idx}" data-f="wht" value="${i.wht || 0}" ${i.sel ? "" : "disabled"} /></td>
         <td class="num"><input class="line-in" data-i="${idx}" data-f="discount" value="${i.discount || 0}" ${i.sel ? "" : "disabled"} /></td>
-        <td class="num ${i.apply ? "apply-amt" : "muted"}">${num(i.apply)}</td>
-      </tr>`; }).join("") : `<tr><td colspan="7" class="cmt-empty">No open invoices — identify the customer first.</td></tr>`;
+      </tr>`; }).join("") : `<tr><td colspan="6" class="cmt-empty">No open invoices — identify the customer first.</td></tr>`;
 
     const mid = `
       <div class="ws-pane" ${dc("ws.allocation", "Workspace · Open invoices & proposed allocation")}>
         <div class="ws-pane__title">Open invoices — proposed allocation</div>
         <div class="table-wrap" style="padding:12px 8px 0"><table class="tbl tbl--fixed alloc-tbl">
-          <colgroup><col style="width:7%"><col style="width:22%"><col style="width:17%"><col style="width:16%"><col style="width:13%"><col style="width:13%"><col style="width:12%"></colgroup>
-          <thead><tr><th>✓</th><th>Invoice</th><th>Due</th><th class="num">Open</th><th class="num">WHT</th><th class="num">Disc.</th><th class="num">Apply</th></tr></thead>
+          <colgroup><col style="width:8%"><col style="width:28%"><col style="width:22%"><col style="width:20%"><col style="width:11%"><col style="width:11%"></colgroup>
+          <thead><tr><th>✓</th><th>Invoice</th><th>Due</th><th class="num">Open</th><th class="num">WHT</th><th class="num">Disc.</th></tr></thead>
           <tbody>${rows}</tbody>
         </table></div>
         ${r.available && r.available.length ? `<div class="add-inv"><span>Add invoice</span>
@@ -452,30 +453,25 @@
         </div>` : ""}
       </div>`;
 
-    // right pane — gap (line-level WHT/discount totals + total-level bank charge/rebate)
-    const gapRow = (lbl, val, cls, extra) => `<div class="gap-row"><span class="lbl">${lbl}${extra || ""}</span><span class="val ${cls || ""}">${val}</span></div>`;
-    const adjRows = r.adjustments.map((a, idx) =>
-      `<div class="gap-row"><span class="lbl">${a.type} (total)</span><span class="val brand">− ${a.amount.toFixed(2)} <button class="adj-del" data-adj="${idx}" title="Remove">×</button></span></div>`).join("");
+    // right pane — gap: total-level adjustments grouped (bank charge, rebate, on-account).
+    // WHT & discount are per-invoice (in the allocation table) and shown read-only.
+    const rebateType = r.gap.rebateType || "Rebate";
+    const rebTypes = ["Rebate", "Agreed deduction", "Claim", "GST/VAT"];
     const right = `
       <div class="ws-pane" ${dc("ws.gap", "Workspace · Gap classification & actions")}>
         <div class="ws-pane__title">Gap classification</div>
         <div class="ws-pane__body">
-          <p class="gap-explain">WHT &amp; discount are taken <b>per invoice</b> (middle); bank charge &amp; rebate/deduction are <b>total-level</b> below.</p>
-          ${gapRow("WHT (per-invoice)", whtTotal ? "− " + whtTotal.toFixed(2) + " → receivable" : "—", whtTotal ? "brand" : "", whtTotal ? ` <button class="lnk-clear" id="clear-wht">clear</button>` : "")}
-          ${gapRow("Discount (per-invoice)", discTotal ? "− " + discTotal.toFixed(2) : "—")}
-          <div class="gap-row"><span class="lbl">Bank charge (total)</span><span class="val"><input class="gap-in" id="bankcharge-in" value="${bankCharge}" /></span></div>
-          ${adjRows}
-          <div class="gap-row"><span class="lbl">On account (total)${unexplained > 0.5 ? ` <button class="lnk-clear" id="park-oa">park residual</button>` : (onAccount > 0 ? ` <button class="lnk-clear" id="clear-oa">clear</button>` : "")}</span><span class="val ${onAccount ? "brand" : ""}"><input class="gap-in" id="onaccount-in" value="${onAccount}" /></span></div>
-          ${gapRow("Unexplained", exact ? "0.00" : (unexplained < 0 ? "+ " : "− ") + Math.abs(unexplained).toFixed(2), exact ? "ok" : "brand")}
-
-          <div class="adj-box">
-            <div class="adj-title">Add a total-level rebate / deduction</div>
-            <div class="adj-form">
-              <select id="adj-type"><option>Rebate</option><option>Agreed deduction</option><option>Claim</option><option>GST</option></select>
-              <input id="adj-amt" type="number" min="0" step="0.01" placeholder="Amount (${ccy})" />
-              <button class="btn btn--ghost btn--sm" id="adj-add">Add</button>
-            </div>
+          <p class="gap-explain">WHT &amp; discount are taken <b>per invoice</b> (allocation table). Bank charge, rebate/deduction and on-account are <b>total-level</b>.</p>
+          <div class="gap-group">
+            <div class="gap-irow"><span class="lbl">Bank charge</span><input class="gap-in" id="bankcharge-in" value="${bankCharge}" /></div>
+            <div class="gap-irow"><span class="lbl">Rebate / deduction <select id="rebate-type" class="gap-sel">${rebTypes.map((t) => `<option ${t === rebateType ? "selected" : ""}>${t}</option>`).join("")}</select></span><input class="gap-in" id="rebate-in" value="${rebateTotal}" /></div>
+            <div class="gap-irow"><span class="lbl">On account ${unexplained > 0.5 ? `<button class="lnk-clear" id="park-oa">park residual</button>` : (onAccount > 0 ? `<button class="lnk-clear" id="clear-oa">clear</button>` : "")}</span><input class="gap-in ${onAccount ? "is-set" : ""}" id="onaccount-in" value="${onAccount}" /></div>
           </div>
+          <div class="gap-derived">
+            <span>WHT (per-invoice) <b>${whtTotal ? num(whtTotal) : "—"}</b>${whtTotal ? ` <button class="lnk-clear" id="clear-wht">clear</button>` : ""}</span>
+            <span>Discount (per-invoice) <b>${discTotal ? num(discTotal) : "—"}</b></span>
+          </div>
+          <div class="gap-unex ${exact ? "ok" : "warn"}"><span>Unexplained</span><b>${exact ? "0.00" : (unexplained < 0 ? "+ " : "− ") + Math.abs(unexplained).toFixed(2)}</b></div>
 
           <button class="btn btn--ghost btn--block" id="simulate-entry" style="margin-top:14px">Simulate accounting entry</button>
           <div class="ws-pane__title" style="padding-left:0;margin-top:18px">Action</div>
@@ -488,7 +484,7 @@
         </div>
       </div>`;
 
-    cockpit.innerHTML = `<div class="workspace"><div class="ws-col">${left}${right}</div>${mid}</div>`;
+    cockpit.innerHTML = `<div class="workspace"><div class="ws-top">${left}${right}</div>${mid}</div>`;
 
     cockpit.querySelectorAll("[data-act]").forEach((b) => {
       b.onclick = () => actionConfirm(b.dataset.act, r);
@@ -533,18 +529,11 @@
     const pn = $("#partial-no");
     if (pn) pn.onclick = () => { delete _cockpit[selectedEntityId + ":" + r.id]; activeReceiptId = r.id; viewWorkspace(); toast("Sent for re-work — allocation reset"); };
 
-    // total-level rebate / deduction
-    const adjAdd = $("#adj-add");
-    if (adjAdd) adjAdd.onclick = () => {
-      const type = $("#adj-type").value;
-      const amt = parseFloat($("#adj-amt").value);
-      if (!amt || amt <= 0) { $("#adj-amt").focus(); return; }
-      r.adjustments.push({ type, amount: amt });
-      renderCockpit(r); toast(`Accounted ${type}: ${fmt(amt, r.ccy)}`);
-    };
-    cockpit.querySelectorAll(".adj-del").forEach((b) => {
-      b.onclick = () => { r.adjustments.splice(+b.dataset.adj, 1); renderCockpit(r); };
-    });
+    // total-level rebate / deduction (single field, grouped with bank charge & on-account)
+    const rebIn = $("#rebate-in");
+    if (rebIn) rebIn.onchange = () => { r.gap.rebate = Math.max(0, parseFloat(rebIn.value) || 0); renderCockpit(r); };
+    const rebType = $("#rebate-type");
+    if (rebType) rebType.onchange = () => { r.gap.rebateType = rebType.value; renderCockpit(r); };
 
     // remittance advice upload / view
     const up = $("#upload-remit"), rf = $("#remit-file");
@@ -645,7 +634,7 @@
     const wht = sel.reduce((s, i) => s + (i.wht || 0), 0);
     const disc = sel.reduce((s, i) => s + (i.discount || 0), 0);
     const bc = r.gap.bankCharge || 0, oa = r.gap.onAccount || 0;
-    const rebate = r.adjustments.reduce((s, a) => s + a.amount, 0);
+    const rebate = r.gap.rebate || 0;
     const lines = [["Bank", r.amount, 0]];
     if (wht) lines.push(["WHT receivable (asset)", wht, 0]);
     if (disc) lines.push(["Cash discount allowed (expense)", disc, 0]);
@@ -656,7 +645,7 @@
     lines.push([`AR — ${cust}`, 0, arCredit]);
     const body = lines.map((l) => `<tr><td class="cell-main">${l[0]}</td><td class="num">${l[1] ? fmt(l[1], ccy) : ""}</td><td class="num">${l[2] ? fmt(l[2], ccy) : ""}</td></tr>`).join("");
     const totD = lines.reduce((s, l) => s + l[1], 0), totC = lines.reduce((s, l) => s + l[2], 0);
-    const unexplained = r.amount - applied - bc - rebate - oa;
+    const unexplained = r.amount - applied + rebate + bc - oa;
     openModal("Simulated accounting entry", `
       <div class="modal-sub">Preview of the journal entry this application would post to the ERP. Nothing posts until you Apply &amp; post (under maker-checker).</div>
       <div class="table-wrap"><table class="tbl">
