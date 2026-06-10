@@ -120,12 +120,12 @@
     "yPct": 20.74892443924648,
     "author": "SME",
     "text": "i should also be able to remove the auto applied wht",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T13:03:01.360Z",
-    "updatedAt": "2026-06-09T13:33:05.665Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-10T07:34:06.152Z",
+    "resolvedAt": "2026-06-10T07:34:06.152Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Auto WHT is removable — edit the per-invoice WHT to 0, or use clear in the gap panel."
   },
   {
     "id": "c_gts3vdci6t2",
