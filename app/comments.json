@@ -48,22 +48,6 @@
     "resolutionNote": "The allocation-rule dropdown now actually re-allocates (FIFO/due-date/exact greedily re-spread the receipt; Remittance restores the directed allocation)."
   },
   {
-    "id": "c_6vgb71wwh6g",
-    "route": "#/deductions",
-    "anchor": "page",
-    "anchorLabel": "Page / navigation",
-    "xPct": 39.86206896551724,
-    "yPct": 3.875968992248062,
-    "author": "SME",
-    "text": "improve this entire page based on the prd and all the context you have till now based on all the comments and changes you made",
-    "status": "resolved",
-    "createdAt": "2026-06-09T11:22:55.864Z",
-    "updatedAt": "2026-06-09T11:42:16.070Z",
-    "resolvedAt": "2026-06-09T11:42:16.070Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "Addressed via the cumulative PRD-aligned overhaul this review. Flag specific spots for further refinement."
-  },
-  {
     "id": "c_nk510qxyk71",
     "route": "#/reports",
     "anchor": "page",
