@@ -192,22 +192,6 @@
     "resolutionNote": "Removed the Reports & close page after moving the trend chart to the dashboard."
   },
   {
-    "id": "c_qfv0ohyf6xw",
-    "route": "#/workspace",
-    "anchor": "ws.gap",
-    "anchorLabel": "Workspace · Gap classification & actions",
-    "xPct": 28.823529411764703,
-    "yPct": 54.27196277640228,
-    "author": "SME",
-    "text": "even for rebate, the variance should reduce and not increase",
-    "status": "resolved",
-    "createdAt": "2026-06-10T08:09:12.164Z",
-    "updatedAt": "2026-06-10T08:25:32.882Z",
-    "resolvedAt": "2026-06-10T08:25:32.882Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "Fixed: rebate now reduces the variance (sign corrected)."
-  },
-  {
     "id": "c_kmyxhq3hvag",
     "route": "#/workspace",
     "anchor": "ws.gap",
