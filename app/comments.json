@@ -280,12 +280,12 @@
     "yPct": 27.736570015733875,
     "author": "SME",
     "text": "show the total view that we see on SAP. \nEG: open items, all items etc",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T13:13:20.326Z",
-    "updatedAt": "2026-06-09T13:13:20.326Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-10T07:22:17.989Z",
+    "resolvedAt": "2026-06-10T07:22:17.989Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Added a SAP-style Account line items view to Customer 360 (Open items / Cleared / All items tabs, with open/cleared/balance totals)."
   },
   {
     "id": "c_bv82gmautfc",
