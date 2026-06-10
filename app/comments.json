@@ -366,5 +366,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_il2iv4xc203",
+    "route": "#/workspace",
+    "anchor": "ws.gap",
+    "anchorLabel": "Workspace · Gap classification & actions",
+    "xPct": 42.05882352941177,
+    "yPct": 73.8337649437724,
+    "author": "SME",
+    "text": "the apply button should get activated only when there is no vairance",
+    "status": "open",
+    "createdAt": "2026-06-10T07:38:46.179Z",
+    "updatedAt": "2026-06-10T07:38:46.181Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
