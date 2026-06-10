@@ -222,5 +222,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_cntupeykwzw",
+    "route": "#/customers",
+    "anchor": "cust.items",
+    "anchorLabel": "Customer 360 · SAP account view",
+    "xPct": 41.417910447761194,
+    "yPct": 14.93591554722215,
+    "author": "SME",
+    "text": "the break for the unapplied is not shown in this table. please add that too",
+    "status": "open",
+    "createdAt": "2026-06-10T11:01:36.908Z",
+    "updatedAt": "2026-06-10T11:01:36.908Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
