@@ -288,22 +288,6 @@
     "resolutionNote": "Remittance is now a detailed SAP/PDF-style advice: remitting party + beneficiary, SWIFT/BIC, invoice no/date/due, gross/WHT/paid, bank narration."
   },
   {
-    "id": "c_0cc5rj7gx1n",
-    "route": "#/workspace",
-    "anchor": "ws.allocation",
-    "anchorLabel": "Workspace · Open invoices & proposed allocation",
-    "xPct": 49.77064220183486,
-    "yPct": 70.84650300625015,
-    "author": "SME",
-    "text": "on confirm and no rework when confirmed, the dialog box should close and disappear",
-    "status": "resolved",
-    "createdAt": "2026-06-09T13:30:48.011Z",
-    "updatedAt": "2026-06-10T07:34:17.108Z",
-    "resolvedAt": "2026-06-10T07:34:17.108Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "Yes-confirm and No-rework now act directly and dismiss the banner (no lingering dialog)."
-  },
-  {
     "id": "c_bmrnzc8lxb9",
     "route": "#/workspace",
     "anchor": "ws.gap",
