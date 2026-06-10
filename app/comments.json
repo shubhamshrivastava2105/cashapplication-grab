@@ -224,22 +224,6 @@
     "resolutionNote": "Apply & post is disabled until the receipt is balanced (gap explained or residual parked on-account)."
   },
   {
-    "id": "c_hb4zvcct2eu",
-    "route": "#/workspace",
-    "anchor": "ws.gap",
-    "anchorLabel": "Workspace · Gap classification & actions",
-    "xPct": 25.882352941176475,
-    "yPct": 56.017253261722,
-    "author": "SME",
-    "text": "there is something called \"on account\", which is missing.",
-    "status": "resolved",
-    "createdAt": "2026-06-09T13:40:14.838Z",
-    "updatedAt": "2026-06-10T07:34:27.598Z",
-    "resolvedAt": "2026-06-10T07:34:27.598Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "Added an On-account line in the gap panel with a park-residual action and editable amount."
-  },
-  {
     "id": "c_bdy8ik373ic",
     "route": "#/workspace",
     "anchor": "ws.allocation",
