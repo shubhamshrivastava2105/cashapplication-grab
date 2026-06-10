@@ -336,22 +336,6 @@
     "resolutionNote": "Apply & post is disabled until the receipt is balanced (gap explained or residual parked on-account)."
   },
   {
-    "id": "c_34p6bvuog9a",
-    "route": "#/workspace",
-    "anchor": "ws.allocation",
-    "anchorLabel": "Workspace · Open invoices & proposed allocation",
-    "xPct": 72.01834862385321,
-    "yPct": 49.78136362556144,
-    "author": "SME",
-    "text": "+ amount can be posted.",
-    "status": "resolved",
-    "createdAt": "2026-06-09T13:36:39.502Z",
-    "updatedAt": "2026-06-10T07:34:26.157Z",
-    "resolvedAt": "2026-06-10T07:34:26.157Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "Overpayment (+) can be posted — park the residual on-account, then Apply & post enables."
-  },
-  {
     "id": "c_hb4zvcct2eu",
     "route": "#/workspace",
     "anchor": "ws.gap",
