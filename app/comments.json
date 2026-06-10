@@ -222,21 +222,5 @@
     "resolvedAt": "2026-06-10T11:12:17.510Z",
     "resolvedBy": "Claude",
     "resolutionNote": "Customer 360 SAP account view now has an Unapplied tab listing the actual unapplied receipts (document, posting date, type/reason, amount, age) that sum to the Unapplied KPI — and these are the same line items shown on the dashboard, so it ties out. Also fixed the broader consistency: receipts now spread across all customers so every Customer-360 record reflects real dashboard data."
-  },
-  {
-    "id": "c_8ieiqylygpx",
-    "route": "#/workspace",
-    "anchor": "ws.gap",
-    "anchorLabel": "Workspace · Gap classification & actions",
-    "xPct": 75.52631578947368,
-    "yPct": 18.240692915888594,
-    "author": "SME",
-    "text": "the confidence score is not properly aligned and should look better",
-    "status": "resolved",
-    "createdAt": "2026-06-10T11:12:08.997Z",
-    "updatedAt": "2026-06-10T11:18:20.445Z",
-    "resolvedAt": "2026-06-10T11:18:20.445Z",
-    "resolvedBy": "Claude",
-    "resolutionNote": "Fixed: the confidence pill was wrapping onto two lines (96% / confidence) and the header title wrapped too. The AI card header is now a single clean line — name on the left (truncates if needed) and a compact, vertically-centred, non-wrapping \"<n>% match\" pill on the right."
   }
 ]
