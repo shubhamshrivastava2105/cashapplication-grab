@@ -238,5 +238,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_qfv0ohyf6xw",
+    "route": "#/workspace",
+    "anchor": "ws.gap",
+    "anchorLabel": "Workspace · Gap classification & actions",
+    "xPct": 28.823529411764703,
+    "yPct": 54.27196277640228,
+    "author": "SME",
+    "text": "even for rebate, the variance should reduce and not increase",
+    "status": "open",
+    "createdAt": "2026-06-10T08:09:12.164Z",
+    "updatedAt": "2026-06-10T08:09:12.164Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
