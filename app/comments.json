@@ -200,12 +200,12 @@
     "yPct": 89.6106048053024,
     "author": "SME",
     "text": "add year along with the month. eg: jul'25",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-10T09:46:45.680Z",
-    "updatedAt": "2026-06-10T09:46:45.682Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-10T10:33:39.365Z",
+    "resolvedAt": "2026-06-10T10:33:39.365Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Dashboard trend x-axis now shows the year with each month — Jul'25 … Jun'26."
   },
   {
     "id": "c_7x8iom13y19",
