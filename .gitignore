@@ -6,3 +6,6 @@ node_modules/
 # Confidential source material — kept out of the public repo
 prd/
 Designs/
+
+# Confidential demo / positioning notes (keep off the public repo)
+DEMO.md
