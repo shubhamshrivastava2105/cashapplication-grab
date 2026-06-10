@@ -232,12 +232,12 @@
     "yPct": 73.8337649437724,
     "author": "SME",
     "text": "the apply button should get activated only when there is no vairance",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-10T07:38:46.179Z",
-    "updatedAt": "2026-06-10T07:38:46.181Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-10T07:51:21.363Z",
+    "resolvedAt": "2026-06-10T07:51:21.363Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "Apply & post is enabled only when there is no variance (gap fully explained or residual parked on-account); disabled otherwise."
   },
   {
     "id": "c_bimblh7ehwf",
