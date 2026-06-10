@@ -312,6 +312,8 @@
   // ════════════════════════════════════════════════════════════════════════
   let activeReceiptId = null;
   const _cockpit = {};                       // per credit, so edits persist across renders
+  const postedIds = new Set();               // credits that have been applied & posted (drop from the open queue)
+  const postedKey = (id) => selectedEntityId + ":" + id;
   function bankName() { const b = D.banks.find((x) => x.id === selectedBankId); return b ? b.name : "—"; }
   function confOf(it) { return it.reason === "Unidentified customer" ? "—" : (0.72 + ((Math.abs(it.amount) % 26) / 100)).toFixed(2); }
   function getCredit(id) {
@@ -329,25 +331,28 @@
 
   function viewWorkspace() {
     const db = D.dashboardFor(selectedEntityId), ccy = db.ccy;
+    // Only the credits still open — posted ones drop out of the queue.
+    const openList = db.list.filter((x) => !postedIds.has(postedKey(x.id)));
+    if (!openList.some((x) => x.id === activeReceiptId)) activeReceiptId = (openList[0] || db.list[0]).id;
     const r = getCredit(activeReceiptId); activeReceiptId = r.id;
     setTopbar("Apply cash", "Match each bank credit to open invoices, classify the gap, and post to the ERP",
       `<span class="topbar__chip"><span>Entity</span> ${currentEntity().name}</span>${bankSelectChip()}`,
       uploadStmtAction());
 
     // Same bank-statement credits as the dashboard (consistent data + amounts)
-    const queueRows = db.list.map((x) => `
+    const queueRows = openList.length ? openList.map((x) => `
       <tr class="queue-row ${x.id === r.id ? "is-active" : ""}" data-rid="${x.id}">
         <td class="muted" style="white-space:nowrap">${x.date}</td>
         <td><div class="cell-main" style="font-weight:var(--font-weight-medium)">${x.desc}</div><div class="cell-sub">${bankName()} · ref ${x.id}</div></td>
         <td class="num strong">${fmt(x.amount, ccy)}</td>
         <td>${x.customer === "— unidentified —" ? `<span class="pill pill--error">Unidentified</span>` : `<span class="cell-main">${x.customer}</span>`}</td>
         <td class="dot-conf">${confOf(x)}</td>
-      </tr>`).join("");
+      </tr>`).join("") : `<tr><td colspan="5">${emptyState("All credits applied", "Every open credit for this account has been posted. Upload a new statement to continue.")}</td></tr>`;
 
     content.innerHTML = `
       <div class="section">
         <div class="card">
-          <div class="card__head"><div class="card__title">Bank statement — open &amp; unapplied credits</div><span class="muted" style="font-size:12px">${db.list.length} lines</span></div>
+          <div class="card__head"><div class="card__title">Bank statement — open &amp; unapplied credits</div><span class="muted" style="font-size:12px">${openList.length} open</span></div>
           <div class="card__body card__body--flush"><div class="table-wrap ws-queue-scroll" id="ws-queue-scroll"><table class="tbl tbl--fixed">
             <colgroup><col style="width:11%"><col style="width:45%"><col style="width:15%"><col style="width:19%"><col style="width:10%"></colgroup>
             <thead><tr><th>Date</th><th>Description</th><th class="num">Amount</th><th>Identified customer</th><th>Conf.</th></tr></thead>
@@ -854,7 +859,9 @@
       <div class="modal-sub" style="margin-top:14px">Journal entry posted</div>
       ${jeTable(je)}
       <div style="margin-top:18px;display:flex;justify-content:flex-end"><button class="btn btn--primary" id="ps-done">Done</button></div>`);
-    const done = document.getElementById("ps-done"); if (done) done.onclick = closeModal;
+    // mark this credit as posted so it drops off the open queue, and re-render to advance
+    postedIds.add(postedKey(r.id));
+    const done = document.getElementById("ps-done"); if (done) done.onclick = () => { closeModal(); viewWorkspace(); };
   }
 
   // Action buttons open a confirmation dialog (clear, visible feedback)
@@ -1086,7 +1093,7 @@
   // ════════════════════════════════════════════════════════════════════════
   //  APPLIED CASH
   // ════════════════════════════════════════════════════════════════════════
-  let autoSearch = "", autoPeriod = "30", autoBank = "all", autoFrom = "", autoTo = "";
+  let autoSearch = "", autoPeriod = "30", autoBank = "all", autoFrom = "", autoTo = "", autoSort = { key: "date", dir: -1 };
   const PERIODS = [{ v: "7", label: "Last 7 days" }, { v: "30", label: "Last 30 days" }, { v: "90", label: "Last 90 days" }, { v: "all", label: "All time" }, { v: "custom", label: "Custom range…" }];
   function viewAutoApplied() {
     const aa = D.autoAppliedFor(selectedEntityId), ccy = aa.ccy;
@@ -1104,6 +1111,14 @@
       inPeriod(x) &&
       (autoBank === "all" || x.bankId === autoBank) &&
       (!q || x.customer.toLowerCase().includes(q) || x.invoices.some((v) => v.inv.toLowerCase().includes(q)) || x.doc.includes(q)));
+    // column sort
+    rows.sort((a, b) => {
+      const k = autoSort.key;
+      const av = k === "amount" ? a.amount : k === "customer" ? a.customer : k === "bank" ? a.bankName : a.date;
+      const bv = k === "amount" ? b.amount : k === "customer" ? b.customer : k === "bank" ? b.bankName : b.date;
+      return (av < bv ? -1 : av > bv ? 1 : 0) * autoSort.dir;
+    });
+    const sortInd = (k) => autoSort.key === k ? `<span class="sort-ind">${autoSort.dir < 0 ? "↓" : "↑"}</span>` : "";
     // filter-aware KPIs
     const count = rows.length;
     const value = rows.reduce((s, x) => s + x.amount, 0);
@@ -1155,7 +1170,7 @@
           </div>
           <div class="card__body card__body--flush"><div class="table-wrap aa-scroll"><table class="tbl tbl--fixed">
             <colgroup><col style="width:9%"><col style="width:21%"><col style="width:11%"><col style="width:16%"><col style="width:11%"><col style="width:14%"><col style="width:10%"><col style="width:8%"></colgroup>
-            <thead><tr><th>Value date</th><th>Description</th><th class="num">Amount</th><th>Customer</th><th>Invoice</th><th>Bank account</th><th>ERP doc</th><th>Status</th></tr></thead>
+            <thead><tr><th class="sortable" data-asort="date">Value date ${sortInd("date")}</th><th>Description</th><th class="num sortable" data-asort="amount">Amount ${sortInd("amount")}</th><th class="sortable" data-asort="customer">Customer ${sortInd("customer")}</th><th>Invoice</th><th class="sortable" data-asort="bank">Bank account ${sortInd("bank")}</th><th>ERP doc</th><th>Status</th></tr></thead>
             <tbody>${body}</tbody>
           </table></div></div>
         </div>
@@ -1171,6 +1186,13 @@
     if (toEl) toEl.onchange = () => { autoTo = toEl.value; viewAutoApplied(); };
     const bs = $("#aa-bank");
     if (bs) bs.onchange = () => { autoBank = bs.value; viewAutoApplied(); };
+    content.querySelectorAll("th.sortable[data-asort]").forEach((th) => {
+      th.onclick = () => {
+        const k = th.dataset.asort;
+        if (autoSort.key === k) autoSort.dir *= -1; else { autoSort.key = k; autoSort.dir = (k === "amount" || k === "date") ? -1 : 1; }
+        viewAutoApplied();
+      };
+    });
     content.querySelectorAll("tr.clickable[data-aid]").forEach((tr) => {
       tr.onclick = () => appliedDetail(rows[+tr.dataset.aid], ccy);
     });

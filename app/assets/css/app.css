@@ -387,6 +387,7 @@ table.tbl--fixed { table-layout: fixed; }
 .row-actions { display: inline-flex; gap: 6px; justify-content: flex-end; }
 th.sortable { cursor: pointer; user-select: none; }
 th.sortable:hover { color: var(--text-default-heading); background: var(--grey-100); }
+.sort-ind { color: var(--text-primary-default); font-weight: var(--font-weight-bold); margin-left: 2px; }
 .tbl--fixed .cell-sub { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .table-scroll thead th { position: sticky; top: 0; z-index: 1; }
 .hbar__val { text-align: right; font-variant-numeric: tabular-nums; color: var(--text-default-caption); font-weight: var(--font-weight-semibold); }
