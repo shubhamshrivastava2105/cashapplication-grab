@@ -360,12 +360,12 @@
     "yPct": 21.948002566600916,
     "author": "SME",
     "text": "the user should be able to change wht on an invoice level, same for discount.",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-09T13:34:41.637Z",
-    "updatedAt": "2026-06-09T13:34:41.637Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-10T07:34:19.411Z",
+    "resolvedAt": "2026-06-10T07:34:19.411Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "WHT and discount are editable per invoice (line inputs)."
   },
   {
     "id": "c_m2rmay1mf2z",
