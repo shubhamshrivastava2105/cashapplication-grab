@@ -334,5 +334,21 @@
     "resolvedAt": null,
     "resolvedBy": null,
     "resolutionNote": null
+  },
+  {
+    "id": "c_66v7pfmo92x",
+    "route": "#/applied",
+    "anchor": "aa.table",
+    "anchorLabel": "Auto-applied · straight-through ledger",
+    "xPct": 25.423728813559322,
+    "yPct": 1.31718304816743,
+    "author": "SME",
+    "text": "the line items should be clickable and then it should open all the details which is releveant",
+    "status": "open",
+    "createdAt": "2026-06-10T12:00:11.769Z",
+    "updatedAt": "2026-06-10T12:00:11.769Z",
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null
   }
 ]
