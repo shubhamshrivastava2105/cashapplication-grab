@@ -124,6 +124,9 @@ body.nav-collapsed .sidebar__toggle svg { transform: rotate(180deg); }
   border-radius: var(--radius-sm); padding: 7px 8px; cursor: pointer;
 }
 .sidebar__addbank:hover { background: rgba(255,255,255,.06); color: var(--text-on-colour-heading); border-color: rgba(255,255,255,.3); }
+.sidebar__bankbtns { display: flex; flex-direction: column; }
+.sidebar__addbank--primary { border-style: solid; border-color: rgba(255,255,255,.28); background: rgba(255,255,255,.06); color: var(--text-on-colour-heading); }
+.sidebar__addbank--primary:hover { background: rgba(255,255,255,.12); border-color: rgba(255,255,255,.45); }
 .bankform { margin-top: var(--scale-300); border-top: 1px solid var(--border-default-default); padding-top: var(--scale-300); }
 .bankform__title { font-size: 13px; font-weight: var(--font-weight-bold); color: var(--text-default-heading); margin-bottom: var(--scale-200); font-family: var(--font-family-plus-jakarta-sans); }
 .bankform input[type="text"], .bankform #bank-name { width: 100%; font-family: var(--font-family-inter); font-size: 13px; border: 1px solid var(--border-default-default); border-radius: var(--radius-sm); padding: 8px; }
@@ -229,6 +232,13 @@ body.nav-collapsed .sidebar__user-meta { display: none; }
 .multi-inv { display: inline-block; font-size: 12px; font-weight: var(--font-weight-semibold); color: var(--text-primary-default); background: var(--surface-primary-subtle); border: 1px solid var(--border-primary-default); border-radius: 999px; padding: 1px 9px; }
 .row-chev { float: right; color: var(--text-default-placeholder); font-weight: var(--font-weight-bold); }
 .tbl tbody tr.clickable:hover .row-chev { color: var(--text-primary-default); }
+/* manual statement upload drop zone */
+.upload-drop { border: 2px dashed var(--border-default-default-hover); border-radius: var(--radius-md); padding: var(--scale-500) var(--scale-400); text-align: center; cursor: pointer; background: var(--grey-50); transition: border-color .13s ease, background-color .13s ease; }
+.upload-drop:hover, .upload-drop.is-over { border-color: var(--border-primary-default); background: var(--surface-primary-subtle); }
+.upload-drop__icon { color: var(--text-primary-default); display: flex; justify-content: center; margin-bottom: 8px; }
+.upload-drop__icon svg { width: 30px; height: 30px; }
+.upload-drop__title { font-weight: var(--font-weight-semibold); color: var(--text-default-heading); font-size: 14px; }
+.upload-drop__file { display: block; margin-top: 8px; font-size: 12px; color: var(--text-primary-default); font-weight: var(--font-weight-semibold); }
 
 /* ─── KPI tiles (left-accent cards, per product reference) ────────────────── */
 .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--scale-300); }

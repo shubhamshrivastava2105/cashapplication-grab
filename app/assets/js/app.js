@@ -111,6 +111,7 @@
   let dashTf = 12; // trend timeframe in months
   // Neoflo AI mark — a four-point sparkle used wherever the model makes a suggestion.
   const aiSparkSvg = `<svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden="true"><path d="M12 2l1.9 5.6a4 4 0 0 0 2.5 2.5L22 12l-5.6 1.9a4 4 0 0 0-2.5 2.5L12 22l-1.9-5.6a4 4 0 0 0-2.5-2.5L2 12l5.6-1.9a4 4 0 0 0 2.5-2.5L12 2z"/></svg>`;
+  const uploadIcon = `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px"><path d="M12 16V4M6 10l6-6 6 6M4 20h16"/></svg>`;
 
   // ════════════════════════════════════════════════════════════════════════
   //  DASHBOARD
@@ -422,7 +423,7 @@
                 <button class="btn btn--ghost btn--sm" id="upload-remit">Upload remittance</button>
                 <input type="file" id="remit-file" style="display:none" accept=".pdf,.eml,.csv,.xlsx,.xls,.png,.jpg" />
               </div>
-              <div class="remit-hint">Auto-matched from the connected AR mailbox; or upload a PDF/email to link a payment reference.</div>
+              <div class="remit-hint">Upload a remittance advice (PDF / email / CSV) to link the payment to its invoices.</div>
             </div>
           </div>
         </div>
@@ -439,17 +440,14 @@
     const rebateTotal = r.gap.rebate || 0;
     // O2C: cash received can fall SHORT of the invoices for legitimate reasons — WHT
     // and cash discount (per line, already inside `allocated`), bank charges deducted in
-    // transit, and agreed rebates / deductions. Each explains part of the shortfall, so
-    // each reduces the variance toward 0. When cash EXCEEDS the invoices it's an
-    // overpayment, parked on-account. The two are mutually exclusive: a short is closed
-    // with deductions (never on-account); an overpayment is parked on-account (deductions
-    // don't apply). Clamped so a field can only ever close the gap, never open one.
+    // transit, and agreed rebates / deductions reduce a short; an overpayment is parked
+    // on-account. Every field uses the EXACT amount entered (no clamping) — over-entering
+    // a deduction simply flips the variance the other way ("X over") so the analyst can
+    // see it and correct, rather than the figure being silently capped.
     const grossGap = allocated - r.amount;                    // + short, − overpay (post per-line WHT/disc)
     const isOverpay = grossGap < -0.5;                        // cash received exceeds the invoices
     const isShort = grossGap > 0.5;                           // cash received is less than the invoices
-    const unexplained = grossGap > 0
-      ? Math.max(0, grossGap - bankCharge - rebateTotal)      // short: explained by bank charge + rebate (+ per-line WHT/disc)
-      : Math.min(0, grossGap + onAccount);                    // overpay: parked on-account
+    const unexplained = grossGap - bankCharge - rebateTotal + onAccount;
     const exact = Math.abs(unexplained) < 0.5;
     const canPost = exact && r.invoices.some((i) => i.sel);
     // ── Neoflo AI gap classifier ──────────────────────────────────────────────
@@ -581,7 +579,7 @@
       const rb = Math.max(0, parseFloat(($("#rebate-in") || {}).value) || 0);
       const oaV = Math.max(0, parseFloat(($("#onaccount-in") || {}).value) || 0);
       const gg = allocated - r.amount;
-      const unex = gg > 0 ? Math.max(0, gg - bc - rb) : Math.min(0, gg + oaV);
+      const unex = gg - bc - rb + oaV;
       const ok = Math.abs(unex) < 0.5;
       const av = $("#alloc-var");
       if (av) { av.className = "bal-chip " + (ok ? "ok" : "warn"); av.textContent = balText(unex, ok); }
@@ -726,7 +724,7 @@
             <tr class="modal-total"><td colspan="3" class="num">Total remitted</td><td class="num">${fmt(grossTotal, ccy)}</td><td class="num">${whtTotal ? "− " + fmt(whtTotal, ccy) : "—"}</td><td class="num strong">${fmt(r.amount, ccy)}</td></tr>
           </tbody>
         </table>
-        <div class="remit-doc__foot">Bank narration: <code>${r.narration}</code> · SWIFT/BIC ${swift}. ${r.remittance.file ? "Uploaded: " + escapeAttr(r.remittance.file) + "." : "Auto-matched from the connected AR mailbox."} Apply the lines via the allocation table.</div>
+        <div class="remit-doc__foot">Bank narration: <code>${r.narration}</code> · SWIFT/BIC ${swift}. ${r.remittance.file ? "Uploaded: " + escapeAttr(r.remittance.file) + "." : "Parsed from an uploaded remittance advice."} Apply the lines via the allocation table.</div>
       </div>`);
   }
 
@@ -781,12 +779,9 @@
     const disc = sel.reduce((s, i) => s + (i.discount || 0), 0);
     const arCleared = applied + wht + disc;       // invoices cleared in full (Σ open of selected)
     const grossGap = applied - r.amount;          // > 0 short, < 0 overpay (post per-line WHT/disc)
-    let shortNeed = Math.max(0, grossGap);
-    const bc = Math.min(r.gap.bankCharge || 0, shortNeed); shortNeed -= bc;
-    const rebate = Math.min(r.gap.rebate || 0, shortNeed); shortNeed -= rebate;
-    const overpay = Math.max(0, -grossGap);
-    const oaCredit = Math.min(r.gap.onAccount || 0, overpay);               // overpayment → advance (Cr)
-    const unexplained = grossGap > 0 ? shortNeed : -(overpay - oaCredit);
+    // Use the EXACT amounts the analyst entered (no capping).
+    const bc = r.gap.bankCharge || 0, rebate = r.gap.rebate || 0, oaCredit = r.gap.onAccount || 0;
+    const unexplained = grossGap - bc - rebate + oaCredit;
     const lines = [["Bank (cash received)", r.amount, 0]];
     if (wht) lines.push(["WHT receivable (asset)", wht, 0]);
     if (disc) lines.push(["Cash discount allowed (expense)", disc, 0]);
@@ -1045,16 +1040,22 @@
   // ════════════════════════════════════════════════════════════════════════
   //  APPLIED CASH
   // ════════════════════════════════════════════════════════════════════════
-  let autoSearch = "", autoPeriod = 30, autoBank = "all";
-  const PERIODS = [{ d: 7, label: "Last 7 days" }, { d: 30, label: "Last 30 days" }, { d: 90, label: "Last 90 days" }, { d: 9999, label: "All time" }];
+  let autoSearch = "", autoPeriod = "30", autoBank = "all", autoFrom = "", autoTo = "";
+  const PERIODS = [{ v: "7", label: "Last 7 days" }, { v: "30", label: "Last 30 days" }, { v: "90", label: "Last 90 days" }, { v: "all", label: "All time" }, { v: "custom", label: "Custom range…" }];
   function viewAutoApplied() {
     const aa = D.autoAppliedFor(selectedEntityId), ccy = aa.ccy;
     setTopbar("Applied cash", "Every receipt matched and posted to open invoices — searchable by period and bank account",
       `<span class="topbar__chip"><span>Entity</span> ${currentEntity().name}</span><span class="topbar__chip"><span>Auto-apply rate</span> <b>${aa.autoApply}%</b></span>`);
 
+    const allDates = aa.list.map((x) => x.date).sort();
+    const minDate = allDates[0], maxDate = allDates[allDates.length - 1];
+    if (autoPeriod === "custom") { if (!autoFrom) autoFrom = minDate; if (!autoTo) autoTo = maxDate; }
+    const inPeriod = (x) => autoPeriod === "custom" ? ((!autoFrom || x.date >= autoFrom) && (!autoTo || x.date <= autoTo))
+      : autoPeriod === "all" ? true : x.ageDays <= +autoPeriod;
+
     const q = autoSearch.toLowerCase();
     const rows = aa.list.filter((x) =>
-      x.ageDays <= autoPeriod &&
+      inPeriod(x) &&
       (autoBank === "all" || x.bankId === autoBank) &&
       (!q || x.customer.toLowerCase().includes(q) || x.invoices.some((v) => v.inv.toLowerCase().includes(q)) || x.doc.includes(q)));
     // filter-aware KPIs
@@ -1064,7 +1065,7 @@
     const ttas = rows.map((x) => x.ttaMin).sort((a, b) => a - b);
     const medTtaMin = ttas.length ? ttas[Math.floor(ttas.length / 2)] : 0;
     const medTta = medTtaMin < 60 ? medTtaMin + " min" : (medTtaMin / 60).toFixed(1) + " hr";
-    const periodLabel = (PERIODS.find((p) => p.d === autoPeriod) || PERIODS[1]).label.toLowerCase();
+    const periodLabel = autoPeriod === "custom" ? `${autoFrom} → ${autoTo}` : (PERIODS.find((p) => p.v === autoPeriod) || PERIODS[1]).label.toLowerCase();
 
     const body = rows.length ? rows.map((x, idx) => `
       <tr class="clickable" data-aid="${idx}">
@@ -1079,21 +1080,24 @@
 
     const bankOpts = `<option value="all" ${autoBank === "all" ? "selected" : ""}>All bank accounts (${aa.banks.length})</option>` +
       aa.banks.map((b) => `<option value="${b.id}" ${autoBank === b.id ? "selected" : ""}>${b.name}</option>`).join("");
-    const periodOpts = PERIODS.map((p) => `<option value="${p.d}" ${autoPeriod === p.d ? "selected" : ""}>${p.label}</option>`).join("");
+    const periodOpts = PERIODS.map((p) => `<option value="${p.v}" ${autoPeriod === p.v ? "selected" : ""}>${p.label}</option>`).join("");
+    const customFields = autoPeriod === "custom" ? `
+          <label class="filter-field"><span>From</span><input type="date" id="aa-from" class="filter-sel" value="${autoFrom}" min="${minDate}" max="${maxDate}" /></label>
+          <label class="filter-field"><span>To</span><input type="date" id="aa-to" class="filter-sel" value="${autoTo}" min="${minDate}" max="${maxDate}" /></label>` : "";
 
     content.innerHTML = `
       <div class="section" ${dc("aa.filters", "Applied cash · filters")}>
         <div class="filter-bar">
           <label class="filter-field"><span>Period</span><select id="aa-period" class="filter-sel">${periodOpts}</select></label>
+          ${customFields}
           <label class="filter-field"><span>Bank account</span><select id="aa-bank" class="filter-sel">${bankOpts}</select></label>
           <input id="aa-search" placeholder="Search customer / invoice / doc…" value="${escapeAttr(autoSearch)}" class="filter-search" />
         </div>
       </div>
       <div class="section" ${dc("aa.kpis", "Applied cash · summary")}>
-        <div class="kpis" style="grid-template-columns:repeat(3,1fr)">
+        <div class="kpis" style="grid-template-columns:repeat(2,minmax(0,1fr));max-width:760px">
           <div class="kpi kpi--accent-success"><div class="kpi__label">Applied (${periodLabel})</div><div class="kpi__value">${count.toLocaleString("en-SG")}</div><div class="kpi__sub">receipts matched &amp; posted</div></div>
           <div class="kpi kpi--accent-primary"><div class="kpi__label">Value applied</div><div class="kpi__value">${D.fmtCompact(value, ccy)}</div><div class="kpi__sub">cleared to open invoices</div></div>
-          <div class="kpi kpi--accent-brand"><div class="kpi__label">Avg match confidence</div><div class="kpi__value">${count ? Math.round(avgConf * 100) : 0}%</div><div class="kpi__sub">across applied receipts</div></div>
         </div>
       </div>
       <div class="section" ${dc("aa.table", "Applied cash · ledger")}>
@@ -1113,7 +1117,11 @@
     const s = $("#aa-search");
     if (s) s.oninput = () => { autoSearch = s.value; viewAutoApplied(); window.COMMENTS && COMMENTS.refresh(); };
     const ps = $("#aa-period");
-    if (ps) ps.onchange = () => { autoPeriod = +ps.value; viewAutoApplied(); window.COMMENTS && COMMENTS.refresh(); };
+    if (ps) ps.onchange = () => { autoPeriod = ps.value; if (autoPeriod !== "custom") { autoFrom = ""; autoTo = ""; } viewAutoApplied(); window.COMMENTS && COMMENTS.refresh(); };
+    const fromEl = $("#aa-from");
+    if (fromEl) fromEl.onchange = () => { autoFrom = fromEl.value; viewAutoApplied(); window.COMMENTS && COMMENTS.refresh(); };
+    const toEl = $("#aa-to");
+    if (toEl) toEl.onchange = () => { autoTo = toEl.value; viewAutoApplied(); window.COMMENTS && COMMENTS.refresh(); };
     const bs = $("#aa-bank");
     if (bs) bs.onchange = () => { autoBank = bs.value; viewAutoApplied(); window.COMMENTS && COMMENTS.refresh(); };
     content.querySelectorAll("tr.clickable[data-aid]").forEach((tr) => {
@@ -1149,7 +1157,7 @@
         <div><div class="post-ok__title">${x.customer} · ${fmt(x.amount, ccy)}</div><div class="post-ok__sub">${pill(x.rule, x.tone)} <span class="conf-pill ${x.conf >= 0.85 ? "hi" : "mid"}" style="margin-left:6px">${Math.round(x.conf * 100)}% match</span> · cleared ${x.nInv} invoice${x.nInv > 1 ? "s" : ""}</div></div>
       </div>
       <div class="post-meta">
-        <span>Bank account <b>${x.bankName}</b></span><span>Value date <b>${x.valueDate}</b></span><span>Time to apply <b>${x.tta}</b></span><span>Clearing doc <b>${x.doc}</b></span>
+        <span>Bank account <b>${x.bankName}</b></span><span>Value date <b>${x.valueDate}</b></span><span>Clearing doc <b>${x.doc}</b></span>
       </div>
       <div class="modal-sub" style="margin-top:14px">Allocation — invoices cleared</div>
       <div class="table-wrap"><table class="tbl">
@@ -1277,28 +1285,26 @@
     }
     const addBtn = $("#add-bank-btn");
     if (addBtn) addBtn.onclick = openBankManager;
+    const upBtn = $("#upload-stmt-btn");
+    if (upBtn) upBtn.onclick = uploadStatement;
   }
 
-  // Bank account management — add multiple accounts per entity, each fed by a
-  // direct MT940 feed from the bank or by manual upload.
+  // Bank account management — add accounts per entity. Statements are brought in by
+  // manual upload (no bank integration).
   function openBankManager() {
     const list = banksForEntity();
     const rows = list.length
-      ? list.map((b) => `<tr><td class="cell-main">${b.name}</td><td>${pill(b.feed || "MT940 direct feed", b.feed === "Manual upload" ? "warn" : "primary")}</td></tr>`).join("")
+      ? list.map((b) => `<tr><td class="cell-main">${b.name}</td><td>${pill("Manual upload", "primary")}</td></tr>`).join("")
       : `<tr><td colspan="2" class="muted">No bank accounts yet for this entity.</td></tr>`;
     openModal(`Bank accounts — ${currentEntity().name}`, `
-      <div class="modal-sub">Add multiple bank accounts per entity. Each account is fed either by a <b>direct MT940 feed</b> from the bank, or by <b>manual statement upload</b>.</div>
-      <div class="table-wrap"><table class="tbl"><thead><tr><th>Account</th><th>Feed type</th></tr></thead><tbody>${rows}</tbody></table></div>
+      <div class="modal-sub">Register the bank accounts for this entity. Statements are brought in by <b>manual upload</b> (MT940 / CSV / camt.053 / Excel) — no bank integration required.</div>
+      <div class="table-wrap"><table class="tbl"><thead><tr><th>Account</th><th>Source</th></tr></thead><tbody>${rows}</tbody></table></div>
       <div class="bankform">
         <div class="bankform__title">Add a bank account</div>
         <input id="bank-name" placeholder="e.g. UOB · …321 (SGD)" />
-        <div class="bankform__feeds">
-          <label><input type="radio" name="feed" value="MT940 direct feed" checked> Direct feed — MT940 from bank</label>
-          <label><input type="radio" name="feed" value="Manual upload"> Manual upload</label>
-        </div>
-        <div id="upload-row" style="display:none;margin-top:8px;align-items:center;gap:8px">
-          <input type="file" id="bank-file" accept=".mt940,.940,.txt,.csv,.xml,.sta,.camt" style="display:none">
-          <button class="btn btn--ghost btn--sm" id="bank-browse">Choose statement file…</button>
+        <div style="display:flex;align-items:center;gap:8px;margin-top:8px">
+          <input type="file" id="bank-file" accept=".mt940,.940,.txt,.csv,.xml,.sta,.camt,.xlsx,.xls" style="display:none">
+          <button class="btn btn--ghost btn--sm" id="bank-browse">Attach a statement (optional)…</button>
           <span id="bank-filename" class="muted" style="font-size:12px">No file selected</span>
         </div>
         <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px">
@@ -1308,25 +1314,57 @@
       </div>`);
     const fileInput = document.getElementById("bank-file");
     const fileLabel = document.getElementById("bank-filename");
-    const uploadRow = document.getElementById("upload-row");
-    document.querySelectorAll('input[name="feed"]').forEach((rb) => {
-      rb.onchange = () => { uploadRow.style.display = (document.querySelector('input[name="feed"]:checked').value === "Manual upload") ? "flex" : "none"; };
-    });
     document.getElementById("bank-browse").onclick = () => fileInput.click();
     fileInput.onchange = () => { fileLabel.textContent = fileInput.files[0] ? fileInput.files[0].name : "No file selected"; };
     document.getElementById("bank-close").onclick = closeModal;
     document.getElementById("bank-add").onclick = () => {
       const name = document.getElementById("bank-name").value.trim();
       if (!name) { document.getElementById("bank-name").focus(); return; }
-      const feed = (document.querySelector('input[name="feed"]:checked') || {}).value || "MT940 direct feed";
-      if (feed === "Manual upload" && !fileInput.files[0]) { fileInput.click(); return; } // open file system
       const fileName = fileInput.files[0] ? fileInput.files[0].name : null;
       const id = "bk-" + Date.now();
-      D.banks.push({ id, entity: selectedEntityId, name, feed: feed + (fileName ? ` (${fileName})` : "") });
+      D.banks.push({ id, entity: selectedEntityId, name, feed: "Manual upload" });
       selectedBankId = id;
       syncSidebarContext();
       openBankManager();
-      toast(`Added ${name} · ${feed}${fileName ? " · " + fileName : ""}`);
+      toast(`Added ${name}${fileName ? " · statement " + fileName + " uploaded" : ""}`);
+    };
+  }
+
+  // Manual bank-statement upload — the only ingestion path (no bank integration).
+  function uploadStatement() {
+    const list = banksForEntity();
+    const opts = list.map((b) => `<option value="${b.id}" ${b.id === selectedBankId ? "selected" : ""}>${b.name}</option>`).join("") || `<option value="">No bank accounts — add one first</option>`;
+    openModal("Upload bank statement", `
+      <div class="modal-sub">Bring in a bank statement by manual upload — <b>MT940 · CSV · camt.053 · Excel</b>. Credits are parsed into the work queue for matching. No bank connection required.</div>
+      <label class="filter-field" style="margin-bottom:12px"><span>Bank account</span><select id="us-bank" class="filter-sel" style="min-width:260px">${opts}</select></label>
+      <div class="upload-drop" id="us-drop">
+        <div class="upload-drop__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M6 10l6-6 6 6M4 20h16"/></svg></div>
+        <div class="upload-drop__title">Choose a statement file or drag it here</div>
+        <div class="muted" style="font-size:12px;margin-top:3px">MT940 · CSV · camt.053 · Excel · up to 20 MB</div>
+        <span id="us-name" class="upload-drop__file"></span>
+        <input type="file" id="us-file" accept=".mt940,.940,.txt,.csv,.xml,.sta,.camt,.xlsx,.xls" style="display:none">
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:16px">
+        <button class="btn btn--ghost" id="us-cancel">Cancel</button>
+        <button class="btn btn--primary" id="us-import" disabled>Import statement</button>
+      </div>`);
+    const drop = document.getElementById("us-drop");
+    const file = document.getElementById("us-file");
+    const nameEl = document.getElementById("us-name");
+    const importBtn = document.getElementById("us-import");
+    const pick = () => { nameEl.textContent = file.files[0] ? "Selected: " + file.files[0].name : ""; importBtn.disabled = !file.files[0]; };
+    drop.onclick = () => file.click();
+    file.onchange = pick;
+    drop.ondragover = (e) => { e.preventDefault(); drop.classList.add("is-over"); };
+    drop.ondragleave = () => drop.classList.remove("is-over");
+    drop.ondrop = (e) => { e.preventDefault(); drop.classList.remove("is-over"); if (e.dataTransfer.files[0]) { file.files = e.dataTransfer.files; pick(); } };
+    document.getElementById("us-cancel").onclick = closeModal;
+    importBtn.onclick = () => {
+      const bank = document.getElementById("us-bank");
+      const bankName = bank.options[bank.selectedIndex] ? bank.options[bank.selectedIndex].text : "—";
+      const n = 40 + (Math.abs((file.files[0] ? file.files[0].name.length : 7) * 17) % 80);   // illustrative parsed count
+      closeModal();
+      toast(`Statement imported to ${bankName} — ${n} credits parsed into the queue`);
     };
   }
 

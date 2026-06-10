@@ -15,15 +15,15 @@ window.DATA = (function () {
     { id: "grab-ph",    name: "Grab Ads PH",          country: "Philippines", currency: "PHP" },
   ];
   const banks = [
-    { id: "dbs-sgd",   entity: "grabads-sg",  name: "DBS · …450 (SGD)",      feed: "MT940 direct feed" },
-    { id: "ocbc-sgd",  entity: "grabads-sg",  name: "OCBC · …881 (SGD)",     feed: "MT940 direct feed" },
-    { id: "maybank",   entity: "gfb-my",      name: "Maybank · …207 (MYR)",  feed: "MT940 direct feed" },
+    { id: "dbs-sgd",   entity: "grabads-sg",  name: "DBS · …450 (SGD)",      feed: "Manual upload" },
+    { id: "ocbc-sgd",  entity: "grabads-sg",  name: "OCBC · …881 (SGD)",     feed: "Manual upload" },
+    { id: "maybank",   entity: "gfb-my",      name: "Maybank · …207 (MYR)",  feed: "Manual upload" },
     { id: "cimb-my",   entity: "gfb-my",      name: "CIMB · …540 (MYR)",     feed: "Manual upload" },
-    { id: "bca-idr",   entity: "grabmart-id", name: "BCA · …119 (IDR)",      feed: "MT940 direct feed" },
+    { id: "bca-idr",   entity: "grabmart-id", name: "BCA · …119 (IDR)",      feed: "Manual upload" },
     { id: "mandiri-id",entity: "grabmart-id", name: "Mandiri · …772 (IDR)",  feed: "Manual upload" },
-    { id: "scb-thb",   entity: "grab-th",     name: "SCB · …663 (THB)",      feed: "MT940 direct feed" },
+    { id: "scb-thb",   entity: "grab-th",     name: "SCB · …663 (THB)",      feed: "Manual upload" },
     { id: "kbank-thb", entity: "grab-th",     name: "KBank · …318 (THB)",    feed: "Manual upload" },
-    { id: "bdo-php",   entity: "grab-ph",     name: "BDO · …884 (PHP)",      feed: "MT940 direct feed" },
+    { id: "bdo-php",   entity: "grab-ph",     name: "BDO · …884 (PHP)",      feed: "Manual upload" },
     { id: "bpi-php",   entity: "grab-ph",     name: "BPI · …205 (PHP)",      feed: "Manual upload" },
   ];
   const lastStatementDate = "08 Jun 2026";
