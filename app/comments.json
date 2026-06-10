@@ -248,12 +248,12 @@
     "yPct": 2.1525426257141578,
     "author": "SME",
     "text": "there should be an option to view the entire list and not just 80",
-    "status": "open",
+    "status": "resolved",
     "createdAt": "2026-06-10T11:48:44.166Z",
-    "updatedAt": "2026-06-10T11:48:44.166Z",
-    "resolvedAt": null,
-    "resolvedBy": null,
-    "resolutionNote": null
+    "updatedAt": "2026-06-10T12:06:33.238Z",
+    "resolvedAt": "2026-06-10T12:06:33.238Z",
+    "resolvedBy": "Claude",
+    "resolutionNote": "The full list is now generated and shown (scrollable with a sticky header), not capped at 80. Filter by period/bank to narrow."
   },
   {
     "id": "c_1owgqofb7ay",
